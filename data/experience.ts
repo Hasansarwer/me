@@ -92,14 +92,13 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    role: "Freelance Developer & Teaching Assistant",
-    company: "Various Clients (incl. Monash University)",
+    role: "Freelance Developer",
+    company: "Various Clients",
     location: "Remote",
     startDate: "2019",
     endDate: "2022",
     bullets: [
-      "Online Teaching Assistant at Monash University, Melbourne \u2014 Computational Linear Algebra, Mathematical Modeling, and Intro to Computational Mathematics",
-      "Completed freelance projects in MATLAB programming, data analysis, and web development",
+      "Freelance projects in MATLAB programming, data analysis, and web development",
     ],
   },
   {

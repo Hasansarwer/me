@@ -82,10 +82,9 @@ export default function AboutPage() {
             I hold a <strong>PhD in Mathematics</strong> from South Asian
             University, New Delhi, with published research in high-accuracy
             numerical methods. I then spent years teaching mathematics at
-            university level &mdash; Monash University, South Asian University,
-            and others &mdash; which means I understand both the mathematical
-            foundations of learning and what it actually takes to teach
-            something well.
+            university level &mdash; which means I understand both the
+            mathematical foundations of learning and what it actually takes
+            to teach something well.
           </p>
           <p>
             That combination &mdash; computational mathematics, software

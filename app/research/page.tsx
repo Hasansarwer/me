@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 export const metadata: Metadata = {
   title: "Research & Teaching",
   description:
-    "PhD research on numerical methods for nonlinear biharmonic problems. Peer-reviewed publications and teaching at South Asian University and Monash University.",
+    "PhD research on numerical methods for nonlinear biharmonic problems. Peer-reviewed publications and teaching at South Asian University, New Delhi.",
   keywords: ["numerical analysis", "computational mathematics", "biharmonic problems", "PhD research", "South Asian University", "peer-reviewed publications", "mathematics lecturer"],
   alternates: { canonical: "/research" },
 };

@@ -35,7 +35,7 @@
 - Backend Developer & Data Engineer, WorkingFromHammock, Netherlands (Mar 2023 - Present): Backend APIs, Python scraping pipelines, geo-distance systems for a travel platform.
 - Full-Stack Developer, Pallabi Business Service, Dhaka (Feb 2023 - Mar 2023): Built ecommerce ecosystem with 1 web platform + 4 mobile apps.
 - Lecturer in Mathematics, College of Aviation Technology (Jan 2022 - Dec 2023): Taught Mathematics I-V to undergraduate students.
-- Teaching Assistant, Monash University, Melbourne (2019 - 2022): Computational Linear Algebra, Mathematical Modeling.
+- Freelance Developer, Various Clients (2019 - 2022): MATLAB programming, data analysis, web development.
 - Research Scholar, South Asian University, New Delhi (Jul 2013 - Apr 2019): Doctoral research, 2 peer-reviewed publications, taught Numerical Analysis and CFD.
 
 ## Notable Projects

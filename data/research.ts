@@ -36,15 +36,6 @@ export const teachingEntries: TeachingEntry[] = [
       "Computational Fluid Dynamics",
     ],
   },
-  {
-    institution: "Monash University, Melbourne (Remote TA)",
-    period: "2019 \u2013 2022",
-    courses: [
-      "Computational Linear Algebra",
-      "Introduction to Computational Mathematics",
-      "Mathematical Modeling",
-    ],
-  },
 ];
 
 export const researchSummary = {
