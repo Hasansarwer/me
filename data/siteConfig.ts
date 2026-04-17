@@ -2,9 +2,9 @@ import type { NavItem, SocialLink } from "@/types";
 
 export const siteConfig = {
   name: "Hasan Sarwer",
-  title: "Hasan Sarwer — Full-Stack Engineer | AI, Data & Web Development",
+  title: "Hasan Sarwer — Builder & Open Source Creator",
   description:
-    "Hasan Sarwer — Full-stack engineer with a PhD in Mathematics. Building web apps, mobile apps, AI/data pipelines, and open-source tools with React, Next.js, and Python.",
+    "Building developer tools, open-source libraries, and the foundation for the ultimate e-learning platform. Creator of salt-theme-gen and react-native-salt. PhD in Mathematics.",
   url: "https://hasansarwer.com",
   email: "hasanmathju@gmail.com",
   phone: "+880-1911-139403",
