@@ -1,14 +1,15 @@
 # Hasan Sarwer
 
-> Full-stack software engineer with a PhD in Mathematics. Building web apps, mobile apps, AI/data pipelines, and open-source tools.
+> Product creator and open-source builder with a PhD in Mathematics. Building developer tools, interactive learning systems, and the foundation for the ultimate e-learning platform.
 
 ## About
 
 - Name: Md. Hasan Sarwer
-- Title: Full-Stack Software Engineer
+- Title: Product Creator & Software Engineer
 - Location: Dhaka, Bangladesh
 - Email: hasanmathju@gmail.com
 - Website: https://hasansarwer.com
+- Products: https://esalt.net
 
 ## Education
 
