@@ -2,36 +2,28 @@ import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
 import { ProjectCard } from "@/components/sections/ProjectCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Badge } from "@/components/ui/Badge";
 import { featuredProjects } from "@/data/projects";
-import { skillCategories } from "@/data/skills";
-import { experiences } from "@/data/experience";
 import styles from "./page.module.css";
 
-const specialties = [
+const products = [
   {
-    title: "Full-Stack Web Development",
-    description: "React, Next.js, Node.js, Express, MongoDB, MySQL",
+    name: "salt-theme-gen",
+    desc: "OKLCH-based design system theme engine. One hex color in — complete light/dark theme with 21 semantic colors, 32 interactive states, and WCAG accessibility. Pure TypeScript, zero dependencies.",
+    status: "live" as const,
+    npm: "https://www.npmjs.com/package/salt-theme-gen",
+    github: "https://github.com/Hasansarwer/salt-theme-gen",
   },
   {
-    title: "Mobile App Development",
-    description: "React Native, Expo, cross-platform iOS & Android",
+    name: "react-native-salt",
+    desc: "119-component React Native UI library that responds to a single theme object. Pass one color — every component adapts across light and dark mode. No native linking, works in Expo Go.",
+    status: "live" as const,
+    npm: "https://www.npmjs.com/package/@esaltws/react-native-salt",
+    github: "https://github.com/Hasansarwer/react-native-salt",
   },
   {
-    title: "AI, Data & Automation",
-    description: "Python, Pandas, scraping, data pipelines, ML models",
-  },
-  {
-    title: "Interactive Digital Products",
-    description: "Pixi.js, Three.js, Canvas, educational simulations",
-  },
-  {
-    title: "Design Systems & Open Source",
-    description: "salt-theme-gen, OKLCH color science, npm packages",
-  },
-  {
-    title: "Quantitative Problem-Solving",
-    description: "PhD Mathematics, numerical methods, algorithm design",
+    name: "E-Learning Platform",
+    desc: "The ultimate goal — an adaptive, interactive e-learning platform built on the design system foundation I've been laying. Combining a PhD in mathematics, pedagogy experience, and software engineering.",
+    status: "building" as const,
   },
 ];
 
@@ -40,30 +32,87 @@ export default function HomePage() {
     <>
       <Hero />
 
-      {/* Specialties */}
+      {/* Products */}
       <section className={styles.section}>
         <div className={styles.container}>
           <SectionHeading
-            title="What I Do"
-            subtitle="Core specialties across engineering, data, and product development."
+            title="Products"
+            subtitle="Open-source tools I've built and published. Each one a building block toward the bigger vision."
           />
-          <div className={styles.specialtiesGrid}>
-            {specialties.map((s) => (
-              <div key={s.title} className={styles.specialtyCard}>
-                <h3 className={styles.specialtyTitle}>{s.title}</h3>
-                <p className={styles.specialtyDesc}>{s.description}</p>
+          <div className={styles.productsGrid}>
+            {products.map((p) => (
+              <div key={p.name} className={styles.productCard}>
+                <div>
+                  <span
+                    className={`${styles.productStatus} ${
+                      p.status === "live"
+                        ? styles.productStatusLive
+                        : styles.productStatusSoon
+                    }`}
+                  >
+                    {p.status === "live" ? "live on npm" : "in progress"}
+                  </span>
+                </div>
+                <h3 className={styles.productName}>{p.name}</h3>
+                <p className={styles.productDesc}>{p.desc}</p>
+                {(p.npm || p.github) && (
+                  <div className={styles.productLinks}>
+                    {p.npm && (
+                      <a
+                        href={p.npm}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.productLink}
+                      >
+                        npm &rarr;
+                      </a>
+                    )}
+                    {p.github && (
+                      <a
+                        href={p.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.productLink}
+                      >
+                        GitHub &rarr;
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Projects */}
+      {/* The Vision */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <SectionHeading title="The Vision" />
+          <div className={styles.visionBlock}>
+            <p className={styles.visionText}>
+              Everything I&apos;m building is pointed at one goal: the world&apos;s most
+              well-designed, mathematically-grounded, interactive e-learning platform.
+              The design systems, the component libraries, the interactive simulations
+              &mdash; all foundational infrastructure for that platform.
+            </p>
+            <p className={styles.visionText}>
+              Along the way I&apos;m shipping those building blocks as standalone
+              open-source products, consulting as a technical partner to fund the work,
+              and sharing what I learn publicly. The PhD in Mathematics isn&apos;t a
+              credential &mdash; it&apos;s how I think about systems, algorithms, and
+              learning.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Selected Work */}
       <section className={styles.section}>
         <div className={styles.container}>
           <SectionHeading
-            title="Featured Projects"
-            subtitle="Products and systems I've designed, built, and shipped."
+            title="Selected Work"
+            subtitle="Systems and products I've designed, built, and shipped."
           />
           <div className={styles.projectsGrid}>
             {featuredProjects.map((project) => (
@@ -72,110 +121,51 @@ export default function HomePage() {
           </div>
           <div className={styles.viewAll}>
             <Link href="/projects" className={styles.viewAllLink}>
-              View All Projects &rarr;
+              View All Work &rarr;
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Experience Highlights */}
+      {/* Background */}
       <section className={styles.section}>
         <div className={styles.container}>
-          <SectionHeading
-            title="Experience"
-            subtitle="Where I've built, led, and delivered."
-          />
-          <div className={styles.experienceList}>
-            {experiences.slice(0, 3).map((exp) => (
-              <div key={exp.company} className={styles.expCard}>
-                <div className={styles.expHeader}>
-                  <div>
-                    <h3 className={styles.expRole}>{exp.role}</h3>
-                    <p className={styles.expCompany}>
-                      {exp.company} &middot; {exp.location}
-                    </p>
-                  </div>
-                  <span className={styles.expDate}>
-                    {exp.startDate} &mdash; {exp.endDate}
-                  </span>
-                </div>
-                <p className={styles.expBullet}>{exp.bullets[0]}</p>
-              </div>
-            ))}
-          </div>
-          <div className={styles.viewAll}>
-            <Link href="/experience" className={styles.viewAllLink}>
-              View Full Experience &rarr;
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Skills Preview */}
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <SectionHeading
-            title="Tech Stack"
-            subtitle="Technologies and tools I work with."
-          />
-          <div className={styles.skillsPreview}>
-            {skillCategories.slice(0, 4).map((cat) => (
-              <div key={cat.name} className={styles.skillGroup}>
-                <h4 className={styles.skillGroupTitle}>{cat.name}</h4>
-                <div className={styles.skillBadges}>
-                  {cat.skills.slice(0, 6).map((skill) => (
-                    <Badge key={skill} variant="primary">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className={styles.viewAll}>
-            <Link href="/skills" className={styles.viewAllLink}>
-              View Full Tech Stack &rarr;
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Research Summary */}
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <SectionHeading title="Research & Academic Background" />
+          <SectionHeading title="Background" />
           <div className={styles.researchSummary}>
             <p className={styles.researchText}>
-              My PhD in Mathematics from South Asian University focused on
-              high-accuracy numerical methods &mdash; the same deep analytical
-              thinking I bring to engineering complex software systems.
-              I&apos;ve published peer-reviewed research and taught at
-              university level, which strengthens my ability to break down hard
-              problems, design algorithms, and communicate technical ideas
-              clearly.
+              PhD in Mathematics (South Asian University, New Delhi) specializing
+              in high-accuracy numerical methods. Before building software products
+              full-time I led university-level mathematics courses, supervised
+              doctoral research, and published peer-reviewed work in computational
+              mathematics. That analytical foundation is what makes my approach to
+              product and algorithm design different.
             </p>
-            <Link href="/research" className={styles.viewAllLink}>
-              View Research &rarr;
-            </Link>
+            <div className={styles.backgroundLinks}>
+              <Link href="/about" className={styles.viewAllLink}>
+                About Me &rarr;
+              </Link>
+              <Link href="/research" className={styles.viewAllLink}>
+                Research &rarr;
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
+      {/* Work with Me CTA */}
       <section className={styles.ctaSection}>
         <div className={styles.container}>
           <div className={styles.cta}>
-            <h2 className={styles.ctaTitle}>
-              Let&apos;s Build Something Together
-            </h2>
+            <h2 className={styles.ctaTitle}>Work with Me</h2>
             <p className={styles.ctaText}>
-              Whether you need a full-stack engineer, a data/AI solution, or a
-              technical partner for your next product &mdash; I&apos;d like to
-              hear about it.
+              I&apos;m not looking for employment. I consult on React, Next.js,
+              React Native, Python, and design systems. If you have a product that
+              needs building or a technical problem that needs solving &mdash;
+              let&apos;s talk.
             </p>
             <div className={styles.ctaActions}>
               <Link href="/contact" className={styles.ctaPrimary}>
-                Get In Touch
+                Get in Touch
               </Link>
               <a
                 href="https://github.com/Hasansarwer"
