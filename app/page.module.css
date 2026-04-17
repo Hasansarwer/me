@@ -142,7 +142,100 @@
   gap: var(--spacing-sm);
 }
 
-/* Research Summary */
+/* Products */
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xl);
+}
+
+.productCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xxl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.productCard:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.productName {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.productDesc {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  margin: 0;
+  line-height: 1.7;
+  flex: 1;
+}
+
+.productStatus {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.productStatusLive {
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  color: var(--color-success);
+}
+
+.productStatusSoon {
+  background: color-mix(in srgb, var(--color-warning) 15%, transparent);
+  color: var(--color-warning);
+}
+
+.productLinks {
+  display: flex;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-xs);
+}
+
+.productLink {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  transition: color 0.2s;
+}
+
+.productLink:hover {
+  color: var(--state-primary-hover);
+}
+
+/* Vision */
+.visionBlock {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-4xl);
+}
+
+.visionText {
+  font-size: var(--font-size-xl);
+  color: var(--color-muted);
+  line-height: 1.8;
+  margin-bottom: var(--spacing-xl);
+}
+
+.visionText:last-child {
+  margin-bottom: 0;
+}
+
+/* Background */
 .researchSummary {
   max-width: 720px;
 }
@@ -152,6 +245,11 @@
   color: var(--color-muted);
   line-height: 1.8;
   margin-bottom: var(--spacing-xl);
+}
+
+.backgroundLinks {
+  display: flex;
+  gap: var(--spacing-xxl);
 }
 
 /* CTA Section */
@@ -230,6 +328,10 @@
     grid-template-columns: 1fr;
   }
 
+  .productsGrid {
+    grid-template-columns: 1fr;
+  }
+
   .projectsGrid {
     grid-template-columns: 1fr;
   }
@@ -243,6 +345,14 @@
     gap: var(--spacing-xs);
   }
 
+  .visionBlock {
+    padding: var(--spacing-xxl);
+  }
+
+  .visionText {
+    font-size: var(--font-size-lg);
+  }
+
   .cta {
     padding: var(--spacing-xxl);
   }
@@ -250,5 +360,10 @@
   .ctaActions {
     flex-direction: column;
     align-items: center;
+  }
+
+  .backgroundLinks {
+    flex-direction: column;
+    gap: var(--spacing-md);
   }
 }
