@@ -118,6 +118,13 @@
   margin: var(--spacing-sm) 0 0;
 }
 
+.certsCondensed {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  line-height: 1.8;
+  margin: 0;
+}
+
 .certGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
