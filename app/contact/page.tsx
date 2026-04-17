@@ -5,10 +5,10 @@ import { siteConfig, socialLinks } from "@/data/siteConfig";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Work with Me",
   description:
-    "Hire Hasan Sarwer — available for full-stack roles, freelance React/Next.js/Python projects, and technical consulting. Based in Dhaka, open to remote.",
-  keywords: ["hire developer", "freelance software engineer", "contact Hasan Sarwer", "full-stack developer for hire", "consulting"],
+    "Work with Hasan Sarwer — available for React/Next.js/React Native consulting, technical partnerships, and product co-building. Not looking for employment. Based in Dhaka, open to remote.",
+  keywords: ["hire consultant", "React consultant", "Next.js consulting", "technical partner", "contact Hasan Sarwer", "freelance developer"],
   alternates: { canonical: "/contact" },
 };
 
@@ -16,8 +16,8 @@ export default function ContactPage() {
   return (
     <div className={styles.container}>
       <SectionHeading
-        title="Get In Touch"
-        subtitle="I'm open to full-stack engineering roles, freelance projects, technical collaborations, and consulting opportunities."
+        title="Work with Me"
+        subtitle="I'm not looking for employment. I consult on React, Next.js, React Native, Python, and design systems — and I'm open to technical partnerships and product co-building."
       />
 
       <div className={styles.grid}>
@@ -66,12 +66,12 @@ export default function ContactPage() {
           <div className={styles.infoCard}>
             <h3 className={styles.infoTitle}>What I&apos;m Open To</h3>
             <ul className={styles.openTo}>
-              <li>Full-stack engineering roles</li>
-              <li>Web & mobile app development</li>
-              <li>AI/data pipeline projects</li>
-              <li>EdTech & interactive content</li>
-              <li>Design system consulting</li>
-              <li>Technical co-building</li>
+              <li>React / Next.js / React Native consulting</li>
+              <li>Python & data pipeline projects</li>
+              <li>EdTech & interactive learning products</li>
+              <li>Design system work</li>
+              <li>Technical co-building & advisory</li>
+              <li>Product partnerships</li>
             </ul>
           </div>
         </div>
