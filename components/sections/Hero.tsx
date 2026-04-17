@@ -5,40 +5,42 @@ export function Hero() {
   return (
     <section className={styles.hero}>
       <div className={styles.inner}>
-        <p className={styles.greeting}>Hello, I&apos;m Hasan Sarwer</p>
+        <p className={styles.greeting}>Hasan Sarwer</p>
         <h1 className={styles.headline}>
-          Building Full-Stack Products,
+          Building the Tools
           <br />
-          <span className={styles.accent}>Data Systems & Interactive</span>
+          <span className={styles.accent}>Developers Need.</span>
           <br />
-          Digital Experiences
+          Working Toward the Platform
+          <br />
+          <span className={styles.accent}>Learners Deserve.</span>
         </h1>
         <p className={styles.subheadline}>
-          Full-Stack Engineer with a PhD in Mathematics. I build web apps,
-          mobile apps, AI/data workflows, and interactive learning products
-          &mdash; from architecture to deployment.
+          Product creator and open-source builder with a PhD in Mathematics.
+          I ship developer tools, interactive learning systems, and the building
+          blocks of what will become the ultimate e-learning platform.
         </p>
         <div className={styles.actions}>
           <Link href="/projects" className={styles.primaryBtn}>
-            View Projects
+            See What I&apos;m Building
           </Link>
           <Link href="/contact" className={styles.secondaryBtn}>
-            Get In Touch
+            Work with Me
           </Link>
         </div>
 
         <div className={styles.metrics}>
           <div className={styles.metric}>
+            <span className={styles.metricValue}>2</span>
+            <span className={styles.metricLabel}>npm Packages</span>
+          </div>
+          <div className={styles.metric}>
+            <span className={styles.metricValue}>119</span>
+            <span className={styles.metricLabel}>Components Shipped</span>
+          </div>
+          <div className={styles.metric}>
             <span className={styles.metricValue}>1,000+</span>
-            <span className={styles.metricLabel}>Interactive Modules</span>
-          </div>
-          <div className={styles.metric}>
-            <span className={styles.metricValue}>10+</span>
-            <span className={styles.metricLabel}>Apps Shipped</span>
-          </div>
-          <div className={styles.metric}>
-            <span className={styles.metricValue}>20+</span>
-            <span className={styles.metricLabel}>Team Members Led</span>
+            <span className={styles.metricLabel}>Learning Modules Built</span>
           </div>
           <div className={styles.metric}>
             <span className={styles.metricValue}>PhD</span>
