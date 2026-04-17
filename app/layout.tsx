@@ -24,18 +24,17 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   keywords: [
     "Hasan Sarwer",
-    "full-stack developer",
-    "software engineer",
-    "React developer",
+    "open source creator",
+    "product builder",
+    "salt-theme-gen",
+    "react-native-salt",
+    "e-learning platform",
+    "React consultant",
     "Next.js developer",
-    "Node.js developer",
-    "Python developer",
-    "React Native",
+    "React Native developer",
+    "design systems",
     "PhD Mathematics",
-    "web development",
-    "mobile app development",
-    "data science",
-    "machine learning",
+    "npm packages",
     "Bangladesh developer",
   ],
   openGraph: {
@@ -106,7 +105,7 @@ export default function RootLayout({
                   url: siteConfig.url,
                   email: siteConfig.email,
                   telephone: siteConfig.phone,
-                  jobTitle: "Full-Stack Software Engineer",
+                  jobTitle: "Product Creator & Software Engineer",
                   description: siteConfig.description,
                   address: {
                     "@type": "PostalAddress",
@@ -158,7 +157,7 @@ export default function RootLayout({
                       name: "Who is Hasan Sarwer?",
                       acceptedAnswer: {
                         "@type": "Answer",
-                        text: "Hasan Sarwer is a full-stack software engineer based in Dhaka, Bangladesh, with a PhD in Mathematics from South Asian University. He builds web apps, mobile apps, AI/data pipelines, and open-source tools using React, Next.js, Node.js, Python, and React Native.",
+                        text: "Hasan Sarwer is a product creator and open-source builder based in Dhaka, Bangladesh, with a PhD in Mathematics from South Asian University. He builds developer tools, open-source libraries, and interactive learning systems — working toward the ultimate e-learning platform. Creator of salt-theme-gen and react-native-salt on npm.",
                       },
                     },
                     {
@@ -179,10 +178,10 @@ export default function RootLayout({
                     },
                     {
                       "@type": "Question",
-                      name: "Is Hasan Sarwer available for hire?",
+                      name: "Is Hasan Sarwer available for consulting or collaboration?",
                       acceptedAnswer: {
                         "@type": "Answer",
-                        text: "Yes, Hasan is available for full-stack engineering roles, freelance React/Next.js/Python projects, and technical consulting. He is based in Dhaka, Bangladesh and open to remote work. Contact him at hasanmathju@gmail.com.",
+                        text: "Yes, Hasan is available for technical consulting on React, Next.js, React Native, Python, and design systems. He is not looking for employment. He is open to product partnerships, technical co-building, and advisory roles. Based in Dhaka, Bangladesh, open to remote. Contact him at hasanmathju@gmail.com.",
                       },
                     },
                     {
