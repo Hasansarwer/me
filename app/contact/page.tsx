@@ -7,8 +7,8 @@ import styles from "./page.module.css";
 export const metadata: Metadata = {
   title: "Work with Me",
   description:
-    "Work with Hasan Sarwer — available for React/Next.js/React Native consulting, technical partnerships, and product co-building. Not looking for employment. Based in Dhaka, open to remote.",
-  keywords: ["hire consultant", "React consultant", "Next.js consulting", "technical partner", "contact Hasan Sarwer", "freelance developer"],
+    "Work with Hasan Sarwer — technical consulting, product partnerships, and co-building. React, Next.js, React Native, Python, and design systems. Based in Dhaka, open to remote.",
+  keywords: ["React consultant", "Next.js consulting", "technical partner", "contact Hasan Sarwer", "design systems consultant", "React Native developer"],
   alternates: { canonical: "/contact" },
 };
 
@@ -17,7 +17,7 @@ export default function ContactPage() {
     <div className={styles.container}>
       <SectionHeading
         title="Work with Me"
-        subtitle="I'm not looking for employment. I consult on React, Next.js, React Native, Python, and design systems — and I'm open to technical partnerships and product co-building."
+        subtitle="I take on select technical partnerships and consulting engagements — React, Next.js, React Native, Python, design systems, and anything at the intersection of software and learning."
       />
 
       <div className={styles.grid}>
@@ -64,14 +64,13 @@ export default function ContactPage() {
           </div>
 
           <div className={styles.infoCard}>
-            <h3 className={styles.infoTitle}>What I&apos;m Open To</h3>
+            <h3 className={styles.infoTitle}>What I Work On</h3>
             <ul className={styles.openTo}>
-              <li>React / Next.js / React Native consulting</li>
-              <li>Python & data pipeline projects</li>
+              <li>React, Next.js, React Native engineering</li>
+              <li>Design systems & component libraries</li>
+              <li>Python, data pipelines, backend architecture</li>
               <li>EdTech & interactive learning products</li>
-              <li>Design system work</li>
-              <li>Technical co-building & advisory</li>
-              <li>Product partnerships</li>
+              <li>Technical co-building & product partnerships</li>
             </ul>
           </div>
         </div>

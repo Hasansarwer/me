@@ -169,10 +169,9 @@ export default function HomePage() {
           <div className={styles.cta}>
             <h2 className={styles.ctaTitle}>Work with Me</h2>
             <p className={styles.ctaText}>
-              I&apos;m not looking for employment. I consult on React, Next.js,
-              React Native, Python, and design systems. If you have a product that
-              needs building or a technical problem that needs solving &mdash;
-              let&apos;s talk.
+              I take on select technical partnerships and consulting engagements.
+              If you have a product that needs building or a hard technical
+              problem that needs solving &mdash; let&apos;s talk.
             </p>
             <div className={styles.ctaActions}>
               <Link href="/contact" className={styles.ctaPrimary}>
