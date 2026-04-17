@@ -6,8 +6,8 @@ import styles from "./page.module.css";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Hasan Sarwer — full-stack engineer with a PhD in Mathematics from South Asian University. React, Next.js, Python, React Native. 10+ shipped products.",
-  keywords: ["about Hasan Sarwer", "full-stack engineer", "PhD Mathematics", "software developer Bangladesh", "web developer portfolio"],
+    "Hasan Sarwer — product creator and open-source builder with a PhD in Mathematics. Building developer tools and the foundation for the ultimate e-learning platform.",
+  keywords: ["about Hasan Sarwer", "open source creator", "product builder", "PhD Mathematics", "software developer Bangladesh", "e-learning platform"],
   alternates: { canonical: "/about" },
 };
 
@@ -21,74 +21,73 @@ export default function AboutPage() {
           <ProfilePhoto />
           <div className={styles.bio}>
             <p className={styles.lead}>
-              I&apos;m Hasan Sarwer &mdash; a full-stack engineer, builder, and
-              technical problem solver based in Dhaka, Bangladesh.
+              I&apos;m Hasan Sarwer &mdash; a product creator, open-source
+              builder, and technical consultant based in Dhaka, Bangladesh.
             </p>
             <p>
-              I build web applications, mobile apps, data pipelines, and
-              interactive digital products. My work spans the full development
-              lifecycle &mdash; from system architecture and backend design to
-              frontend interfaces and deployment.
+              I build developer tools, open-source libraries, and interactive
+              learning systems. My current products &mdash; salt-theme-gen and
+              react-native-salt &mdash; are published on npm and are building
+              blocks toward a larger goal: the ultimate e-learning platform.
             </p>
           </div>
         </div>
 
         <section className={styles.section}>
-          <h3 className={styles.subheading}>What I Do</h3>
+          <h3 className={styles.subheading}>What I Build</h3>
           <ul className={styles.list}>
             <li>
-              <strong>Web Applications</strong> &mdash; React, Next.js, Node.js,
-              Express
+              <strong>Open-Source Dev Tools</strong> &mdash; salt-theme-gen,
+              react-native-salt, design system infrastructure
             </li>
             <li>
-              <strong>Mobile Apps</strong> &mdash; React Native, Expo
+              <strong>Interactive Learning Products</strong> &mdash; simulations,
+              2D/3D educational content, adaptive platforms
             </li>
             <li>
-              <strong>Data & Automation</strong> &mdash; Python, scraping,
-              analysis, dashboards
+              <strong>Web & Mobile Applications</strong> &mdash; React, Next.js,
+              React Native, Node.js, full-stack systems
             </li>
             <li>
-              <strong>Interactive Content</strong> &mdash; Pixi.js, Three.js,
-              Canvas-based simulations
-            </li>
-            <li>
-              <strong>Design Systems</strong> &mdash; salt-theme-gen, OKLCH
-              color science, npm packages
+              <strong>Data & Automation</strong> &mdash; Python pipelines,
+              scraping, analysis, ML-backed features
             </li>
           </ul>
+        </section>
+
+        <section className={styles.section}>
+          <h3 className={styles.subheading}>Where I&apos;m Headed</h3>
           <p>
-            I&apos;ve led teams building government-funded educational
-            platforms, architected multi-vendor ecommerce ecosystems, developed
-            cross-platform mobile applications, and published open-source design
-            system tools on npm.
+            The ultimate goal is an adaptive, interactive e-learning platform
+            &mdash; one that brings together mathematical rigor, modern
+            software engineering, and serious pedagogy. Everything I build now
+            is pointed at that.
+          </p>
+          <p>
+            Along the way, I publish open-source tools that solve real problems
+            for developers, consult as a technical partner to fund the work,
+            and share what I learn publicly. The PhD in Mathematics isn&apos;t
+            a career credential &mdash; it&apos;s how I think about systems,
+            algorithms, and learning itself.
           </p>
         </section>
 
         <section className={styles.section}>
-          <h3 className={styles.subheading}>My Background</h3>
+          <h3 className={styles.subheading}>The Path Here</h3>
           <p>
             I hold a <strong>PhD in Mathematics</strong> from South Asian
-            University, New Delhi, where I specialized in numerical methods and
-            computational mathematics. This research background gives me an edge
-            in algorithm design, quantitative analysis, and systematic
-            problem-solving that most engineers don&apos;t bring to the table.
+            University, New Delhi, specializing in high-accuracy numerical
+            methods and computational mathematics. Before building software
+            products full-time, I led university-level mathematics courses
+            at multiple institutions, supervised research, and published
+            peer-reviewed work.
           </p>
           <p>
-            Before transitioning fully into software engineering, I taught
-            mathematics at university level and worked as a research scholar.
-            That experience sharpened my ability to communicate complex ideas
-            clearly and think rigorously about system design.
-          </p>
-        </section>
-
-        <section className={styles.section}>
-          <h3 className={styles.subheading}>What Drives Me</h3>
-          <p>
-            I&apos;m drawn to projects where technology meets real-world impact
-            &mdash; educational tools that make learning interactive, platforms
-            that connect businesses with customers, and data systems that turn
-            raw information into decisions. I care about clean architecture,
-            practical outcomes, and building things that work.
+            That background &mdash; deep quantitative thinking, research
+            discipline, and teaching experience &mdash; shapes how I approach
+            product design and engineering. It&apos;s also why I&apos;m
+            building toward education: I know what good learning looks like,
+            and I know it can be done far better than it currently is.
           </p>
         </section>
 
