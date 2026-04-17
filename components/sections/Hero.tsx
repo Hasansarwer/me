@@ -9,16 +9,16 @@ export function Hero() {
         <h1 className={styles.headline}>
           Building the Tools
           <br />
-          <span className={styles.accent}>Developers Need.</span>
+          <span className={styles.accent}>Developers Rely On.</span>
           <br />
-          Working Toward the Platform
+          Building the Platform
           <br />
-          <span className={styles.accent}>Learners Deserve.</span>
+          <span className={styles.accent}>Education Has Been Missing.</span>
         </h1>
         <p className={styles.subheadline}>
-          Product creator and open-source builder with a PhD in Mathematics.
-          I ship developer tools, interactive learning systems, and the building
-          blocks of what will become the ultimate e-learning platform.
+          Two npm packages shipped. An adaptive learning platform in active
+          development. The PhD in Mathematics isn&apos;t background &mdash;
+          it&apos;s why the products are built differently.
         </p>
         <div className={styles.actions}>
           <Link href="/projects" className={styles.primaryBtn}>
