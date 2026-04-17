@@ -216,6 +216,19 @@
   color: var(--state-primary-hover);
 }
 
+.productLinkDemo {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.productLinkDemo:hover {
+  background: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  color: var(--color-primary);
+}
+
 /* Vision */
 .visionBlock {
   background: var(--color-surface);

@@ -19,6 +19,7 @@ const products = [
     status: "live" as const,
     npm: "https://www.npmjs.com/package/@esaltws/react-native-salt",
     github: "https://github.com/Hasansarwer/react-native-salt",
+    demo: "https://drive.google.com/file/d/1i1qEqURhI9MKpvX9Z_8nuaY_PAasOBl8/view",
   },
   {
     name: "E-Learning Platform",
@@ -55,8 +56,18 @@ export default function HomePage() {
                 </div>
                 <h3 className={styles.productName}>{p.name}</h3>
                 <p className={styles.productDesc}>{p.desc}</p>
-                {(p.npm || p.github) && (
+                {(p.npm || p.github || p.demo) && (
                   <div className={styles.productLinks}>
+                    {p.demo && (
+                      <a
+                        href={p.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${styles.productLink} ${styles.productLinkDemo}`}
+                      >
+                        Try Demo (APK) &rarr;
+                      </a>
+                    )}
                     {p.npm && (
                       <a
                         href={p.npm}
