@@ -1,0 +1,202 @@
+/* ===== SALT-THEME-GEN: Ocean Preset ===== */
+
+/* Light Mode (default) */
+:root {
+  --color-primary: #0078a9;
+  --color-secondary: #8462a0;
+  --color-tertiary: #995756;
+  --color-quaternary: #217c80;
+  --color-background: #f3f5f7;
+  --color-surface: #ffffff;
+  --color-text: #060809;
+  --color-muted: #6a7379;
+  --color-border: #d4d8db;
+  --color-danger: #c53637;
+  --color-success: #128227;
+  --color-warning: #946800;
+  --color-info: #0078a9;
+  --color-on-primary: #ffffff;
+  --color-on-secondary: #ffffff;
+  --color-on-tertiary: #ffffff;
+  --color-on-quaternary: #ffffff;
+
+  --elevation-card: #fcfcfa;
+  --elevation-elevated: #faf9f6;
+  --elevation-modal: #f7f6f1;
+  --elevation-popover: #f4f3ec;
+
+  --state-primary-hover: #006088;
+  --state-primary-pressed: #004b6d;
+  --state-primary-focused: #b7cee2;
+  --state-primary-disabled: #7a91a0;
+
+  --state-secondary-hover: #6d4b87;
+  --state-secondary-pressed: #593872;
+
+  --spacing-none: 0px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --spacing-3xl: 48px;
+  --spacing-4xl: 64px;
+
+  --radius-none: 0px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-xxl: 24px;
+  --radius-pill: 999px;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-xxl: 24px;
+  --font-size-3xl: 32px;
+  --font-size-4xl: 40px;
+  --font-size-5xl: 48px;
+  --font-size-6xl: 60px;
+
+  --font-heading: "Inter", "Geist", system-ui, -apple-system, sans-serif;
+  --font-body: "Inter", "Geist", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", "JetBrains Mono", "Fira Code", monospace;
+
+  --max-width: 1200px;
+  --header-height: 64px;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  --color-primary: #5bbaee;
+  --color-secondary: #c5a5e3;
+  --color-tertiary: #cf8c8a;
+  --color-quaternary: #6bb8bb;
+  --color-background: #090b0d;
+  --color-surface: #131719;
+  --color-text: #f3f5f7;
+  --color-muted: #879197;
+  --color-border: #2b2e30;
+  --color-danger: #f97770;
+  --color-success: #67bb6b;
+  --color-warning: #dca331;
+  --color-info: #4cb0e5;
+  --color-on-primary: #444444;
+  --color-on-secondary: #454545;
+  --color-on-tertiary: #363535;
+  --color-on-quaternary: #414040;
+
+  --elevation-card: #1a1e20;
+  --elevation-elevated: #212527;
+  --elevation-modal: #2a2f31;
+  --elevation-popover: #35393b;
+
+  --state-primary-hover: #3fa1d3;
+  --state-primary-pressed: #238bbc;
+  --state-primary-focused: #233848;
+  --state-primary-disabled: #c9e3f3;
+
+  --state-secondary-hover: #ac8cc9;
+  --state-secondary-pressed: #9677b2;
+}
+
+/* ===== GLOBAL RESETS ===== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  line-height: 1.7;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+h1 { font-size: var(--font-size-5xl); }
+h2 { font-size: var(--font-size-3xl); }
+h3 { font-size: var(--font-size-xxl); }
+h4 { font-size: var(--font-size-xl); }
+
+p {
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-muted);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--state-primary-hover);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* ===== UTILITIES ===== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  h1 { font-size: var(--font-size-3xl); }
+  h2 { font-size: var(--font-size-xxl); }
+  h3 { font-size: var(--font-size-xl); }
+}

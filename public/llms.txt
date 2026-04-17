@@ -1,0 +1,83 @@
+# Hasan Sarwer
+
+> Full-stack software engineer with a PhD in Mathematics. Building web apps, mobile apps, AI/data pipelines, and open-source tools.
+
+## About
+
+- Name: Md. Hasan Sarwer
+- Title: Full-Stack Software Engineer
+- Location: Dhaka, Bangladesh
+- Email: hasanmathju@gmail.com
+- Website: https://hasansarwer.com
+
+## Education
+
+- PhD in Mathematics, South Asian University, New Delhi (2013-2019). Thesis: "High Accuracy Compact Numerical Methods for Nonlinear Biharmonic Problems of First Kind"
+- MSc in Mathematics, Jahangirnagar University, Dhaka (2009-2010)
+- BSc (Hons) in Mathematics, Jahangirnagar University, Dhaka (2005-2009)
+- SAARC-India Silver Jubilee Scholarship recipient
+
+## Skills
+
+- Frontend: React, Next.js, TypeScript, JavaScript, HTML5, CSS3, Pixi.js, Three.js, HTML Canvas
+- Backend: Node.js, Express.js, NestJS, Python, FastAPI, REST APIs, WebSocket
+- Mobile: React Native, Expo (cross-platform iOS & Android)
+- AI/Data: Python, Pandas, NumPy, Scikit-learn, Matplotlib, Plotly, Dash, BeautifulSoup, Machine Learning
+- Databases: MongoDB, MySQL, PostgreSQL
+- Cloud/DevOps: AWS (EC2, RDS, Route 53, Amplify), Vercel, Git, GitHub, Linux
+- Research: Numerical Analysis, MATLAB, Mathematica, Fortran, C/C++, LaTeX
+
+## Experience
+
+- Independent Software Engineer, Self-Employed, Dhaka (Mar 2025 - Present): Building open-source libraries (salt-theme-gen, react-native-salt) on npm. Contract backend work for WorkingFromHammock.
+- Pedagogy Specialist & Lead Software Engineer, Automind IT, Dhaka (Dec 2023 - Feb 2025): Led development of 1,000+ interactive simulations for Sheikh Russel Digital Lab (Ministry of ICT, Bangladesh). Managed team of 23.
+- Backend Developer & Data Engineer, WorkingFromHammock, Netherlands (Mar 2023 - Present): Backend APIs, Python scraping pipelines, geo-distance systems for a travel platform.
+- Full-Stack Developer, Pallabi Business Service, Dhaka (Feb 2023 - Mar 2023): Built ecommerce ecosystem with 1 web platform + 4 mobile apps.
+- Lecturer in Mathematics, College of Aviation Technology (Jan 2022 - Dec 2023): Taught Mathematics I-V to undergraduate students.
+- Teaching Assistant, Monash University, Melbourne (2019 - 2022): Computational Linear Algebra, Mathematical Modeling.
+- Research Scholar, South Asian University, New Delhi (Jul 2013 - Apr 2019): Doctoral research, 2 peer-reviewed publications, taught Numerical Analysis and CFD.
+
+## Notable Projects
+
+- react-native-salt: 119-component React Native UI library with single-color theming. Published on npm as @esaltws/react-native-salt. GitHub: https://github.com/Hasansarwer/react-native-salt
+- salt-theme-gen: OKLCH-based design system theme engine. One hex color in, complete light/dark theme out with WCAG accessibility. Published on npm. GitHub: https://github.com/Hasansarwer/salt-theme-gen
+- Sheikh Russel Digital Lab: 1,000+ interactive educational modules for grades 6-10, funded by Bangladesh Ministry of ICT.
+- WorkingFromHammock: Backend and data pipeline for a travel platform for remote workers. Live: https://workingfromhammock.com
+- Pallabi Business Service Ecosystem: 1 web + 4 mobile apps for B2B/B2C ecommerce.
+- SymptomWatch: AI-assisted mental health monitoring platform with risk scoring. Live: https://symptomwatch-puce.vercel.app
+
+## Publications
+
+- Mohanty, R.K. & Sarwer, M.H. (2019). "A class of numerical methods for the solution of fourth-order nonlinear ordinary differential equations on a graded mesh." International Journal for Computational Methods in Engineering Science and Mechanics, 20:5, 434-450.
+- Mohanty, R.K., Sarwer, M.H. & Setia, N. (2016). "A class of quasi-variable mesh methods based on off-step discretization for the solution of non-linear fourth order ordinary differential equations." Advances in Differential Equations, 2016:248.
+
+## Certifications
+
+- IBM Full-Stack JavaScript Developer (Coursera, 2025)
+- IBM Backend JavaScript Developer (Coursera, 2025)
+- IBM AI Developer (Coursera, 2025)
+- IBM Data Science (Coursera, 2024)
+- IBM Front-End Developer (Coursera, 2025)
+- Meta React Native (Coursera, 2024)
+- Meta Front-End Developer (Coursera, 2025)
+- Online Learning Design for Educators, Macquarie University (Coursera, 2025)
+
+## Links
+
+- GitHub: https://github.com/Hasansarwer
+- LinkedIn: https://www.linkedin.com/in/hasansarwer/
+- Google Scholar: https://scholar.google.com/citations?user=IgjT4gUAAAAJ&hl=en
+- ORCID: https://orcid.org/0000-0002-8402-5146
+- npm: https://www.npmjs.com/~hasansarwer
+- DEV: https://dev.to/hasansarwer
+
+## Site Pages
+
+- Home: https://hasansarwer.com/
+- About: https://hasansarwer.com/about/
+- Projects: https://hasansarwer.com/projects/
+- Skills: https://hasansarwer.com/skills/
+- Experience: https://hasansarwer.com/experience/
+- Research: https://hasansarwer.com/research/
+- Contact: https://hasansarwer.com/contact/
+- SAU Sample Questions: https://hasansarwer.com/sau-sample-questions/

@@ -1,0 +1,15 @@
+.wrapper {
+  flex-shrink: 0;
+}
+
+.svg {
+  width: 220px;
+  height: 220px;
+}
+
+@media (max-width: 768px) {
+  .svg {
+    width: 180px;
+    height: 180px;
+  }
+}

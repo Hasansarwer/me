@@ -1,0 +1,176 @@
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--spacing-4xl) var(--spacing-xl);
+}
+
+.content {
+  max-width: 800px;
+}
+
+.intro {
+  display: flex;
+  gap: var(--spacing-3xl);
+  margin-bottom: var(--spacing-3xl);
+  align-items: flex-start;
+}
+
+.photoWrapper {
+  flex-shrink: 0;
+}
+
+.photo {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-xl);
+  border: 3px solid var(--color-border);
+}
+
+.bio {
+  flex: 1;
+}
+
+.lead {
+  font-size: var(--font-size-xl);
+  color: var(--color-text);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.section {
+  margin-bottom: var(--spacing-3xl);
+}
+
+.subheading {
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-lg);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-lg) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.list li {
+  font-size: var(--font-size-md);
+  color: var(--color-muted);
+  line-height: 1.6;
+  padding-left: var(--spacing-xl);
+  position: relative;
+}
+
+.list li::before {
+  content: "\2022";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.list li strong {
+  color: var(--color-text);
+}
+
+.educationGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.eduCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.eduDegree {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.eduInst {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+}
+
+.eduYear {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}
+
+.eduThesis {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  font-style: italic;
+  margin: var(--spacing-sm) 0 0;
+}
+
+.certGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.certCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  text-decoration: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.certCard:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.certName {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.certIssuer {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+}
+
+.certYear {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 768px) {
+  .intro {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .photo {
+    width: 160px;
+    height: 160px;
+  }
+
+  .certGrid {
+    grid-template-columns: 1fr;
+  }
+}

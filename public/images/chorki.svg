@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <!-- Start drawing here -->
+<g>
+<animateTransform
+    attributeName="transform"
+    type="rotate"
+    from="0 200 200"
+    to="360 200 200"
+    dur="3s"
+    repeatCount="indefinite"
+  />
+<path d="M 200,200 H 300 L 250,150 z " fill="#f44" stroke="#333" />
+<path d="M 200,200  L 250,150 L 200,150 z " fill="red" stroke="#333" />
+<path d="M 200,200 V 100 L 150,150 z " fill="#4f4" stroke="#333" />
+<path d="M 200,200  L 150,150 L 150,200 z " fill="green" stroke="#333" />
+<path d="M 200,200 H 100 L 150,250 z " fill="#44f" stroke="#333" />
+<path d="M 200,200  L 150,250 L 200,250 z " fill="blue" stroke="#333" />
+<path d="M 200,200 V 300 L 250,250 z " fill="#ffff90" stroke="#333" />
+<path d="M 200,200  L 250,250 L 250,200 z " fill="yellow" stroke="#333" />
+</g>
+</svg>

@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <!-- Start drawing here -->
+
+
+   
+  <path id="motionPath" d="M 70,200 a 130,130 0 1,0 260,0 a 130,130 0 1,0 -260,0" 
+    fill="transparent" 
+  />
+  
+
+  <rect x="10" y="10" width="380" height="380" rx="10" ry="10" 
+    fill="#333" />
+  <!-- Array of moving circles with staggered timing -->
+  <circle r="10" fill="hsl(0,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(9,100%,50%)" stroke="gold" stroke-width="2" >
+    <animateMotion dur="3s" begin="0.075s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(18,100%,50%)" stroke="gold" stroke-width="2"
+  >
+    <animateMotion dur="3s" begin="0.15s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(27,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.225s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(36,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.3s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(45,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.375s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(54,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.45s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(63,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.525s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle><circle r="10" fill="hsl(72,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.6s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(81,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.675s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(90,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.75s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(99,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.825s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle><circle r="10" fill="hsl(108,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.9s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(117,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="0.975s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(126,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.05s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(135,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.125s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle><circle r="10" fill="hsl(144,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.2s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(153,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.275s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(162,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.35s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(171,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.425s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle><circle r="10" fill="hsl(180,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(189,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.575s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(198,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.65s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(207,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.725s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle><circle r="10" fill="hsl(216,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.8s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(225,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.875s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(234,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="1.95s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(243,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.025s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle><circle r="10" fill="hsl(252,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.1s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(261,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.175s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(270,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.25s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(279,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.325s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle><circle r="10" fill="hsl(288,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.4s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(297,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.475s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(306,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.55s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(315,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.625s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+<circle r="10" fill="hsl(324,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.7s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(333,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.775s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(342,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.85s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="10" fill="hsl(351,100%,50%)" stroke="gold" stroke-width="2">
+    <animateMotion dur="3s" begin="2.925s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+      <mpath href="#motionPath"/>
+    </animateMotion>
+  </circle>
+    
+  <path d="M 200 200 L 320 200 A 120 120 0 0 1 260 303.9 Z" fill="hsl(0, 80%, 50%)"/>
+  
+  <path d="M 200 200 L 260 303.9 A 120 120 0 0 1 140 303.9 Z" fill="hsl(60, 80%, 50%)"/>
+  
+  <path d="M 200 200 L 140 303.9 A 120 120 0 0 1 80 200 Z" fill="hsl(120, 80%, 50%)"/>
+  
+  <path d="M 200 200 L 80 200 A 120 120 0 0 1 140 96.1 Z" fill="hsl(180, 80%, 50%)"/>
+  
+  <path d="M 200 200 L 140 96.1 A 120 120 0 0 1 260 96.1 Z" fill="hsl(240, 80%, 50%)"/>
+  
+  <path d="M 200 200 L 260 96.1 A 120 120 0 0 1 320 200 Z" fill="hsl(300, 80%, 50%)"/>
+  <circle cx="200" cy="200" r="100"
+        fill="#5bbaee" stroke="white"
+        stroke-width="5"/>
+  <text x="130" y="240"
+      font-family="Georgia" font-size="100"
+      fill="orange">HS</text>
+  
+</svg>
