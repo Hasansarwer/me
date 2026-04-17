@@ -34,7 +34,7 @@ export const projects: Project[] = [
       "Combines design system thinking, color science, and React Native engineering into a complete open-source product. One color in, 119 themed components out \u2014 from mathematical color derivation to production UI.",
     github: "https://github.com/Hasansarwer/react-native-salt",
     npm: "https://www.npmjs.com/package/@esaltws/react-native-salt",
-    demo: "/application-28d76e80-4b1c-4bde-93ad-afd31848ef3b.apk",
+    demo: "https://drive.google.com/file/d/1i1qEqURhI9MKpvX9Z_8nuaY_PAasOBl8/view",
     featured: true,
     status: "published",
   },

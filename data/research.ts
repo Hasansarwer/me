@@ -24,7 +24,7 @@ export const publications: Publication[] = [
 export const teachingEntries: TeachingEntry[] = [
   {
     institution: "College of Aviation Technology, National University",
-    period: "2022 \u2013 Present",
+    period: "2022 \u2013 2023",
     courses: ["Mathematics I\u2013V (Aeronautical & Aviation Science)"],
   },
   {
