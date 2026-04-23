@@ -2,47 +2,20 @@ import type { SkillCategory } from "@/types";
 
 export const skillCategories: SkillCategory[] = [
   {
-    name: "Frontend",
+    name: "Design / Interaction",
     skills: [
-      "React",
-      "Next.js",
-      "Redux",
-      "React Router",
-      "JavaScript (ES6+)",
-      "TypeScript",
-      "HTML5",
-      "CSS3",
-      "Bootstrap 5",
-      "Pixi.js",
-      "Three.js",
-      "HTML Canvas",
-      "ZIM.js",
+      "salt-theme-gen",
+      "OKLCH Color Science",
+      "Design System Architecture",
+      "Interactive Simulations",
+      "2D/3D Graphics Programming",
     ],
   },
   {
-    name: "Backend",
+    name: "AI & Data Engineering",
     skills: [
-      "Node.js",
-      "Express.js",
-      "NestJS",
-      "REST APIs",
-      "WebSocket",
-      "Python",
-      "FastAPI",
-      "Authentication & RBAC",
-    ],
-  },
-  {
-    name: "Mobile",
-    skills: [
-      "React Native",
-      "Expo",
-      "Cross-platform iOS & Android",
-    ],
-  },
-  {
-    name: "AI / Data / Automation",
-    skills: [
+      "Anthropic SDK",
+      "Claude API",
       "Python",
       "Pandas",
       "NumPy",
@@ -53,37 +26,6 @@ export const skillCategories: SkillCategory[] = [
       "Plotly",
       "Dash",
       "BeautifulSoup",
-      "Web Scraping",
-      "Data Pipelines",
-      "Jupyter Notebooks",
-      "Machine Learning",
-    ],
-  },
-  {
-    name: "Databases",
-    skills: ["MongoDB", "Mongoose", "MySQL", "SQL", "PostgreSQL"],
-  },
-  {
-    name: "Cloud / DevOps",
-    skills: [
-      "Git",
-      "GitHub",
-      "AWS (EC2, RDS, Route 53, Amplify, IAM)",
-      "Vercel",
-      "Linux",
-      "npm Publishing",
-    ],
-  },
-  {
-    name: "Design / Interaction",
-    skills: [
-      "salt-theme-gen",
-      "OKLCH Color Science",
-      "Design System Architecture",
-      "Interactive Simulations",
-      "2D/3D Graphics Programming",
-      "Responsive Design",
-      "Mobile-first UI",
     ],
   },
   {
@@ -100,6 +42,51 @@ export const skillCategories: SkillCategory[] = [
       "C/C++",
       "LaTeX",
       "Scientific Writing",
+    ],
+  },
+  {
+    name: "Frontend",
+    skills: [
+      "React",
+      "Next.js",
+      "Redux",
+      "React Router",
+      "TypeScript",
+      "Pixi.js",
+      "Three.js",
+      "HTML Canvas",
+    ],
+  },
+  {
+    name: "Mobile",
+    skills: [
+      "React Native",
+      "Expo",
+    ],
+  },
+  {
+    name: "Backend",
+    skills: [
+      "Node.js",
+      "Express.js",
+      "WebSocket",
+      "FastAPI",
+      "Authentication & RBAC",
+    ],
+  },
+  {
+    name: "Databases",
+    skills: ["MongoDB", "Mongoose", "MySQL", "PostgreSQL", "SQLModel", "Alembic"],
+  },
+  {
+    name: "Cloud / DevOps",
+    skills: [
+      "Git",
+      "GitHub",
+      "AWS (EC2, RDS, Route 53, Amplify, IAM)",
+      "Vercel",
+      "Linux",
+      "npm Publishing",
     ],
   },
 ];
