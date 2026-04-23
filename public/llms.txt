@@ -91,3 +91,14 @@
 - Research: https://hasansarwer.com/research/
 - Contact: https://hasansarwer.com/contact/
 - SAU Sample Questions: https://hasansarwer.com/sau-sample-questions/
+
+## Project Pages
+
+- salt-theme-gen: https://hasansarwer.com/projects/salt-theme-gen/
+- react-native-salt: https://hasansarwer.com/projects/react-native-salt/
+- DentistLeads: https://hasansarwer.com/projects/dentistleads/
+- Sheikh Russel Digital Lab: https://hasansarwer.com/projects/sheikh-russel-digital-lab/
+- WorkingFromHammock: https://hasansarwer.com/projects/workingfromhammock/
+- SymptomWatch: https://hasansarwer.com/projects/symptomwatch/
+- Pallabi Business Service Ecosystem: https://hasansarwer.com/projects/pallabi-ecosystem/
+- Data Analysis & Visualization: https://hasansarwer.com/projects/data-analysis-dashboards/
