@@ -36,10 +36,6 @@ export default function ContactPage() {
                 </a>
               </div>
               <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Phone</span>
-                <span className={styles.infoValue}>{siteConfig.phone}</span>
-              </div>
-              <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>Location</span>
                 <span className={styles.infoValue}>{siteConfig.location}</span>
               </div>

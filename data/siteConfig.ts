@@ -7,7 +7,6 @@ export const siteConfig = {
     "Building developer tools, open-source libraries, and the foundation for the ultimate e-learning platform. Creator of salt-theme-gen and react-native-salt. PhD in Mathematics.",
   url: "https://hasansarwer.com",
   email: "hasanmathju@gmail.com",
-  phone: "+880-1911-139403",
   location: "Dhaka, Bangladesh",
 };
 

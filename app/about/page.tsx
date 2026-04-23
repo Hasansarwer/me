@@ -40,20 +40,25 @@ export default function AboutPage() {
           <h3 className={styles.subheading}>What I Build</h3>
           <ul className={styles.list}>
             <li>
-              <strong>Open-Source Dev Tools</strong> &mdash; salt-theme-gen,
-              react-native-salt, design system infrastructure
+              <strong>salt-theme-gen</strong> &mdash; OKLCH-based design system
+              engine. One hex color in, complete light/dark theme out. Published
+              on npm, zero dependencies.
             </li>
             <li>
-              <strong>Interactive Learning Products</strong> &mdash; simulations,
-              2D/3D educational content, adaptive platforms
+              <strong>react-native-salt</strong> &mdash; 119-component React
+              Native UI library that responds to a single theme object. Published
+              on npm, works in Expo Go.
             </li>
             <li>
-              <strong>Web & Mobile Applications</strong> &mdash; React, Next.js,
-              React Native, Node.js, full-stack systems
+              <strong>DentistLeads</strong> &mdash; B2B SaaS pipeline that
+              identifies under-performing dental practices and generates
+              AI-powered opportunity reports for marketing agencies. In active
+              development.
             </li>
             <li>
-              <strong>Data & Automation</strong> &mdash; Python pipelines,
-              scraping, analysis, ML-backed features
+              <strong>The e-learning platform</strong> &mdash; adaptive,
+              interactive, mathematically grounded. The reason everything else
+              exists. In development.
             </li>
           </ul>
         </section>
