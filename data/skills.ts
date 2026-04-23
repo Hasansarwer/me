@@ -84,6 +84,7 @@ export const skillCategories: SkillCategory[] = [
       "Git",
       "GitHub",
       "AWS (EC2, RDS, Route 53, Amplify, IAM)",
+      "AWS Cloud Technical Essentials (Certified)",
       "Vercel",
       "Linux",
       "npm Publishing",

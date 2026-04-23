@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SkillCategory } from "@/components/sections/SkillCategory";
+import { CertificationCard } from "@/components/sections/CertificationCard";
 import { skillCategories } from "@/data/skills";
+import { certifications } from "@/data/certifications";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -23,6 +25,17 @@ export default function SkillsPage() {
         {skillCategories.map((category) => (
           <SkillCategory key={category.name} category={category} />
         ))}
+      </div>
+      <div className={styles.certifications}>
+        <SectionHeading
+          title="Certifications"
+          subtitle="Verified credentials from accredited platforms."
+        />
+        <div className={styles.certList}>
+          {certifications.map((cert) => (
+            <CertificationCard key={cert.name} cert={cert} />
+          ))}
+        </div>
       </div>
     </div>
   );

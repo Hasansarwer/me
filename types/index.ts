@@ -46,6 +46,14 @@ export interface TeachingEntry {
   courses: string[];
 }
 
+export interface Certification {
+  name: string;
+  issuer: string;
+  date: string;
+  credentialUrl?: string;
+  topics?: string[];
+}
+
 export interface SocialLink {
   label: string;
   url: string;
