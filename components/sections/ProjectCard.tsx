@@ -144,6 +144,16 @@ export function ProjectCard({ project, variant = "compact" }: ProjectCardProps) 
             npm
           </a>
         )}
+        {project.live && (
+          <a
+            href={project.live}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.link}
+          >
+            Live
+          </a>
+        )}
         {project.demo && (
           <a href={project.demo} download className={styles.link}>
             Demo APK
