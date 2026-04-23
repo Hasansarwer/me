@@ -21,7 +21,7 @@ export default function ProjectsPage() {
       />
       <div className={styles.projects}>
         {projects.map((project) => (
-          <ProjectCard key={project.slug} project={project} variant="full" />
+          <ProjectCard key={project.slug} project={project} />
         ))}
       </div>
     </div>

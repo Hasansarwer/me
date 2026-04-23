@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Project } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import styles from "./ProjectCard.module.css";
@@ -124,6 +125,9 @@ export function ProjectCard({ project, variant = "compact" }: ProjectCardProps) 
         )}
       </div>
       <div className={styles.links}>
+        <Link href={`/projects/${project.slug}`} className={styles.link}>
+          Details &rarr;
+        </Link>
         {project.github && (
           <a
             href={project.github}
@@ -155,7 +159,7 @@ export function ProjectCard({ project, variant = "compact" }: ProjectCardProps) 
           </a>
         )}
         {project.demo && (
-          <a href={project.demo} download className={styles.link}>
+          <a href={project.demo} target="_blank" rel="noopener noreferrer" className={styles.link}>
             Demo APK
           </a>
         )}
