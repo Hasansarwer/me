@@ -1,15 +1,33 @@
 # Hasan Sarwer
 
-> Product creator and open-source builder with a PhD in Mathematics. Building developer tools, interactive learning systems, and the foundation for the ultimate e-learning platform.
+> Product builder and open-source creator with a PhD in Mathematics. Shipping developer tools, B2B SaaS products, and building the foundation for the ultimate adaptive e-learning platform.
 
 ## About
 
 - Name: Md. Hasan Sarwer
-- Title: Product Creator & Software Engineer
+- Title: Product Builder & Open-Source Creator
 - Location: Dhaka, Bangladesh
 - Email: hasanmathju@gmail.com
 - Website: https://hasansarwer.com
 - Products: https://esalt.net
+
+## Products
+
+- salt-theme-gen: OKLCH-based design system theme engine. One hex color in — complete light/dark theme with 21 semantic colors, 32 interactive states, and WCAG accessibility. Zero dependencies, pure TypeScript. npm: https://www.npmjs.com/package/salt-theme-gen GitHub: https://github.com/Hasansarwer/salt-theme-gen
+- react-native-salt: 119-component React Native UI library with single-color theming. Pass one hex color — every component adapts in light and dark mode. No native linking, works in Expo Go. npm: https://www.npmjs.com/package/@esaltws/react-native-salt GitHub: https://github.com/Hasansarwer/react-native-salt
+- DentistLeads: B2B SaaS data pipeline that identifies under-performing dental practices in any target city and generates AI-powered opportunity reports for dental marketing agencies. Built with FastAPI, PostgreSQL, Anthropic SDK, Google Maps API, H3 hex grid. In active development.
+- E-Learning Platform: Adaptive, interactive e-learning platform with mathematical rigor and serious pedagogy. In development.
+
+## Skills
+
+- Design / Interaction: salt-theme-gen, OKLCH Color Science, Design System Architecture, Interactive Simulations, 2D/3D Graphics Programming
+- AI & Data Engineering: Anthropic SDK, Claude API, Python, Pandas, NumPy, SciPy, Scikit-learn, Matplotlib, Seaborn, Plotly, Dash, BeautifulSoup
+- Research / Quantitative: Numerical Analysis, Computational Mathematics, Algorithm Design, Mathematical Modeling, MATLAB, Mathematica, Maple, Fortran, C/C++, LaTeX
+- Frontend: React, Next.js, Redux, React Router, TypeScript, Pixi.js, Three.js, HTML Canvas
+- Mobile: React Native, Expo
+- Backend: Node.js, Express.js, WebSocket, FastAPI, Authentication & RBAC
+- Databases: MongoDB, Mongoose, MySQL, PostgreSQL, SQLModel, Alembic
+- Cloud/DevOps: Git, GitHub, AWS (EC2, RDS, Route 53, Amplify, IAM), Vercel, Linux, npm Publishing
 
 ## Education
 
@@ -18,19 +36,9 @@
 - BSc (Hons) in Mathematics, Jahangirnagar University, Dhaka (2005-2009)
 - SAARC-India Silver Jubilee Scholarship recipient
 
-## Skills
-
-- Frontend: React, Next.js, TypeScript, JavaScript, HTML5, CSS3, Pixi.js, Three.js, HTML Canvas
-- Backend: Node.js, Express.js, NestJS, Python, FastAPI, REST APIs, WebSocket
-- Mobile: React Native, Expo (cross-platform iOS & Android)
-- AI/Data: Python, Pandas, NumPy, Scikit-learn, Matplotlib, Plotly, Dash, BeautifulSoup, Machine Learning
-- Databases: MongoDB, MySQL, PostgreSQL
-- Cloud/DevOps: AWS (EC2, RDS, Route 53, Amplify), Vercel, Git, GitHub, Linux
-- Research: Numerical Analysis, MATLAB, Mathematica, Fortran, C/C++, LaTeX
-
 ## Experience
 
-- Independent Software Engineer, Self-Employed, Dhaka (Mar 2025 - Present): Building open-source libraries (salt-theme-gen, react-native-salt) on npm. Contract backend work for WorkingFromHammock.
+- Independent Software Engineer, Self-Employed, Dhaka (Mar 2025 - Present): Building open-source libraries (salt-theme-gen, react-native-salt) on npm. Building DentistLeads — B2B SaaS lead pipeline for dental marketing agencies. Contract backend work for WorkingFromHammock.
 - Pedagogy Specialist & Lead Software Engineer, Automind IT, Dhaka (Dec 2023 - Feb 2025): Led development of 1,000+ interactive simulations for Sheikh Russel Digital Lab (Ministry of ICT, Bangladesh). Managed team of 23.
 - Backend Developer & Data Engineer, WorkingFromHammock, Netherlands (Mar 2023 - Present): Backend APIs, Python scraping pipelines, geo-distance systems for a travel platform.
 - Full-Stack Developer, Pallabi Business Service, Dhaka (Feb 2023 - Mar 2023): Built ecommerce ecosystem with 1 web platform + 4 mobile apps.
@@ -40,8 +48,9 @@
 
 ## Notable Projects
 
-- react-native-salt: 119-component React Native UI library with single-color theming. Published on npm as @esaltws/react-native-salt. GitHub: https://github.com/Hasansarwer/react-native-salt
-- salt-theme-gen: OKLCH-based design system theme engine. One hex color in, complete light/dark theme out with WCAG accessibility. Published on npm. GitHub: https://github.com/Hasansarwer/salt-theme-gen
+- salt-theme-gen: OKLCH design system theme engine. Published on npm. GitHub: https://github.com/Hasansarwer/salt-theme-gen
+- react-native-salt: 119-component React Native UI library. Published on npm. GitHub: https://github.com/Hasansarwer/react-native-salt
+- DentistLeads: B2B SaaS pipeline — identifies under-performing dental practices, generates AI opportunity reports for marketing agencies.
 - Sheikh Russel Digital Lab: 1,000+ interactive educational modules for grades 6-10, funded by Bangladesh Ministry of ICT.
 - WorkingFromHammock: Backend and data pipeline for a travel platform for remote workers. Live: https://workingfromhammock.com
 - Pallabi Business Service Ecosystem: 1 web + 4 mobile apps for B2B/B2C ecommerce.
