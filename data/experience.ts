@@ -9,6 +9,7 @@ export const experiences: Experience[] = [
     endDate: "Present",
     bullets: [
       "Building and maintaining open-source libraries (salt-theme-gen, react-native-salt) published on npm",
+      "Building DentistLeads — a B2B SaaS pipeline that identifies under-performing dental practices and generates AI-powered opportunity reports for marketing agencies",
       "Continuing contract backend development for WorkingFromHammock (Netherlands)",
       "Developing a full e-learning platform architecture",
     ],
