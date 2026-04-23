@@ -210,6 +210,44 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    slug: "dentistleads",
+    title: "DentistLeads — B2B SaaS Lead Pipeline",
+    summary:
+      "A B2B SaaS data pipeline that identifies under-performing dental practices in any target city and generates AI-powered opportunity reports for dental marketing agencies.",
+    problem:
+      "Dental marketing agencies spend hours manually researching which practices in a city are struggling — low ratings, poor reviews, weak online presence. There was no automated way to surface qualified leads with evidence-backed opportunity scores.",
+    role: "Creator & Sole Developer",
+    techStack: [
+      "FastAPI",
+      "PostgreSQL",
+      "SQLModel",
+      "Alembic",
+      "Python",
+      "Anthropic SDK",
+      "Google Maps API",
+      "H3 Hex Grid",
+      "Outscraper",
+    ],
+    whatIBuilt: [
+      "H3 hex grid city coverage system — divides any target city into hexagonal cells and queries Google Maps Places API for dental practices in each cell",
+      "Automated review scraping pipeline via Outscraper API collecting up to 20 reviews per practice",
+      "Claude-powered AI analysis (Batch API) generating per-practice summaries, pain points, opportunities, and urgency levels",
+      "Composite 0–100 opportunity scorer: 30% rating gap + 25% review volume + 25% AI urgency + 20% review text quality",
+      "REST API with city-level lead reports, full practice report cards, and CSV export for agency workflows",
+      "Async FastAPI backend with PostgreSQL persistence, Alembic migrations, and configurable filter thresholds",
+    ],
+    outcome: [
+      "Full pipeline from city name → qualified lead list in a single API call sequence",
+      "AI-generated opportunity reports using Claude with adaptive thinking",
+      "Exportable lead CSV ready for agency CRM import",
+      "Configurable thresholds for rating, review count, and batch size",
+    ],
+    whyItMatters:
+      "Combines data engineering, AI integration, and domain knowledge into a product that solves a real sales problem. Dental agencies pay for qualified leads — this pipeline generates them automatically at scale.",
+    featured: true,
+    status: "in-development",
+  },
+  {
     slug: "data-analysis-dashboards",
     title: "Data Analysis & Visualization Projects",
     summary:
