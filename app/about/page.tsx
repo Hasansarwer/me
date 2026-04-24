@@ -136,11 +136,12 @@ export default function AboutPage() {
         <section className={styles.section}>
           <h3 className={styles.subheading}>Certifications</h3>
           <p className={styles.certsCondensed}>
+            AWS Cloud Technical Essentials (Amazon Web Services) &middot;
             IBM Full-Stack JavaScript Developer &middot; IBM Backend JavaScript Developer &middot;
             IBM AI Developer &middot; IBM Data Science &middot; IBM Front-End Developer &middot;
             Meta React Native &middot; Meta Front-End Developer &middot;
             Online Learning Design for Educators (Macquarie University)
-            &mdash; Coursera, 2024&ndash;2025.
+            &mdash; Coursera, 2024&ndash;2026.
           </p>
         </section>
 
