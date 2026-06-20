@@ -140,6 +140,16 @@ export default async function ProjectPage({
               Demo &rarr;
             </a>
           )}
+          {project.docs && (
+            <a
+              href={project.docs}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.link}
+            >
+              Docs &rarr;
+            </a>
+          )}
         </div>
       </div>
     </div>

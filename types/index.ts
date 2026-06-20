@@ -12,6 +12,7 @@ export interface Project {
   live?: string;
   npm?: string;
   demo?: string;
+  docs?: string;
   featured?: boolean;
   status?: "published" | "in-development";
 }

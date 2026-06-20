@@ -101,6 +101,16 @@ export function ProjectCard({ project, variant = "compact" }: ProjectCardProps) 
                 Demo APK &darr;
               </a>
             )}
+            {project.docs && (
+              <a
+                href={project.docs}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.link}
+              >
+                Docs &rarr;
+              </a>
+            )}
           </div>
         </div>
       </article>
@@ -161,6 +171,11 @@ export function ProjectCard({ project, variant = "compact" }: ProjectCardProps) 
         {project.demo && (
           <a href={project.demo} target="_blank" rel="noopener noreferrer" className={styles.link}>
             Demo APK
+          </a>
+        )}
+        {project.docs && (
+          <a href={project.docs} target="_blank" rel="noopener noreferrer" className={styles.link}>
+            Docs
           </a>
         )}
       </div>
