@@ -250,6 +250,43 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    slug: "payback",
+    title: "Payback — Mobile EMI Financing Platform",
+    summary:
+      "A field-agent-facing backend for mobile device financing on installment — agents sell devices on EMI, generate contracts, collect payments, and enforce device lock policies via Android AMAPI integration.",
+    problem:
+      "Mobile device financing in emerging markets relies on manual paperwork, disconnected agents, and no enforcement mechanism if a buyer defaults. There was no integrated system for agents to generate EMI contracts, track payments, and remotely lock devices until full payment.",
+    role: "Co-founder & Lead Developer",
+    techStack: [
+      "NestJS",
+      "TypeScript",
+      "PostgreSQL",
+      "Prisma",
+      "Node.js",
+      "Android AMAPI",
+      "class-validator",
+    ],
+    whatIBuilt: [
+      "EMI contract engine — generates installment schedules on contract creation with per-payment tracking",
+      "Agent and distributor management with role-based access control (RBAC)",
+      "Payment collection flow with credit ledger and audit logging",
+      "Android AMAPI device enrollment and lock policy enforcement — remotely lock devices on payment default",
+      "Enrollment token generation flow tied to active contracts",
+      "REST API following OpenAPI spec: auth, contracts, payments, devices, vouchers, and audit endpoints",
+      "Prisma schema with 10 models: User, Distributor, Agent, Contract, ScheduleItem, Payment, Device, EnrollmentToken, AuditLog, CreditLedger",
+    ],
+    outcome: [
+      "Full backend architecture for device EMI financing from contract generation to payment enforcement",
+      "AMAPI integration enabling remote device locking on payment default",
+      "Audit trail for all agent actions and policy changes",
+      "OpenAPI-documented REST API covering auth, contracts, payments, and device management",
+    ],
+    whyItMatters:
+      "Combines fintech and device management in a single platform — solving a real enforcement problem in mobile financing markets where default risk is high and agents operate in the field. The AMAPI integration turns every financed device into its own collateral.",
+    featured: true,
+    status: "in-development",
+  },
+  {
     slug: "data-analysis-dashboards",
     title: "Data Analysis & Visualization Projects",
     summary:
