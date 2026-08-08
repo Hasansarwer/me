@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PHY-1111 SHM Explorer</title>
+  <style>
+    :root {
+      --bg: #f3ce6a62;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1, h2, h3 { margin-top: 0; }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: -8px;
+      margin-bottom: 24px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .stats {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .stats strong { color: var(--text); }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover { background: #f1f5f9; }
+
+    .visuals {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      background: var(--card);
+      border-radius: 10px;
+    }
+
+    .prompt {
+      margin-top: 20px;
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+      padding: 14px 16px;
+      border-radius: 10px;
+    }
+
+    .equation {
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: 1.15rem;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 760px) {
+      .controls,
+      .visuals {
+        grid-template-columns: 1fr;
+      }
+
+      .wide {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>SHM Explorer</h1>
+    <p class="subtitle">
+      Explore amplitude, frequency and phase using oscillation, circular projection and a sinusoidal signal.
+    </p>
+
+    <section class="controls">
+      <div class="card">
+        <label for="amp">Amplitude A</label>
+        <input id="amp" type="range" min="0.3" max="1" step="0.05" value="0.75" />
+        <div id="ampVal" class="value">0.75</div>
+      </div>
+
+      <div class="card">
+        <label for="freq">Frequency f (Hz)</label>
+        <input id="freq" type="range" min="0.2" max="2" step="0.1" value="0.7" />
+        <div id="freqVal" class="value">0.7</div>
+      </div>
+
+      <div class="card">
+        <label for="phase">Phase φ (degrees)</label>
+        <input id="phase" type="range" min="0" max="360" step="15" value="0" />
+        <div id="phaseVal" class="value">0°</div>
+      </div>
+    </section>
+
+    <div class="stats">
+      <span>Period <strong id="periodVal">T = 1.43 s</strong></span>
+      <span>Angular frequency <strong id="omegaVal">ω = 4.40 rad/s</strong></span>
+    </div>
+
+    <div class="actions">
+      <button id="toggle">Pause</button>
+      <button id="reset">Reset</button>
+
+      <label>
+        <input id="cse" type="checkbox" />
+        CSE signal view
+      </label>
+    </div>
+
+    <section class="visuals">
+      <div class="card">
+        <h3>1. Oscillator</h3>
+
+        <svg viewBox="0 0 360 150" role="img" aria-label="Oscillating mass">
+          <!-- Left wall -->
+          <line x1="22" y1="55" x2="22" y2="130" stroke="#94a3b8" stroke-width="4"/>
+          <line x1="22" y1="62" x2="10" y2="74" stroke="#94a3b8" stroke-width="1.5"/>
+          <line x1="22" y1="76" x2="10" y2="88" stroke="#94a3b8" stroke-width="1.5"/>
+          <line x1="22" y1="90" x2="10" y2="102" stroke="#94a3b8" stroke-width="1.5"/>
+          <line x1="22" y1="104" x2="10" y2="116" stroke="#94a3b8" stroke-width="1.5"/>
+          <line x1="22" y1="118" x2="10" y2="130" stroke="#94a3b8" stroke-width="1.5"/>
+
+          <!-- Right wall -->
+          <line x1="338" y1="55" x2="338" y2="130" stroke="#94a3b8" stroke-width="4"/>
+          <line x1="338" y1="62" x2="350" y2="74" stroke="#94a3b8" stroke-width="1.5"/>
+          <line x1="338" y1="76" x2="350" y2="88" stroke="#94a3b8" stroke-width="1.5"/>
+          <line x1="338" y1="90" x2="350" y2="102" stroke="#94a3b8" stroke-width="1.5"/>
+          <line x1="338" y1="104" x2="350" y2="116" stroke="#94a3b8" stroke-width="1.5"/>
+          <line x1="338" y1="118" x2="350" y2="130" stroke="#94a3b8" stroke-width="1.5"/>
+
+          <!-- Springs (updated by JS) -->
+          <polyline id="springL" fill="none" stroke="#64748b" stroke-width="2" points="22,92 164,92"/>
+          <polyline id="springR" fill="none" stroke="#64748b" stroke-width="2" points="196,92 338,92"/>
+
+          <!-- Equilibrium marker -->
+          <line x1="180" y1="55" x2="180" y2="125" stroke="#64748b" stroke-dasharray="5 5" />
+          <text x="145" y="142" fill="#64748b" font-size="12">equilibrium</text>
+
+          <circle id="mass" cx="180" cy="92" r="16" fill="#2563eb" />
+
+          <text id="xLabel" x="18" y="24" fill="#0f172a" font-size="14">x/A = 0.00</text>
+        </svg>
+      </div>
+
+      <div class="card">
+        <h3>2. Circular Projection</h3>
+
+        <svg viewBox="0 0 360 150" role="img" aria-label="Circular projection">
+          <circle id="refCircle" cx="120" cy="75" r="55" fill="none" stroke="#cbd5e1" stroke-width="2" />
+          <line x1="50" y1="75" x2="300" y2="75" stroke="#cbd5e1" />
+
+          <line id="radius"
+                x1="120" y1="75" x2="175" y2="75"
+                stroke="#2563eb" stroke-width="3" />
+
+          <circle id="rotor" cx="175" cy="75" r="7" fill="#2563eb" />
+
+          <line id="projLine"
+                x1="175" y1="75" x2="175" y2="75"
+                stroke="#64748b" stroke-dasharray="4 4" />
+
+          <circle id="proj" cx="175" cy="75" r="7" fill="#0f172a" />
+        </svg>
+      </div>
+
+      <div class="card wide">
+        <h3 id="graphTitle">3. Displacement vs Time</h3>
+
+        <div id="equation" class="equation">
+          x(t) = A cos(2πft + φ)
+        </div>
+
+        <svg viewBox="0 0 720 260" role="img" aria-label="Sinusoidal graph">
+          <!-- Horizontal grid lines at ±1 (max amplitude) -->
+          <line x1="45" y1="40"  x2="700" y2="40"  stroke="#e2e8f0" stroke-dasharray="4 4"/>
+          <line x1="45" y1="210" x2="700" y2="210" stroke="#e2e8f0" stroke-dasharray="4 4"/>
+
+          <!-- Vertical grid lines at 1 s intervals -->
+          <line x1="209" y1="20" x2="209" y2="230" stroke="#e2e8f0" stroke-dasharray="4 4"/>
+          <line x1="373" y1="20" x2="373" y2="230" stroke="#e2e8f0" stroke-dasharray="4 4"/>
+          <line x1="536" y1="20" x2="536" y2="230" stroke="#e2e8f0" stroke-dasharray="4 4"/>
+
+          <!-- Axes -->
+          <line x1="45" y1="125" x2="700" y2="125" stroke="#cbd5e1" />
+          <line x1="45" y1="20"  x2="45"  y2="230" stroke="#cbd5e1" />
+
+          <!-- Y-axis tick marks & labels -->
+          <line x1="42" y1="40"  x2="48" y2="40"  stroke="#94a3b8"/>
+          <line x1="42" y1="210" x2="48" y2="210" stroke="#94a3b8"/>
+          <text x="5"  y="44"  fill="#64748b" font-size="11">+1</text>
+          <text x="9"  y="129" fill="#64748b" font-size="11">0</text>
+          <text x="4"  y="214" fill="#64748b" font-size="11">−1</text>
+
+          <!-- X-axis tick marks & labels -->
+          <line x1="209" y1="122" x2="209" y2="128" stroke="#94a3b8"/>
+          <line x1="373" y1="122" x2="373" y2="128" stroke="#94a3b8"/>
+          <line x1="536" y1="122" x2="536" y2="128" stroke="#94a3b8"/>
+          <line x1="700" y1="122" x2="700" y2="128" stroke="#94a3b8"/>
+          <text x="202" y="244" fill="#64748b" font-size="11">1 s</text>
+          <text x="366" y="244" fill="#64748b" font-size="11">2 s</text>
+          <text x="529" y="244" fill="#64748b" font-size="11">3 s</text>
+          <text x="693" y="244" fill="#64748b" font-size="11">4 s</text>
+
+          <text x="648" y="118" fill="#64748b" font-size="12">time →</text>
+
+          <polyline id="wave"
+                    fill="none"
+                    stroke="#2563eb"
+                    stroke-width="3"
+                    points="" />
+
+          <circle id="cursor" cx="45" cy="125" r="6" fill="#0f172a" />
+        </svg>
+      </div>
+    </section>
+
+    <section class="prompt">
+      <strong>Prediction prompt</strong>
+      <p id="promptText">
+        Change the amplitude. What changes on the graph? What remains unchanged?
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const amp   = document.getElementById("amp");
+    const freq  = document.getElementById("freq");
+    const phase = document.getElementById("phase");
+
+    const ampVal    = document.getElementById("ampVal");
+    const freqVal   = document.getElementById("freqVal");
+    const phaseVal  = document.getElementById("phaseVal");
+    const periodVal = document.getElementById("periodVal");
+    const omegaVal  = document.getElementById("omegaVal");
+
+    const mass      = document.getElementById("mass");
+    const rotor     = document.getElementById("rotor");
+    const radius    = document.getElementById("radius");
+    const refCircle = document.getElementById("refCircle");
+    const projLine  = document.getElementById("projLine");
+    const proj      = document.getElementById("proj");
+    const springL   = document.getElementById("springL");
+    const springR   = document.getElementById("springR");
+
+    const wave   = document.getElementById("wave");
+    const cursor = document.getElementById("cursor");
+    const xLabel = document.getElementById("xLabel");
+
+    const toggleBtn  = document.getElementById("toggle");
+    const resetBtn   = document.getElementById("reset");
+    const cse        = document.getElementById("cse");
+    const graphTitle = document.getElementById("graphTitle");
+    const equation   = document.getElementById("equation");
+    const promptText = document.getElementById("promptText");
+
+    let running    = true;
+    let startTime  = performance.now();
+    let pausedTime = 0;
+
+    function getValues() {
+      return {
+        A:   Number(amp.value),
+        f:   Number(freq.value),
+        phi: Number(phase.value) * Math.PI / 180
+      };
+    }
+
+    // Zigzag polyline string for a spring between two x-positions
+    function makeSpring(x1, x2, cy, coils, h) {
+      if (x2 <= x1 + 6) return `${x1.toFixed(1)},${cy} ${x2.toFixed(1)},${cy}`;
+      const n      = coils * 2;
+      const margin = Math.min(10, (x2 - x1) * 0.08);
+      const zx1    = x1 + margin;
+      const zx2    = x2 - margin;
+      const step   = (zx2 - zx1) / n;
+      const pts    = [[x1, cy], [zx1, cy]];
+      for (let i = 0; i < n; i++) {
+        pts.push([zx1 + (i + 0.5) * step, cy + (i % 2 === 0 ? -h : h)]);
+      }
+      pts.push([zx2, cy]);
+      pts.push([x2, cy]);
+      return pts.map(([px, py]) => `${px.toFixed(1)},${py.toFixed(1)}`).join(" ");
+    }
+
+    function updateLabels() {
+      ampVal.textContent   = Number(amp.value).toFixed(2);
+      freqVal.textContent  = Number(freq.value).toFixed(1);
+      phaseVal.textContent = phase.value + "°";
+
+      const f = Number(freq.value);
+      periodVal.textContent = `T = ${(1 / f).toFixed(2)} s`;
+      omegaVal.textContent  = `ω = ${(2 * Math.PI * f).toFixed(2)} rad/s`;
+    }
+
+    function draw(timeSeconds) {
+      const { A, f, phi } = getValues();
+      const theta = 2 * Math.PI * f * timeSeconds + phi;
+      const cosT  = Math.cos(theta);
+
+      // --- Oscillator ---
+      const massCx = 180 + 125 * A * cosT;
+      mass.setAttribute("cx", massCx);
+      springL.setAttribute("points", makeSpring(22, massCx - 16, 92, 7, 10));
+      springR.setAttribute("points", makeSpring(massCx + 16, 338, 92, 7, 10));
+      xLabel.textContent = (cse.checked ? "V/V₀" : "x/A") + " = " + cosT.toFixed(2);
+
+      // --- Circular projection (radius scales with A so rotor stays on circle) ---
+      const r      = 55 * A;
+      const rotorX = 120 + r * cosT;
+      const rotorY = 75  - r * Math.sin(theta);
+
+      refCircle.setAttribute("r",  r.toFixed(1));
+      rotor.setAttribute("cx", rotorX);
+      rotor.setAttribute("cy", rotorY);
+      radius.setAttribute("x2", rotorX);
+      radius.setAttribute("y2", rotorY);
+
+      // Dashed line drops vertically from rotor to horizontal axis
+      projLine.setAttribute("x1", rotorX);
+      projLine.setAttribute("y1", rotorY);
+      projLine.setAttribute("x2", rotorX);   // same x → vertical drop
+      projLine.setAttribute("y2", 75);
+      proj.setAttribute("cx", rotorX);
+      proj.setAttribute("cy", 75);
+
+      // --- Wave graph ---
+      const points = [];
+      for (let i = 0; i <= 300; i++) {
+        const t      = (i / 300) * 4;
+        const y      = A * Math.cos(2 * Math.PI * f * t + phi);
+        const graphX = 45 + (i / 300) * 655;
+        const graphY = 125 - y * 85;
+        points.push(graphX.toFixed(1) + "," + graphY.toFixed(1));
+      }
+      wave.setAttribute("points", points.join(" "));
+
+      const currentT = timeSeconds % 4;
+      cursor.setAttribute("cx", 45 + (currentT / 4) * 655);
+      cursor.setAttribute("cy", 125 - A * Math.cos(2 * Math.PI * f * currentT + phi) * 85);
+    }
+
+    function animate(now) {
+      const t = running ? (now - startTime) / 1000 : pausedTime;
+      draw(t);
+      requestAnimationFrame(animate);
+    }
+
+    amp.addEventListener("input", () => {
+      updateLabels();
+      promptText.textContent =
+        "Amplitude changed. Does the period change, or only the size of the oscillation?";
+    });
+
+    freq.addEventListener("input", () => {
+      updateLabels();
+      promptText.textContent =
+        "Frequency changed. Compare the number of cycles and the period.";
+    });
+
+    phase.addEventListener("input", () => {
+      updateLabels();
+      promptText.textContent =
+        "Phase changed. What shifted in the motion? Which properties stayed unchanged?";
+    });
+
+    toggleBtn.addEventListener("click", () => {
+      if (running) {
+        pausedTime = (performance.now() - startTime) / 1000;
+        running = false;
+        toggleBtn.textContent = "Play";
+      } else {
+        startTime = performance.now() - pausedTime * 1000;
+        running = true;
+        toggleBtn.textContent = "Pause";
+      }
+    });
+
+    resetBtn.addEventListener("click", () => {
+      amp.value   = "0.75";
+      freq.value  = "0.7";
+      phase.value = "0";
+      startTime  = performance.now();
+      pausedTime = 0;
+      updateLabels();
+      promptText.textContent =
+        "Change the amplitude. What changes on the graph? What remains unchanged?";
+    });
+
+    cse.addEventListener("change", () => {
+      if (cse.checked) {
+        graphTitle.textContent = "3. CSE View: Sinusoidal Voltage Signal";
+        equation.textContent   = "V(t) = V₀ cos(2πft + φ)";
+      } else {
+        graphTitle.textContent = "3. Displacement vs Time";
+        equation.textContent   = "x(t) = A cos(2πft + φ)";
+      }
+    });
+
+    updateLabels();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
