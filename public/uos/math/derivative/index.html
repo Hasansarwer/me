@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Derivative Explorer — Secant to Tangent</title>
+<style>
+  :root{
+    --bg:#f7f9fc; --panel:#ffffff; --text:#172033; --muted:#5e6a7d; --line:#d8dfeb;
+    --accent:#0f766e; --accent2:#1d4ed8; --warn:#b45309;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px}
+  h1{margin:0 0 6px;font-size:clamp(24px,3vw,38px)}
+  .sub{color:var(--muted);margin-bottom:18px}
+  .grid{display:grid;grid-template-columns:330px 1fr;gap:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 20px rgba(16,24,40,.06)}
+  .controls{padding:18px}
+  .plot{padding:10px}
+  label{display:block;font-weight:650;margin:14px 0 6px}
+  select,input[type=range],button{width:100%}
+  select,button{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:15px}
+  input[type=range]{accent-color:var(--accent)}
+  button{cursor:pointer;font-weight:700}
+  button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.secondary{background:#eef6f5;color:var(--accent)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .readouts{margin-top:16px;display:grid;gap:8px}
+  .metric{padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid var(--line)}
+  .metric b{font-size:18px}
+  .delta-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;padding:6px 10px 12px;color:var(--muted);font-size:14px}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+  .note{font-size:13px;line-height:1.45;color:var(--muted);margin-top:14px}
+  canvas{width:100%;height:620px;display:block;border-radius:12px;background:#fff}
+  .question{margin-top:12px;padding:12px;border-left:4px solid var(--warn);background:#fff8eb;border-radius:8px;font-size:14px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}canvas{height:480px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Derivative Explorer</h1>
+  <div class="sub">Move Q toward P and watch the secant line become the tangent line.</div>
+
+  <div class="grid">
+    <div class="card controls">
+      <label for="fn">Function / interpretation</label>
+      <select id="fn">
+        <option value="reciprocal">Geometry: y = 1/x</option>
+        <option value="square">Geometry: y = x²</option>
+        <option value="sine">Geometry: y = sin x</option>
+        <option value="motion">Motion: s(t) = t³ − 6t² + 9t</option>
+      </select>
+
+      <label for="x0">Point P: <span id="x0v"></span></label>
+      <input id="x0" type="range" min="-3" max="3" step="0.05" value="1.5">
+
+      <label for="h">Horizontal change h = Δx: <span id="hv"></span></label>
+      <input id="h" type="range" min="-2" max="2" step="0.01" value="1">
+
+      <div class="row">
+        <button class="primary" id="animate">Animate h → 0</button>
+        <button class="secondary" id="reset">Reset</button>
+      </div>
+
+      <div class="readouts">
+        <div class="metric">P = <b id="p"></b></div>
+        <div class="metric">Q = <b id="q"></b></div>
+        <div class="delta-row">
+          <div class="metric">Δx = <b id="dx"></b></div>
+          <div class="metric">Δy = <b id="dy"></b></div>
+        </div>
+        <div class="metric">Average rate / secant slope = <b id="sec"></b></div>
+        <div class="metric">Instantaneous rate / derivative = <b id="tan"></b></div>
+        <div class="metric" id="physBox" style="display:none">
+          Velocity v(t) = <b id="vel"></b><br>
+          Acceleration a(t) = <b id="acc"></b>
+        </div>
+      </div>
+
+      <div class="question" id="question">
+        Ask students: "What happens to the secant slope as h approaches 0?"
+      </div>
+
+      <div class="note">
+        Teaching sequence: first let students estimate the slope with a large h, then reduce h manually,
+        then run the animation. Emphasize that the derivative is a <b>limit of average rates</b>.
+      </div>
+    </div>
+
+    <div class="card plot">
+      <canvas id="c"></canvas>
+      <div class="legend">
+        <span><span class="dot" style="background:#111827"></span>function</span>
+        <span><span class="dot" style="background:#0f766e"></span>P and tangent</span>
+        <span><span class="dot" style="background:#1d4ed8"></span>Q and secant</span>
+        <span><span class="dot" style="background:#94a3b8"></span>Δx / Δy</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const fnSel = document.getElementById('fn');
+const x0Slider = document.getElementById('x0');
+const hSlider = document.getElementById('h');
+const x0v = document.getElementById('x0v');
+const hv = document.getElementById('hv');
+const pEl = document.getElementById('p');
+const qEl = document.getElementById('q');
+const dxEl = document.getElementById('dx');
+const dyEl = document.getElementById('dy');
+const secEl = document.getElementById('sec');
+const tanEl = document.getElementById('tan');
+const physBox = document.getElementById('physBox');
+const velEl = document.getElementById('vel');
+const accEl = document.getElementById('acc');
+const question = document.getElementById('question');
+
+// CSS-pixel dimensions — kept in sync by the ResizeObserver below.
+let cssW = 900, cssH = 620;
+let animId = null;
+
+function f(x){
+  switch(fnSel.value){
+    case 'reciprocal': return 1/x;
+    case 'square': return x*x;
+    case 'sine': return Math.sin(x);
+    case 'motion': return x*x*x - 6*x*x + 9*x;
+  }
+}
+function df(x){
+  switch(fnSel.value){
+    case 'reciprocal': return -1/(x*x);
+    case 'square': return 2*x;
+    case 'sine': return Math.cos(x);
+    case 'motion': return 3*x*x - 12*x + 9;
+  }
+}
+function d2f(x){
+  switch(fnSel.value){
+    case 'motion': return 6*x - 12;
+    case 'reciprocal': return 2/(x*x*x);
+    case 'square': return 2;
+    case 'sine': return -Math.sin(x);
+  }
+}
+function fmt(v){
+  if(!Number.isFinite(v)) return 'undefined';
+  if(Math.abs(v) < 1e-9) v = 0;
+  return (Math.round(v*1000)/1000).toString();
+}
+function ranges(){
+  if(fnSel.value === 'motion') return {xmin:0,xmax:5,ymin:-4,ymax:12};
+  if(fnSel.value === 'reciprocal') return {xmin:-4,xmax:4,ymin:-5,ymax:5};
+  if(fnSel.value === 'square') return {xmin:-4,xmax:4,ymin:-2,ymax:10};
+  return {xmin:-7,xmax:7,ymin:-2,ymax:2};
+}
+
+// All coordinate transforms use cssW/cssH (CSS pixels) so they remain
+// correct after the ResizeObserver updates the canvas buffer size.
+function sx(x,r){ return (x-r.xmin)/(r.xmax-r.xmin)*cssW; }
+function sy(y,r){ return cssH-(y-r.ymin)/(r.ymax-r.ymin)*cssH; }
+
+function drawAxes(r){
+  ctx.strokeStyle='#d8dfeb'; ctx.lineWidth=1;
+  ctx.beginPath();
+  if(r.ymin<=0 && r.ymax>=0){ctx.moveTo(0,sy(0,r));ctx.lineTo(cssW,sy(0,r));}
+  if(r.xmin<=0 && r.xmax>=0){ctx.moveTo(sx(0,r),0);ctx.lineTo(sx(0,r),cssH);}
+  ctx.stroke();
+
+  ctx.fillStyle='#64748b'; ctx.font='13px system-ui';
+  for(let x=Math.ceil(r.xmin);x<=Math.floor(r.xmax);x++){
+    if(x===0) continue;
+    const X=sx(x,r), Y=sy(0,r);
+    ctx.fillText(x.toString(), X-4, Math.min(cssH-5, Y+16));
+  }
+  for(let y=Math.ceil(r.ymin);y<=Math.floor(r.ymax);y++){
+    if(y===0) continue;
+    const X=sx(0,r), Y=sy(y,r);
+    ctx.fillText(y.toString(), Math.max(4,X+6), Y+4);
+  }
+}
+
+function drawCurve(r){
+  ctx.strokeStyle='#111827';ctx.lineWidth=2.2;ctx.beginPath();
+  let started=false;
+  for(let px=0;px<=cssW;px++){
+    const x=r.xmin + (px/cssW)*(r.xmax-r.xmin);
+    if(fnSel.value==='reciprocal' && Math.abs(x)<0.04){started=false;continue;}
+    const y=f(x);
+    if(!Number.isFinite(y) || y<r.ymin-5 || y>r.ymax+5){started=false;continue;}
+    const Y=sy(y,r);
+    if(!started){ctx.moveTo(px,Y);started=true}else ctx.lineTo(px,Y);
+  }
+  ctx.stroke();
+}
+
+function lineThrough(x0,y0,m,r,color,width){
+  const xA=r.xmin, xB=r.xmax;
+  const yA=y0+m*(xA-x0), yB=y0+m*(xB-x0);
+  ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();
+  ctx.moveTo(sx(xA,r),sy(yA,r));ctx.lineTo(sx(xB,r),sy(yB,r));ctx.stroke();
+}
+
+function point(x,y,r,color,label){
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(sx(x,r),sy(y,r),6,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=color;ctx.font='bold 15px system-ui';ctx.fillText(label,sx(x,r)+9,sy(y,r)-9);
+}
+
+// Right-angle triangle showing Δx (horizontal) and Δy (vertical) between P and Q.
+function drawDeltaTriangle(x0, y0, x1, y1, r){
+  if(!Number.isFinite(y0) || !Number.isFinite(y1)) return;
+  if(Math.abs(x1 - x0) < 0.06) return;
+
+  const px0 = sx(x0, r), py0 = sy(y0, r);
+  const px1 = sx(x1, r), py1 = sy(y1, r);
+  // Right-angle corner sits at (x1, y0) — horizontally level with P, vertically below Q.
+  const pcx = px1, pcy = py0;
+
+  ctx.save();
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 4]);
+
+  // Horizontal leg P → corner
+  ctx.beginPath();
+  ctx.moveTo(px0, py0);
+  ctx.lineTo(pcx, pcy);
+  ctx.stroke();
+
+  // Vertical leg corner → Q
+  ctx.beginPath();
+  ctx.moveTo(pcx, pcy);
+  ctx.lineTo(px1, py1);
+  ctx.stroke();
+
+  // Right-angle square at corner
+  ctx.setLineDash([]);
+  const sq = 8;
+  const sdx = Math.sign(px0 - pcx) * sq; // toward P horizontally
+  const sdy = Math.sign(py1 - pcy) * sq; // toward Q vertically
+  ctx.beginPath();
+  ctx.moveTo(pcx + sdx, pcy);
+  ctx.lineTo(pcx + sdx, pcy + sdy);
+  ctx.lineTo(pcx, pcy + sdy);
+  ctx.stroke();
+
+  // Labels
+  ctx.fillStyle = '#475569';
+  ctx.font = 'bold 13px system-ui';
+
+  // Δx — centred on horizontal leg, placed outside the triangle
+  const midHx = (px0 + pcx) / 2;
+  const dxLabelY = pcy + (py1 < pcy ? 16 : -5);
+  ctx.fillText('Δx', midHx - 8, dxLabelY);
+
+  // Δy — centred on vertical leg, placed outside the triangle
+  const midVy = (pcy + py1) / 2 + 4;
+  const dyLabelX = pcx + (px1 >= px0 ? 8 : -26);
+  ctx.fillText('Δy', dyLabelX, midVy);
+
+  ctx.restore();
+}
+
+function render(){
+  const r=ranges();
+  ctx.clearRect(0, 0, cssW, cssH);
+  drawAxes(r); drawCurve(r);
+
+  let x0=parseFloat(x0Slider.value);
+  let h=parseFloat(hSlider.value);
+
+  // Avoid the singularity for y = 1/x.
+  if(fnSel.value==='reciprocal'){
+    if(Math.abs(x0)<0.15){x0=0.15; x0Slider.value=x0;}
+    if(Math.abs(x0+h)<0.08){
+      h = (x0>0 ? 0.1 : -0.1) - x0;
+      hSlider.value=h;
+    }
+  }
+
+  const y0=f(x0), x1=x0+h, y1=f(x1);
+  const sec = Math.abs(h)<1e-9 ? df(x0) : (y1-y0)/h;
+  const tan = df(x0);
+
+  if(Number.isFinite(sec)) lineThrough(x0,y0,sec,r,'#1d4ed8',2);
+  if(Number.isFinite(tan)) lineThrough(x0,y0,tan,r,'#0f766e',2.5);
+
+  // Draw triangle before points so points render on top.
+  if(Number.isFinite(y0) && Number.isFinite(y1)) drawDeltaTriangle(x0,y0,x1,y1,r);
+
+  if(Number.isFinite(y0)) point(x0,y0,r,'#0f766e','P');
+  if(Number.isFinite(y1)) point(x1,y1,r,'#1d4ed8','Q');
+
+  x0v.textContent=fmt(x0);
+  hv.textContent=fmt(h);
+  pEl.textContent=`(${fmt(x0)}, ${fmt(y0)})`;
+  qEl.textContent=`(${fmt(x1)}, ${fmt(y1)})`;
+  dxEl.textContent=fmt(h);
+  dyEl.textContent=Number.isFinite(y1-y0) ? fmt(y1-y0) : 'undefined';
+  secEl.textContent=fmt(sec);
+  tanEl.textContent=fmt(tan);
+
+  if(fnSel.value==='motion'){
+    physBox.style.display='block';
+    velEl.textContent=fmt(df(x0));
+    accEl.textContent=fmt(d2f(x0));
+    question.textContent='Ask students: "What does the secant slope mean physically? What does the tangent slope mean?"';
+  }else{
+    physBox.style.display='none';
+    question.textContent='Ask students: "What happens to the secant slope as h approaches 0?"';
+  }
+}
+
+function setPreset(){
+  if(fnSel.value==='motion'){
+    x0Slider.min='0';x0Slider.max='4';x0Slider.value='2';
+    hSlider.min='-1.5';hSlider.max='1.5';hSlider.value='1';
+  }else if(fnSel.value==='reciprocal'){
+    x0Slider.min='-3';x0Slider.max='3';x0Slider.value='1.5';
+    hSlider.min='-2';hSlider.max='2';hSlider.value='1';
+  }else{
+    x0Slider.min='-3';x0Slider.max='3';x0Slider.value='1';
+    hSlider.min='-2';hSlider.max='2';hSlider.value='1';
+  }
+  render();
+}
+
+fnSel.addEventListener('change',setPreset);
+x0Slider.addEventListener('input',render);
+hSlider.addEventListener('input',render);
+
+document.getElementById('reset').addEventListener('click',()=>{
+  if(animId){ cancelAnimationFrame(animId); animId=null; }
+  setPreset();
+});
+
+document.getElementById('animate').addEventListener('click',()=>{
+  if(animId){ cancelAnimationFrame(animId); animId=null; }
+
+  let h=parseFloat(hSlider.value);
+  if(Math.abs(h)<0.05){ h=1; hSlider.value=h; }
+
+  const h0   = h;
+  const sign = Math.sign(h0) || 1;
+  const DURATION = 15000; // ms — Q travels to P over exactly 15 s
+  const H_END    = 0.01;  // stops just short of 0 to avoid division issues
+  let t0 = null;
+
+  function step(now){
+    if(!t0) t0 = now;
+    const progress = Math.min((now - t0) / DURATION, 1);
+    // Exponential interpolation: |h| decays from |h0| to H_END in 15 s
+    const absH = Math.abs(h0) * Math.pow(H_END / Math.abs(h0), progress);
+    hSlider.value = sign * absH;
+    render();
+    if(progress < 1){
+      animId = requestAnimationFrame(step);
+    } else {
+      animId = null;
+    }
+  }
+
+  animId = requestAnimationFrame(step);
+});
+
+// Keep the canvas pixel buffer matched to its actual displayed size.
+// ctx.setTransform resets the DPR scale each time (avoids cumulative scaling).
+new ResizeObserver(() => {
+  const rect = canvas.getBoundingClientRect();
+  const dpr  = window.devicePixelRatio || 1;
+  cssW = rect.width;
+  cssH = rect.height;
+  canvas.width  = Math.round(cssW * dpr);
+  canvas.height = Math.round(cssH * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  render();
+}).observe(canvas);
+</script>
+</body>
+</html>
