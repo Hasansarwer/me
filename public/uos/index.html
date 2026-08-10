@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Interactive STEM Simulations — CSE, University of Scholars</title>
+  <meta name="description" content="Hands-on interactive simulations for students of the Department of Computer Science and Engineering at University of Scholars. Explore calculus, derivatives, physics oscillations and more." />
+  <meta name="keywords" content="interactive simulations, CSE, University of Scholars, STEM education, calculus, physics, e-learning, derivative, SHM, oscillation" />
+  <meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Interactive STEM Simulations — CSE, University of Scholars" />
+  <meta property="og:description" content="Hands-on interactive simulations for CSE students at University of Scholars. Explore calculus, physics and more through browser-based tools." />
+  <meta property="og:locale" content="en_GB" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Interactive STEM Simulations — CSE, University of Scholars" />
+  <meta name="twitter:description" content="Hands-on interactive simulations for CSE students at University of Scholars." />
+
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Interactive STEM Simulations — CSE, University of Scholars",
+    "description": "Browser-based interactive simulations for students of the Department of Computer Science and Engineering at University of Scholars.",
+    "inLanguage": "en",
+    "publisher": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  }
+  </script>
+
+  <style>
+    /* salt-theme-gen — preset: ocean, radius: rounded */
+    :root {
+      --bg:           #f3f5f7;
+      --card:         #fcfcfa;
+      --text:         #060809;
+      --muted:        #6a7379;
+      --border:       #d4d8db;
+      --accent:       #0078a9;
+      --accent-hover: #006088;
+      --accent-soft:  #b7cee2;
+      --on-accent:    #ffffff;
+
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #090b0d;
+        --card:         #1a1e20;
+        --text:         #f3f5f7;
+        --muted:        #879197;
+        --border:       #2b2e30;
+        --accent:       #5bbaee;
+        --accent-hover: #3fa1d3;
+        --accent-soft:  #233848;
+        --on-accent:    #444444;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+    }
+
+    header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .hero { margin-bottom: 48px; }
+
+    .hero h2 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      margin-top: 12px;
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 560px;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .course-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: box-shadow 0.18s, border-color 0.18s, transform 0.18s;
+    }
+
+    .course-card:hover {
+      box-shadow: 0 8px 32px color-mix(in oklch, var(--accent) 15%, transparent);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .course-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .course-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .course-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .course-meta {
+      margin-top: auto;
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .theme-credit {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .theme-credit a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .theme-credit a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>UOS Simulations</h1>
+    <p>Department of Computer Science and Engineering — University of Scholars</p>
+  </header>
+
+  <main class="container">
+    <div class="hero">
+      <h2>Explore interactive<br>simulations</h2>
+      <p>Hands-on tools to help CSE students visualise and understand core concepts across modules.</p>
+    </div>
+
+    <p class="section-label">Courses</p>
+
+    <div class="course-grid">
+      <a class="course-card" href="./math/">
+        <div class="course-icon" aria-hidden="true">∂</div>
+        <h3>Mathematics</h3>
+        <p>Calculus, derivatives, limits and more — explored through interactive graphs.</p>
+        <span class="course-meta">1 simulation →</span>
+      </a>
+
+      <a class="course-card" href="./physics-1111/">
+        <div class="course-icon" aria-hidden="true">〜</div>
+        <h3>PHY-1111</h3>
+        <p>Foundations of physics — oscillations, waves and circular motion visualised in real time.</p>
+        <span class="course-meta">1 simulation →</span>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <span>Department of Computer Science and Engineering · University of Scholars</span>
+    <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+  </footer>
+</body>
+</html>

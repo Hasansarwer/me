@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>PHY-1111 Physics Simulations — CSE, University of Scholars</title>
+  <meta name="description" content="Interactive physics simulations for PHY-1111 students in the Department of Computer Science and Engineering at University of Scholars. Explore simple harmonic motion, spring-mass oscillators, and sinusoidal waves." />
+  <meta name="keywords" content="simple harmonic motion, SHM, oscillation, spring mass, physics simulation, PHY-1111, CSE, University of Scholars, wave, amplitude, frequency, phase" />
+  <meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="PHY-1111 Physics Simulations — CSE, University of Scholars" />
+  <meta property="og:description" content="Interactive physics simulations for PHY-1111 students at University of Scholars. Explore simple harmonic motion, oscillations and waves." />
+  <meta property="og:locale" content="en_GB" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="PHY-1111 Physics Simulations — CSE, University of Scholars" />
+  <meta name="twitter:description" content="Interactive physics simulations for PHY-1111 students at University of Scholars CSE department." />
+
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "PHY-1111 — Physics Interactive Simulations",
+    "description": "Browser-based interactive simulations covering simple harmonic motion, spring-mass oscillators, circular projection, and sinusoidal displacement for CSE students.",
+    "inLanguage": "en",
+    "educationalLevel": "undergraduate",
+    "courseCode": "PHY-1111",
+    "teaches": ["simple harmonic motion", "oscillations", "amplitude", "frequency", "phase", "circular motion"],
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    },
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": "online"
+    }
+  }
+  </script>
+
+  <style>
+    /* salt-theme-gen — preset: ocean, radius: rounded */
+    :root {
+      --bg:           #f3f5f7;
+      --card:         #fcfcfa;
+      --text:         #060809;
+      --muted:        #6a7379;
+      --border:       #d4d8db;
+      --accent:       #0078a9;
+      --accent-hover: #006088;
+      --accent-soft:  #b7cee2;
+      --on-accent:    #ffffff;
+
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #090b0d;
+        --card:         #1a1e20;
+        --text:         #f3f5f7;
+        --muted:        #879197;
+        --border:       #2b2e30;
+        --accent:       #5bbaee;
+        --accent-hover: #3fa1d3;
+        --accent-soft:  #233848;
+        --on-accent:    #444444;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--border); }
+    .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 40px;
+    }
+
+    .course-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-lg);
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .page-header p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .sim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .sim-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow 0.18s, border-color 0.18s, transform 0.18s;
+    }
+
+    .sim-card:hover {
+      box-shadow: 0 8px 32px color-mix(in oklch, var(--accent) 15%, transparent);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .sim-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      width: fit-content;
+    }
+
+    .sim-card h3 { font-size: 1.1rem; font-weight: 700; }
+
+    .sim-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .sim-footer {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .theme-credit { font-size: 0.8rem; color: var(--muted); }
+
+    .theme-credit a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .theme-credit a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../">UOS Simulations</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span class="current" aria-current="page">PHY-1111</span>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="course-icon" aria-hidden="true">〜</div>
+      <div>
+        <h1>PHY-1111</h1>
+        <p>Interactive simulations for foundations of physics — CSE, University of Scholars.</p>
+      </div>
+    </div>
+
+    <p class="section-label">Simulations</p>
+
+    <div class="sim-grid">
+      <a class="sim-card" href="./shm/">
+        <span class="sim-tag">Oscillations</span>
+        <h3>SHM Explorer</h3>
+        <p>
+          Explore simple harmonic motion through a spring-mass oscillator, circular
+          projection, and sinusoidal displacement graph. Adjust amplitude, frequency and phase in real time.
+        </p>
+        <div class="sim-footer">Open simulation →</div>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <span>Department of Computer Science and Engineering · University of Scholars</span>
+    <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+  </footer>
+</body>
+</html>
