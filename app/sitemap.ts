@@ -25,8 +25,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const uosPages = [
     { url: "/uos",                         priority: 0.7, changeFrequency: "monthly" as const },
-    { url: "/uos/math",                    priority: 0.6, changeFrequency: "monthly" as const },
-    { url: "/uos/math/derivative",         priority: 0.6, changeFrequency: "monthly" as const },
+    { url: "/uos/math-1111",               priority: 0.6, changeFrequency: "monthly" as const },
+    { url: "/uos/math-1111/derivative",    priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/physics-1111",            priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/physics-1111/shm",        priority: 0.6, changeFrequency: "monthly" as const },
   ];
