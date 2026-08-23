@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Discontinuity Explorer — Types of Discontinuity | MATH-1111, CSE, University of Scholars</title>
+<meta name="description" content="Explore all six types of discontinuity — ordinary, second kind, mixed, removable, infinite, and oscillatory — with animated left and right approaches. MATH-1111, CSE, University of Scholars." />
+<meta name="keywords" content="discontinuity, removable discontinuity, jump discontinuity, infinite discontinuity, oscillatory, limit, calculus, MATH-1111, CSE, University of Scholars" />
+<meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+<meta name="robots" content="index, follow" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Discontinuity Explorer — Types of Discontinuity | MATH-1111, CSE, University of Scholars" />
+<meta property="og:description" content="Interactive simulation exploring all six types of discontinuity for CSE students at University of Scholars." />
+<meta property="og:locale" content="en_GB" />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Discontinuity Explorer — MATH-1111, CSE, University of Scholars" />
+<meta name="twitter:description" content="Explore six types of discontinuity with animated left and right limit approaches." />
+
+<!-- JSON-LD structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Discontinuity Explorer — Types of Discontinuity",
+  "description": "Browser-based interactive simulation for exploring six types of function discontinuity with animated left and right limit approaches.",
+  "inLanguage": "en",
+  "educationalLevel": "undergraduate",
+  "learningResourceType": "Simulation",
+  "author": {
+    "@type": "Person",
+    "name": "Hasan Sarwer",
+    "jobTitle": "Adjunct Faculty",
+    "worksFor": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  },
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Mathematics",
+    "courseCode": "MATH-1111",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  }
+}
+</script>
+
+<style>
+  /* salt-theme-gen — preset: ocean, radius: rounded */
+  :root {
+    --bg:           #f3f5f7;
+    --card:         #fcfcfa;
+    --text:         #060809;
+    --muted:        #6a7379;
+    --border:       #d4d8db;
+    --accent:       #0078a9;
+    --accent-hover: #006088;
+    --accent-soft:  #b7cee2;
+    --on-accent:    #ffffff;
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+
+    --curve: #111827;
+    --cleft: #1d4ed8;
+    --cright: #b45309;
+    --cpoint: #0f766e;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:           #090b0d;
+      --card:         #1a1e20;
+      --text:         #f3f5f7;
+      --muted:        #879197;
+      --border:       #2b2e30;
+      --accent:       #5bbaee;
+      --accent-hover: #3fa1d3;
+      --accent-soft:  #233848;
+      --on-accent:    #444444;
+
+      --curve: #e5e7eb;
+      --cleft: #60a5fa;
+      --cright: #fbbf24;
+      --cpoint: #34d399;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+  }
+
+  .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: .9rem; }
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb .sep { color: var(--border); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+  .app { max-width: 820px; margin: 0 auto; padding: 24px 16px; }
+
+  .page-title { font-size: 1.45rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 6px; }
+  .sub { color: var(--muted); font-size: .95rem; line-height: 1.5; margin-bottom: 20px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .section { padding: 16px; }
+
+  label { display: block; font-weight: 700; font-size: .94rem; margin: 0 0 7px; }
+
+  select, input[type=range], button { font: inherit; }
+
+  select {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 12px;
+    font-size: 16px;
+    background: var(--card);
+    color: var(--text);
+  }
+
+  input[type=range] { width: 100%; height: 44px; }
+
+  button {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 14px;
+    background: var(--card);
+    color: var(--text);
+    font-weight: 700;
+    cursor: pointer;
+    min-height: 44px;
+    transition: background .15s, border-color .15s;
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  button.soft { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); }
+
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media(min-width: 600px) { .tabs { grid-template-columns: repeat(3, 1fr); } }
+
+  .tab { padding: 10px; font-size: .88rem; line-height: 1.25; text-align: left; }
+  .tab.active { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+
+  .definition {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    line-height: 1.5;
+  }
+  .formula { margin-top: 8px; font-family: Georgia, serif; font-size: 1.02rem; font-weight: 700; }
+  .example { margin-top: 8px; color: var(--muted); font-size: .91rem; line-height: 1.45; }
+
+  .plotwrap { padding: 14px; }
+
+  canvas {
+    width: 100%;
+    height: 400px;
+    display: block;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    touch-action: manipulation;
+  }
+  @media (prefers-color-scheme: dark) { canvas { background: #0f1117; } }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 10px; color: var(--muted); font-size: .88rem;
+  }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .metrics { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  @media(min-width: 600px) { .metrics { grid-template-columns: repeat(3, 1fr); } }
+
+  .metric {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 12px;
+    background: var(--card);
+  }
+  .metric .k { font-size: .8rem; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+  .metric .v { font-size: .98rem; font-weight: 800; line-height: 1.35; }
+
+  .observation {
+    background: #fff9ed;
+    border-left: 4px solid #d97706;
+    color: #7c2d12;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: .92rem;
+    line-height: 1.5;
+  }
+  @media (prefers-color-scheme: dark) {
+    .observation { background: #2a1f0a; color: #fbbf24; border-color: #d97706; }
+  }
+
+  .small { font-size: .86rem; color: var(--muted); margin-top: 10px; }
+
+  footer {
+    text-align: center;
+    padding: 28px 16px;
+    font-size: .85rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .theme-credit { font-size: .8rem; }
+  .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .theme-credit a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../">UOS Simulations</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="../">Mathematics</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="current" aria-current="page">Discontinuity Explorer</span>
+  </nav>
+</header>
+
+<div class="app">
+  <h1 class="page-title">Explore types of discontinuity</h1>
+  <p class="sub">Move toward the discontinuity from the left and right. Compare the two one-sided behaviours with the value of the function at the point.</p>
+
+  <div class="card">
+    <div class="section">
+      <label>Choose discontinuity type</label>
+      <div class="tabs" id="tabs"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section">
+      <div class="definition">
+        <div style="font-weight:800" id="typeTitle">—</div>
+        <div class="formula" id="typeDefinition">—</div>
+        <div class="example" id="typeExample">—</div>
+      </div>
+
+      <label for="hSlider" style="margin-top:14px">Distance from the point: &nbsp;<b>h = <span id="hVal">1</span></b></label>
+      <input id="hSlider" type="range" min="0.01" max="2" step="0.01" value="1">
+
+      <label for="speedSel" style="margin-top:10px">Animation speed</label>
+      <select id="speedSel">
+        <option value="slow" selected>Slow — 30 s</option>
+        <option value="normal">Normal — 20 s</option>
+        <option value="fast">Fast — 10 s</option>
+      </select>
+
+      <div class="row" style="margin-top:12px">
+        <button id="animateBtn" class="primary">&#9654; Approach a from both sides</button>
+        <button id="pauseBtn" class="soft">&#9646;&#9646; Pause</button>
+        <button id="resetBtn">&#8635; Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="plotwrap">
+      <canvas id="graph"></canvas>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--curve)"></span>f(x)</span>
+        <span><span class="dot" style="background:var(--cleft)"></span>x = a &minus; h</span>
+        <span><span class="dot" style="background:var(--cright)"></span>x = a + h</span>
+        <span><span class="dot" style="background:var(--cpoint)"></span>x = a</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="k" style="color:var(--cleft)">From the left</div>
+      <div class="v" id="leftReadout">—</div>
+    </div>
+    <div class="metric">
+      <div class="k" style="color:var(--cright)">From the right</div>
+      <div class="v" id="rightReadout">—</div>
+    </div>
+    <div class="metric">
+      <div class="k" style="color:var(--cpoint)">At x = a</div>
+      <div class="v" id="pointReadout">—</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="section">
+      <div class="observation" id="observation">—</div>
+      <p class="small">The six categories follow the classification used in the course notes.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Department of Computer Science and Engineering &middot; University of Scholars</span>
+  <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+</footer>
+
+<script>
+const types = [
+  {
+    id:'ordinary',
+    title:'1. Ordinary discontinuity / first kind',
+    def:'The left-hand and right-hand limits are finite but are not equal.',
+    ex:'Example: f(x) = x/|x| for x ≠ 0 and f(0) = 0.',
+    a:0, xmin:-3, xmax:3, ymin:-2, ymax:2, h:1,
+    f:x=>x<0?-1:(x>0?1:0),
+    leftLimit:'−1', rightLimit:'1'
+  },
+  {
+    id:'second',
+    title:'2. Discontinuity of the second kind',
+    def:'The one-sided limits do not exist at x = a.',
+    ex:'Example: f(x) = cos(π/x) near x = 0.',
+    a:0, xmin:-1, xmax:1, ymin:-1.5, ymax:1.5, h:.35,
+    f:x=>x===0?0:Math.cos(Math.PI/x),
+    leftLimit:'does not exist', rightLimit:'does not exist'
+  },
+  {
+    id:'mixed',
+    title:'3. Mixed discontinuity',
+    def:'One side agrees with f(a), while the other side does not.',
+    ex:'Course-note example at a = 3/2: f(x) = 3 − 2x for x < 3/2 and f(x) = −3 − 2x for x ≥ 3/2.',
+    a:1.5, xmin:0, xmax:3, ymin:-8, ymax:4, h:.8,
+    f:x=>x<1.5?3-2*x:-3-2*x,
+    leftLimit:'0', rightLimit:'−6'
+  },
+  {
+    id:'removable',
+    title:'4. Removable discontinuity',
+    def:'The left-hand and right-hand limits are equal, but that common value differs from f(a).',
+    ex:'Example at a = 1: f(x) = (x² − 1)/(x − 1) for x ≠ 1, and f(1) = 0.',
+    a:1, xmin:-2, xmax:4, ymin:-2, ymax:6, h:1,
+    f:x=>Math.abs(x-1)<1e-12?0:(x*x-1)/(x-1),
+    leftLimit:'2', rightLimit:'2',
+    hole:{x:1, y:2}
+  },
+  {
+    id:'infinite',
+    title:'5. Infinite discontinuity',
+    def:'The function becomes unbounded as x approaches a from both sides.',
+    ex:'Course-note example: f(x) = (x − 2)/(x − 1) at x = 1.',
+    a:1, xmin:-2, xmax:4, ymin:-8, ymax:8, h:1,
+    f:x=>(x-2)/(x-1),
+    leftLimit:'+∞', rightLimit:'−∞'
+  },
+  {
+    id:'oscillatory',
+    title:'6. Oscillatory discontinuity',
+    def:'The function oscillates and never settles to a finite limit or to ±∞ near x = a.',
+    ex:'Course-note example: f(x) = sin(1/x) at x = 0.',
+    a:0, xmin:-1, xmax:1, ymin:-1.5, ymax:1.5, h:.35,
+    f:x=>x===0?0:Math.sin(1/x),
+    leftLimit:'does not exist', rightLimit:'does not exist'
+  }
+];
+
+const tabsEl       = document.getElementById('tabs');
+const titleEl      = document.getElementById('typeTitle');
+const defEl        = document.getElementById('typeDefinition');
+const exEl         = document.getElementById('typeExample');
+const hSlider      = document.getElementById('hSlider');
+const hValEl       = document.getElementById('hVal');
+const speedSel     = document.getElementById('speedSel');
+const canvas       = document.getElementById('graph');
+const ctx          = canvas.getContext('2d');
+const leftReadout  = document.getElementById('leftReadout');
+const rightReadout = document.getElementById('rightReadout');
+const pointReadout = document.getElementById('pointReadout');
+const obsEl        = document.getElementById('observation');
+
+let current = types[0];
+let animId  = null;
+let cssW    = 760, cssH = 400;
+
+function getColor(v){
+  return getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+}
+function fmt(v){
+  if(Number.isNaN(v)) return 'undefined';
+  if(v===Infinity)  return '+∞';
+  if(v===-Infinity) return '−∞';
+  if(!Number.isFinite(v)) return 'undefined';
+  let n=Number(v.toFixed(4));
+  if(Object.is(n,-0)) n=0;
+  return String(n);
+}
+function sx(x){ return (x-current.xmin)/(current.xmax-current.xmin)*cssW; }
+function sy(y){ return cssH-(y-current.ymin)/(current.ymax-current.ymin)*cssH; }
+
+function drawAxes(){
+  ctx.clearRect(0,0,cssW,cssH);
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,cssW,cssH);
+
+  ctx.strokeStyle='#e7edf4'; ctx.lineWidth=1;
+  for(let i=0;i<=8;i++){
+    const x=current.xmin+(current.xmax-current.xmin)*i/8;
+    const X=sx(x); ctx.beginPath(); ctx.moveTo(X,0); ctx.lineTo(X,cssH); ctx.stroke();
+  }
+  for(let i=0;i<=6;i++){
+    const y=current.ymin+(current.ymax-current.ymin)*i/6;
+    const Y=sy(y); ctx.beginPath(); ctx.moveTo(0,Y); ctx.lineTo(cssW,Y); ctx.stroke();
+  }
+
+  ctx.strokeStyle='#64748b'; ctx.lineWidth=1.2;
+  if(current.ymin<0&&current.ymax>0){
+    const Y=sy(0); ctx.beginPath(); ctx.moveTo(0,Y); ctx.lineTo(cssW,Y); ctx.stroke();
+  }
+  if(current.xmin<0&&current.xmax>0){
+    const X=sx(0); ctx.beginPath(); ctx.moveTo(X,0); ctx.lineTo(X,cssH); ctx.stroke();
+  }
+
+  ctx.strokeStyle=getColor('--cpoint'); ctx.setLineDash([6,6]);
+  const A=sx(current.a);
+  ctx.beginPath(); ctx.moveTo(A,0); ctx.lineTo(A,cssH); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function drawCurve(){
+  ctx.strokeStyle=getColor('--curve'); ctx.lineWidth=2.2;
+  ctx.beginPath();
+  let open=false, prevY=null;
+  const n=900;
+  for(let i=0;i<=n;i++){
+    const x=current.xmin+(current.xmax-current.xmin)*i/n;
+    let y; try{y=current.f(x)}catch{y=NaN}
+    const good=Number.isFinite(y)&&y>current.ymin-5&&y<current.ymax+5;
+    if(!good){open=false;prevY=null;continue}
+    const X=sx(x),Y=sy(y);
+    if(!open){ctx.moveTo(X,Y);open=true}
+    else if(prevY!==null&&Math.abs(y-prevY)<(current.ymax-current.ymin)*1.2) ctx.lineTo(X,Y);
+    else ctx.moveTo(X,Y);
+    prevY=y;
+  }
+  ctx.stroke();
+
+  if(current.hole){
+    ctx.fillStyle='#fff'; ctx.strokeStyle=getColor('--curve'); ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(sx(current.hole.x),sy(current.hole.y),6,0,Math.PI*2);
+    ctx.fill(); ctx.stroke();
+  }
+}
+
+function dot(x,y,color){
+  if(!Number.isFinite(y)||y<current.ymin||y>current.ymax) return;
+  ctx.fillStyle=color; ctx.beginPath(); ctx.arc(sx(x),sy(y),6,0,Math.PI*2); ctx.fill();
+}
+
+function render(){
+  drawAxes(); drawCurve();
+  const h=parseFloat(hSlider.value);
+  hValEl.textContent=fmt(h);
+  const xl=current.a-h, xr=current.a+h;
+  let yl,yr,ya;
+  try{yl=current.f(xl)}catch{yl=NaN}
+  try{yr=current.f(xr)}catch{yr=NaN}
+  try{ya=current.f(current.a)}catch{ya=NaN}
+
+  ctx.setLineDash([5,5]); ctx.lineWidth=1.5;
+  ctx.strokeStyle=getColor('--cleft');
+  ctx.beginPath(); ctx.moveTo(sx(xl),0); ctx.lineTo(sx(xl),cssH); ctx.stroke();
+  ctx.strokeStyle=getColor('--cright');
+  ctx.beginPath(); ctx.moveTo(sx(xr),0); ctx.lineTo(sx(xr),cssH); ctx.stroke();
+  ctx.setLineDash([]);
+
+  dot(xl,yl,getColor('--cleft'));
+  dot(xr,yr,getColor('--cright'));
+  dot(current.a,ya,getColor('--cpoint'));
+
+  leftReadout.textContent  = 'x = '+fmt(xl)+',  f(x) = '+fmt(yl);
+  rightReadout.textContent = 'x = '+fmt(xr)+',  f(x) = '+fmt(yr);
+  pointReadout.textContent = 'f('+fmt(current.a)+') = '+fmt(ya);
+
+  const obs = {
+    ordinary:   'As h → 0, the left side approaches <b>'+current.leftLimit+'</b> and the right side approaches <b>'+current.rightLimit+'</b>. Both are finite but different — a classic jump.',
+    second:     'Neither one-sided limit settles to a single value. This is a <b>discontinuity of the second kind</b>.',
+    mixed:      'The right side approaches <b>−6 = f(a)</b>, while the left side approaches <b>0 ≠ f(a)</b>. One side agrees with the function value; the other does not.',
+    removable:  'Both sides approach <b>2</b>, but <b>f(1) = 0</b>. The discontinuity can be removed by redefining f(1) = 2.',
+    infinite:   'The function grows without bound near x = 1. Left side → <b>+∞</b>, right side → <b>−∞</b>. Vertical asymptote at <b>x = 1</b>.',
+    oscillatory:'As x → 0, <b>sin(1/x)</b> oscillates more and more rapidly and never settles to any value.'
+  };
+  obsEl.innerHTML = obs[current.id] || '';
+}
+
+function selectType(id){
+  if(animId){ cancelAnimationFrame(animId); animId=null; }
+  current = types.find(t=>t.id===id) || types[0];
+  titleEl.textContent = current.title;
+  defEl.textContent   = current.def;
+  exEl.textContent    = current.ex;
+  hSlider.max   = Math.min(2, (current.xmax-current.xmin)/3);
+  hSlider.value = current.h;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b.dataset.id===current.id));
+  render();
+}
+
+types.forEach(t=>{
+  const b=document.createElement('button');
+  b.type='button'; b.className='tab'; b.dataset.id=t.id;
+  b.textContent=t.title.replace(/^\d+\.\s*/,'');
+  b.addEventListener('click', ()=>selectType(t.id));
+  tabsEl.appendChild(b);
+});
+
+hSlider.addEventListener('input', render);
+
+const duration = { fast:10, normal:20, slow:30 };
+
+document.getElementById('animateBtn').addEventListener('click', ()=>{
+  if(animId){ cancelAnimationFrame(animId); animId=null; }
+  const startH = parseFloat(hSlider.value);
+  if(startH <= 0.011) return;
+  const T = duration[speedSel.value] || 20;
+  const k = Math.log(startH / 0.01) / T;
+  let startT = null;
+  function run(now){
+    if(!startT) startT = now;
+    const elapsed = (now - startT) / 1000;
+    const h = Math.max(0.01, startH * Math.exp(-k * elapsed));
+    hSlider.value = h;
+    render();
+    if(h <= 0.011){ animId=null; return; }
+    animId = requestAnimationFrame(run);
+  }
+  animId = requestAnimationFrame(run);
+});
+
+document.getElementById('pauseBtn').addEventListener('click', ()=>{
+  if(animId){ cancelAnimationFrame(animId); animId=null; }
+});
+document.getElementById('resetBtn').addEventListener('click', ()=>selectType(current.id));
+
+new ResizeObserver(()=>{
+  const rect = canvas.getBoundingClientRect();
+  const dpr  = window.devicePixelRatio || 1;
+  cssW = rect.width; cssH = rect.height;
+  canvas.width  = Math.round(cssW * dpr);
+  canvas.height = Math.round(cssH * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  render();
+}).observe(canvas);
+
+selectType('ordinary');
+</script>
+</body>
+</html>
