@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Periodic Motion Parameters — Amplitude, Period &amp; Frequency | PHY-1111, CSE, University of Scholars</title>
+<meta name="description" content="Explore how amplitude, period, frequency, angular frequency and phase govern periodic motion. Interactive spring-mass oscillator with live displacement graph. PHY-1111, CSE, University of Scholars." />
+<meta name="keywords" content="periodic motion, amplitude, period, frequency, angular frequency, phase, spring mass, oscillation, sinusoidal, PHY-1111, CSE, University of Scholars" />
+<meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+<meta name="robots" content="index, follow" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Periodic Motion Parameters | PHY-1111, CSE, University of Scholars" />
+<meta property="og:description" content="Interactive spring-mass oscillator showing how A, T, f, ω and φ govern periodic motion." />
+<meta property="og:locale" content="en_GB" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Periodic Motion Parameters — PHY-1111, CSE, University of Scholars" />
+<meta name="twitter:description" content="Explore amplitude, period, frequency and phase with a live spring-mass oscillator." />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Periodic Motion Parameters — Amplitude, Period and Frequency",
+  "description": "Interactive browser-based simulation of a spring-mass oscillator demonstrating how amplitude, period, frequency, angular frequency and phase control periodic motion.",
+  "inLanguage": "en",
+  "educationalLevel": "undergraduate",
+  "learningResourceType": "Simulation",
+  "teaches": ["periodic motion","amplitude","period","frequency","angular frequency","phase","sinusoidal displacement"],
+  "author": {
+    "@type": "Person",
+    "name": "Hasan Sarwer",
+    "jobTitle": "Adjunct Faculty",
+    "worksFor": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  },
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Foundations of Physics",
+    "courseCode": "PHY-1111",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  }
+}
+</script>
+
+<style>
+  /* salt-theme-gen — preset: ocean, radius: rounded */
+  :root {
+    --bg:           #f3f5f7;
+    --card:         #fcfcfa;
+    --text:         #060809;
+    --muted:        #6a7379;
+    --border:       #d4d8db;
+    --accent:       #0078a9;
+    --accent-hover: #006088;
+    --accent-soft:  #b7cee2;
+    --on-accent:    #ffffff;
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+
+    --cx: #0f766e;   /* curve / oscillator colour */
+    --cx-soft: #d1fae5;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:           #090b0d;
+      --card:         #1a1e20;
+      --text:         #f3f5f7;
+      --muted:        #879197;
+      --border:       #2b2e30;
+      --accent:       #5bbaee;
+      --accent-hover: #3fa1d3;
+      --accent-soft:  #233848;
+      --on-accent:    #444444;
+      --cx: #34d399;
+      --cx-soft: #064e3b;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+  }
+
+  .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: .9rem; }
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb .sep { color: var(--border); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+  .app { max-width: 860px; margin: 0 auto; padding: 24px 16px; }
+
+  .page-title { font-size: 1.45rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 6px; }
+  .sub { color: var(--muted); font-size: .96rem; line-height: 1.5; margin-bottom: 20px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .section { padding: 16px; }
+
+  label { display: block; font-weight: 700; font-size: .94rem; margin: 0 0 6px; }
+  input[type=range], select, button { font: inherit; }
+  input[type=range] { width: 100%; height: 40px; }
+
+  button {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 16px;
+    background: var(--card);
+    color: var(--text);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  button.soft { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); }
+
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .col { flex: 1 1 200px; }
+
+  .plot-wrap { padding: 12px; }
+
+  canvas {
+    width: 100%;
+    height: 420px;
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+  @media (prefers-color-scheme: dark) { canvas { background: #0f1117; } }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  @media(min-width: 540px) { .metric-grid { grid-template-columns: repeat(5, 1fr); } }
+
+  .metric {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 12px 10px;
+    background: var(--card);
+    text-align: center;
+  }
+  .metric .k { font-size: .78rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+  .metric .v { font-size: 1.05rem; font-weight: 800; }
+  .metric .u { font-size: .75rem; color: var(--muted); font-weight: 600; margin-left: 2px; }
+
+  .formula-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1rem;
+    line-height: 1.9;
+  }
+  .formula-box b { font-family: system-ui, sans-serif; font-size: .85rem; color: var(--muted); font-weight: 700; display: block; margin-bottom: 4px; }
+
+  .help {
+    background: #fff9ed;
+    border-left: 4px solid #d97706;
+    color: #7c2d12;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: .92rem;
+    line-height: 1.5;
+    margin-top: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .help { background: #2a1f0a; color: #fbbf24; border-color: #d97706; }
+  }
+
+  footer {
+    text-align: center;
+    padding: 28px 16px;
+    font-size: .85rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .theme-credit { font-size: .8rem; }
+  .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .theme-credit a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../">UOS Simulations</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="../">PHY-1111</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="current" aria-current="page">Periodic Motion Parameters</span>
+  </nav>
+</header>
+
+<div class="app">
+  <h1 class="page-title">Periodic motion parameters</h1>
+  <p class="sub">Adjust amplitude, frequency, and phase to see how each parameter shapes the sinusoidal displacement. The oscillator and the graph share the same vertical scale — watch the dashed connector trace them in perfect sync.</p>
+
+  <!-- Controls -->
+  <div class="card">
+    <div class="section">
+      <div class="row" style="margin-bottom:12px">
+        <div class="col">
+          <label for="slA">Amplitude &nbsp;<b>A = <span id="lblA">0.80</span> m</b></label>
+          <input id="slA" type="range" min="0.20" max="1.50" step="0.05" value="0.80">
+        </div>
+        <div class="col">
+          <label for="slF">Frequency &nbsp;<b>f = <span id="lblF">0.50</span> Hz</b></label>
+          <input id="slF" type="range" min="0.10" max="2.00" step="0.05" value="0.50">
+        </div>
+      </div>
+      <div class="row" style="margin-bottom:14px">
+        <div class="col">
+          <label for="slPhi">Phase &nbsp;<b>&phi; = <span id="lblPhi">0</span>&deg;</b></label>
+          <input id="slPhi" type="range" min="0" max="355" step="5" value="0">
+        </div>
+        <div class="col" style="display:flex;align-items:flex-end;padding-bottom:4px">
+          <div class="row" style="width:100%">
+            <button id="btnPlay"  class="primary" style="flex:1">&#9654; Play</button>
+            <button id="btnPause" class="soft"    style="flex:1">&#9646;&#9646; Pause</button>
+            <button id="btnReset"                 style="flex:1">&#8635; Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="card">
+    <div class="plot-wrap">
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+
+  <!-- Parameter metrics -->
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="k">Period</div>
+      <div class="v"><span id="mT">2.00</span><span class="u">s</span></div>
+    </div>
+    <div class="metric">
+      <div class="k">Frequency</div>
+      <div class="v"><span id="mF">0.50</span><span class="u">Hz</span></div>
+    </div>
+    <div class="metric">
+      <div class="k">Angular freq.</div>
+      <div class="v"><span id="mW">3.14</span><span class="u">rad/s</span></div>
+    </div>
+    <div class="metric">
+      <div class="k">v<sub>max</sub> = A&omega;</div>
+      <div class="v"><span id="mVmax">2.51</span><span class="u">m/s</span></div>
+    </div>
+    <div class="metric">
+      <div class="k">a<sub>max</sub> = A&omega;&sup2;</div>
+      <div class="v"><span id="mAmax">7.90</span><span class="u">m/s&sup2;</span></div>
+    </div>
+  </div>
+
+  <!-- Formulas + Teaching note -->
+  <div class="card">
+    <div class="section">
+      <div class="formula-box">
+        <b>Key equations</b>
+        x(t) &nbsp;=&nbsp; A cos(&omega;t + &phi;)
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        T &nbsp;=&nbsp; 1/f &nbsp;=&nbsp; 2&pi;/&omega;
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        &omega; &nbsp;=&nbsp; 2&pi;f
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        v<sub>max</sub> &nbsp;=&nbsp; A&omega;
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        a<sub>max</sub> &nbsp;=&nbsp; A&omega;&sup2;
+      </div>
+      <div class="help">
+        <b>Classroom ideas:</b>
+        Ask students why doubling <i>f</i> quadruples a<sub>max</sub> but only doubles v<sub>max</sub>.
+        Then change &phi; and ask: "The graph shifts — does the oscillator motion change, or only when it starts?"
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Department of Computer Science and Engineering &middot; University of Scholars</span>
+  <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+</footer>
+
+<script>
+/* ── state ── */
+let A   = 0.80;   // amplitude  (m)
+let f   = 0.50;   // frequency  (Hz)
+let phi = 0;      // phase      (rad)
+
+let isPlaying = false;
+let startTime = null;   // performance.now() when clock started
+let pausedAt  = 0;      // elapsed seconds when paused
+let animId    = null;
+
+let cssW = 760, cssH = 420;
+
+const canvas = document.getElementById('canvas');
+const ctx    = canvas.getContext('2d');
+
+/* ── derived ── */
+const omega = () => 2 * Math.PI * f;
+const T     = () => 1 / f;
+const xAt   = t => A * Math.cos(omega() * t + phi);
+
+/* ── clock ── */
+function elapsed() {
+  if (!isPlaying) return pausedAt;
+  return (performance.now() - startTime) / 1000;
+}
+function play() {
+  if (isPlaying) return;
+  startTime = performance.now() - pausedAt * 1000;
+  isPlaying = true;
+  function step() { render(); animId = requestAnimationFrame(step); }
+  animId = requestAnimationFrame(step);
+}
+function pause() {
+  if (!isPlaying) return;
+  pausedAt = elapsed();
+  isPlaying = false;
+  cancelAnimationFrame(animId); animId = null;
+}
+function reset() {
+  pause(); pausedAt = 0; render();
+}
+
+/* ── layout ── */
+function getLayout() {
+  const oscW   = Math.round(Math.min(cssW * 0.28, 195));
+  const midY   = cssH / 2;
+  const ceilY  = 18;
+  const ballR  = Math.max(11, Math.min(18, cssH * 0.04));
+  const ppm    = (midY - ceilY - ballR - 14) / 1.5;   // pixels per metre, fixed to max A=1.5
+  const oscCX  = oscW / 2;
+
+  const gPad   = 10;
+  const gInX   = oscW + gPad;
+  const gInW   = cssW - gInX - gPad;
+  const gInYt  = midY - ppm * 1.5 - 8;
+  const gInYb  = midY + ppm * 1.5 + 8;
+  const gInH   = gInYb - gInYt;
+
+  return { oscW, midY, ceilY, ballR, ppm, oscCX, gInX, gInW, gInYt, gInYb, gInH };
+}
+
+/* ── colour helper ── */
+function cssVar(v) {
+  return getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+}
+
+/* ── vertical spring ── */
+function drawVSpring(cx, y1, y2, coils, amp) {
+  const n    = coils * 2;
+  const step = (y2 - y1) / (n + 2);
+  ctx.beginPath();
+  ctx.moveTo(cx, y1);
+  ctx.lineTo(cx, y1 + step);
+  for (let i = 0; i < n; i++) {
+    const yy = y1 + step * (i + 2);
+    const xx = cx + (i % 2 === 0 ? amp : -amp);
+    ctx.lineTo(xx, yy);
+  }
+  ctx.lineTo(cx, y2 - step);
+  ctx.lineTo(cx, y2);
+  ctx.stroke();
+}
+
+/* ── oscillator panel ── */
+function drawOscillator(ly, t) {
+  const { oscW, midY, ceilY, ballR, ppm, oscCX } = ly;
+  const disp  = xAt(t);
+  const ballY = midY - disp * ppm;
+
+  /* ceiling bar */
+  ctx.fillStyle = cssVar('--border');
+  ctx.fillRect(oscCX - 28, ceilY - 6, 56, 10);
+
+  /* equilibrium line */
+  ctx.strokeStyle = cssVar('--muted');
+  ctx.lineWidth   = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(12, midY);
+  ctx.lineTo(oscW - 4, midY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  /* ±A markers */
+  const curA = A * ppm;
+  ctx.strokeStyle = cssVar('--accent');
+  ctx.lineWidth   = 1;
+  ctx.setLineDash([3, 4]);
+  [[midY - curA, '+A'], [midY + curA, '−A']].forEach(([y, lbl]) => {
+    ctx.beginPath();
+    ctx.moveTo(12, y);
+    ctx.lineTo(oscW - 4, y);
+    ctx.stroke();
+    ctx.fillStyle   = cssVar('--accent');
+    ctx.font        = `bold 11px system-ui`;
+    ctx.textAlign   = 'left';
+    ctx.fillText(lbl, 14, y - 3);
+  });
+  ctx.setLineDash([]);
+
+  /* equilibrium label */
+  ctx.fillStyle = cssVar('--muted');
+  ctx.font      = '10px system-ui';
+  ctx.textAlign = 'left';
+  ctx.fillText('0', 14, midY - 3);
+
+  /* spring */
+  const springBot = ballY - ballR;
+  const springTop = ceilY + 4;
+  ctx.strokeStyle = cssVar('--text');
+  ctx.lineWidth   = 1.8;
+  if (springBot > springTop + 8) {
+    drawVSpring(oscCX, springTop, springBot, 7, Math.max(10, oscW * 0.18));
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(oscCX, springTop);
+    ctx.lineTo(oscCX, springBot);
+    ctx.stroke();
+  }
+
+  /* mass block */
+  const bx = oscCX - ballR;
+  const by = ballY - ballR;
+  const bd = ballR * 2;
+  ctx.fillStyle   = cssVar('--cx');
+  ctx.strokeStyle = cssVar('--card');
+  ctx.lineWidth   = 2;
+  roundRect(bx, by, bd, bd, ballR * 0.4);
+  ctx.fill(); ctx.stroke();
+
+  /* mass label */
+  ctx.fillStyle  = '#fff';
+  ctx.font       = `bold ${Math.round(ballR * 0.8)}px system-ui`;
+  ctx.textAlign  = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('m', oscCX, ballY);
+  ctx.textBaseline = 'alphabetic';
+
+  /* displacement readout */
+  ctx.fillStyle = cssVar('--muted');
+  ctx.font      = '11px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText(`x = ${disp >= 0 ? '+' : ''}${disp.toFixed(3)} m`, oscCX, cssH - 8);
+}
+
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+/* ── graph panel ── */
+function drawGraph(ly, t) {
+  const { midY, ppm, gInX, gInW, gInYt, gInYb, gInH } = ly;
+  const period = T();
+  const winDur = 2 * period;
+
+  /* background */
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(gInX, gInYt, gInW, gInH);
+
+  /* save & clip */
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(gInX, gInYt, gInW, gInH);
+  ctx.clip();
+
+  /* horizontal grid at ±A and ±A/2 */
+  const gridYs = [-A, -A / 2, 0, A / 2, A];
+  gridYs.forEach(yv => {
+    const Y = midY - yv * ppm;
+    ctx.strokeStyle = yv === 0 ? '#94a3b8' : '#e2e8f0';
+    ctx.lineWidth   = yv === 0 ? 1.2 : 0.8;
+    ctx.beginPath(); ctx.moveTo(gInX, Y); ctx.lineTo(gInX + gInW, Y); ctx.stroke();
+  });
+
+  /* vertical grid at every T */
+  const tStart = t - winDur;
+  const tFirstTick = Math.ceil(tStart / period) * period;
+  ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 0.8;
+  for (let tk = tFirstTick; tk <= t + period * 0.01; tk += period) {
+    const px = gInX + (tk - tStart) / winDur * gInW;
+    ctx.beginPath(); ctx.moveTo(px, gInYt); ctx.lineTo(px, gInYb); ctx.stroke();
+    /* T label */
+    const n = Math.round(tk / period);
+    if (n > 0) {
+      ctx.fillStyle   = cssVar('--muted');
+      ctx.font        = '10px system-ui';
+      ctx.textAlign   = 'center';
+      ctx.fillText(n === 1 ? 'T' : `${n}T`, px, gInYt + 10);
+    }
+  }
+
+  /* sinusoidal curve */
+  ctx.strokeStyle = cssVar('--cx');
+  ctx.lineWidth   = 2.6;
+  ctx.beginPath();
+  for (let px = 0; px <= gInW; px++) {
+    const tPx = tStart + (px / gInW) * winDur;
+    const Y   = midY - xAt(tPx) * ppm;
+    if (px === 0) ctx.moveTo(gInX + px, Y);
+    else          ctx.lineTo(gInX + px, Y);
+  }
+  ctx.stroke();
+
+  ctx.restore();
+
+  /* cursor dot at current time (right edge) */
+  const curY = midY - xAt(t) * ppm;
+  ctx.fillStyle = cssVar('--cx');
+  ctx.beginPath();
+  ctx.arc(gInX + gInW, curY, 6, 0, Math.PI * 2);
+  ctx.fill();
+
+  /* y-axis label */
+  ctx.save();
+  ctx.translate(gInX + 10, midY);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillStyle  = cssVar('--muted');
+  ctx.font       = '11px system-ui';
+  ctx.textAlign  = 'center';
+  ctx.fillText('x (m)', 0, 0);
+  ctx.restore();
+
+  /* t label */
+  ctx.fillStyle  = cssVar('--muted');
+  ctx.font       = '11px system-ui';
+  ctx.textAlign  = 'right';
+  ctx.fillText('t (s)', gInX + gInW - 2, gInYb - 4);
+}
+
+/* ── horizontal connector ── */
+function drawConnector(ly, t) {
+  const { oscW, midY, ppm, gInX, gInW, ballR } = ly;
+  const disp  = xAt(t);
+  const connY = midY - disp * ppm;
+  const x1    = oscW / 2 + ballR + 2;
+  const x2    = gInX + gInW;
+
+  ctx.strokeStyle = cssVar('--muted');
+  ctx.lineWidth   = 1;
+  ctx.setLineDash([4, 5]);
+  ctx.beginPath();
+  ctx.moveTo(x1, connY);
+  ctx.lineTo(x2, connY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+/* ── metrics ── */
+function updateMetrics() {
+  const w    = omega();
+  const vmax = A * w;
+  const amax = A * w * w;
+  const fmt4 = v => v.toFixed(v >= 10 ? 1 : v >= 1 ? 2 : 3);
+  document.getElementById('mT').textContent    = T().toFixed(2);
+  document.getElementById('mF').textContent    = f.toFixed(2);
+  document.getElementById('mW').textContent    = fmt4(w);
+  document.getElementById('mVmax').textContent = fmt4(vmax);
+  document.getElementById('mAmax').textContent = fmt4(amax);
+}
+
+/* ── render ── */
+function render() {
+  const t  = elapsed();
+  const ly = getLayout();
+
+  ctx.clearRect(0, 0, cssW, cssH);
+
+  /* divider between panels */
+  ctx.strokeStyle = cssVar('--border');
+  ctx.lineWidth   = 1;
+  ctx.beginPath();
+  ctx.moveTo(ly.oscW, ly.gInYt);
+  ctx.lineTo(ly.oscW, ly.gInYb);
+  ctx.stroke();
+
+  drawGraph(ly, t);
+  drawConnector(ly, t);
+  drawOscillator(ly, t);
+
+  updateMetrics();
+}
+
+/* ── slider wiring ── */
+const slA   = document.getElementById('slA');
+const slF   = document.getElementById('slF');
+const slPhi = document.getElementById('slPhi');
+
+slA.addEventListener('input', () => {
+  A = parseFloat(slA.value);
+  document.getElementById('lblA').textContent = A.toFixed(2);
+  if (!isPlaying) render();
+});
+slF.addEventListener('input', () => {
+  f = parseFloat(slF.value);
+  document.getElementById('lblF').textContent = f.toFixed(2);
+  if (!isPlaying) render();
+});
+slPhi.addEventListener('input', () => {
+  const deg = parseInt(slPhi.value);
+  phi = deg * Math.PI / 180;
+  document.getElementById('lblPhi').textContent = deg;
+  if (!isPlaying) render();
+});
+
+document.getElementById('btnPlay').addEventListener('click',  play);
+document.getElementById('btnPause').addEventListener('click', pause);
+document.getElementById('btnReset').addEventListener('click', reset);
+
+/* ── ResizeObserver ── */
+new ResizeObserver(() => {
+  const rect = canvas.getBoundingClientRect();
+  const dpr  = window.devicePixelRatio || 1;
+  cssW = rect.width; cssH = rect.height;
+  canvas.width  = Math.round(cssW * dpr);
+  canvas.height = Math.round(cssH * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  render();
+}).observe(canvas);
+
+/* ── start ── */
+play();
+</script>
+</body>
+</html>
