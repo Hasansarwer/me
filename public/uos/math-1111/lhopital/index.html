@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>L'Hôpital's Rule — Step-by-Step Evaluator | MATH-1111, CSE, University of Scholars</title>
+<meta name="description" content="Step-by-step L'Hôpital's rule evaluator for 0/0 and ∞/∞ indeterminate forms. Apply one derivative step at a time with symbolic differentiation. MATH-1111, CSE, University of Scholars." />
+<meta name="keywords" content="L'Hopital's rule, indeterminate form, 0/0, infinity over infinity, limit, symbolic differentiation, calculus, MATH-1111, CSE, University of Scholars" />
+<meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+<meta name="robots" content="index, follow" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="L'Hôpital's Rule — Step-by-Step Evaluator | MATH-1111, CSE, University of Scholars" />
+<meta property="og:description" content="Interactive step-by-step L'Hôpital evaluator for CSE students at University of Scholars." />
+<meta property="og:locale" content="en_GB" />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="L'Hôpital's Rule Evaluator — MATH-1111, CSE, University of Scholars" />
+<meta name="twitter:description" content="Apply L'Hôpital's rule step by step with symbolic differentiation." />
+
+<!-- JSON-LD structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "L'Hôpital's Rule — Step-by-Step Evaluator",
+  "description": "Browser-based interactive tool for evaluating limits of indeterminate forms using L'Hôpital's rule, with symbolic differentiation shown step by step.",
+  "inLanguage": "en",
+  "educationalLevel": "undergraduate",
+  "learningResourceType": "Simulation",
+  "author": {
+    "@type": "Person",
+    "name": "Hasan Sarwer",
+    "jobTitle": "Adjunct Faculty",
+    "worksFor": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  },
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Mathematics",
+    "courseCode": "MATH-1111",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  }
+}
+</script>
+
+<style>
+  /* salt-theme-gen — preset: ocean, radius: rounded */
+  :root {
+    --bg:           #f3f5f7;
+    --card:         #fcfcfa;
+    --text:         #060809;
+    --muted:        #6a7379;
+    --border:       #d4d8db;
+    --accent:       #0078a9;
+    --accent-hover: #006088;
+    --accent-soft:  #b7cee2;
+    --on-accent:    #ffffff;
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+
+    --bad: #b91c1c;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:           #090b0d;
+      --card:         #1a1e20;
+      --text:         #f3f5f7;
+      --muted:        #879197;
+      --border:       #2b2e30;
+      --accent:       #5bbaee;
+      --accent-hover: #3fa1d3;
+      --accent-soft:  #233848;
+      --on-accent:    #444444;
+      --bad: #f87171;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+  }
+
+  .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: .9rem; }
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb .sep { color: var(--border); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+  .app { max-width: 820px; margin: 0 auto; padding: 24px 16px; }
+
+  .page-title { font-size: 1.45rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 6px; }
+  .sub { color: var(--muted); font-size: .95rem; line-height: 1.5; margin-bottom: 20px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .section { padding: 16px; }
+
+  label { display: block; font-weight: 700; font-size: .94rem; margin: 0 0 7px; }
+  input, select, button { font: inherit; }
+
+  input[type=text], select {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 12px;
+    font-size: 16px;
+    background: var(--card);
+    color: var(--text);
+  }
+
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .grow { flex: 1 1 220px; }
+  .third { flex: 1 1 120px; }
+
+  button {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 14px;
+    background: var(--card);
+    color: var(--text);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  button.soft { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); }
+
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .chip {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 13px;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    font-weight: 600;
+    transition: border-color .15s, color .15s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  .fraction { display: grid; grid-template-columns: 1fr; gap: 6px; margin-top: 10px; }
+  .fracline { height: 2px; background: var(--text); border-radius: 2px; opacity: .6; }
+
+  .expr {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .94rem;
+    overflow: auto;
+  }
+
+  .status { margin-top: 8px; min-height: 1.3em; font-size: .92rem; font-weight: 650; color: var(--bad); }
+
+  .badge { display: inline-block; border-radius: 999px; padding: 4px 9px; font-size: .82rem; font-weight: 750; }
+  .ok   { background: #eaf8f1; color: #166534; }
+  .warn { background: #fff7e8; color: #92400e; }
+  .bad  { background: #feecec; color: #991b1b; }
+  @media (prefers-color-scheme: dark) {
+    .ok   { background: #0f2e1a; color: #4ade80; }
+    .warn { background: #2a1f0a; color: #fbbf24; }
+    .bad  { background: #2a0f0f; color: #f87171; }
+  }
+
+  .steps { display: grid; gap: 10px; }
+  .step { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; background: var(--bg); }
+  .stephead { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; margin-bottom: 7px; }
+  .stepnum { font-weight: 800; }
+  .muted { color: var(--muted); font-size: .9rem; line-height: 1.45; }
+  .value { font-weight: 800; font-size: 1.05rem; margin-top: 6px; }
+
+  .help {
+    background: #fff9ed;
+    border-left: 4px solid #d97706;
+    color: #7c2d12;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: .91rem;
+    line-height: 1.5;
+  }
+  @media (prefers-color-scheme: dark) {
+    .help { background: #2a1f0a; color: #fbbf24; border-color: #d97706; }
+  }
+
+  .mini-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
+  @media(min-width: 600px) { .mini-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .mini { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; background: var(--card); }
+  .mini .k { color: var(--muted); font-size: .8rem; font-weight: 700; }
+  .mini .v { font-weight: 800; margin-top: 3px; }
+
+  footer {
+    text-align: center;
+    padding: 28px 16px;
+    font-size: .85rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .theme-credit { font-size: .8rem; }
+  .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .theme-credit a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../">UOS Simulations</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="../">Mathematics</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="current" aria-current="page">L’Hôpital’s Rule</span>
+  </nav>
+</header>
+
+<div class="app">
+  <h1 class="page-title">L’Hôpital’s Rule Evaluator</h1>
+  <p class="sub">Step-by-step classroom tool for limits of the forms <b>0/0</b> and <b>∞/∞</b>. Apply one derivative step at a time and see when the limit becomes evaluable.</p>
+
+  <div class="card">
+    <div class="section">
+      <label>Preset examples</label>
+      <div class="chips">
+        <button class="chip" data-n="sin(x)" data-d="x" data-a="0">sin(x)/x → 0</button>
+        <button class="chip" data-n="exp(x)-1" data-d="x" data-a="0">(eˣ−1)/x → 0</button>
+        <button class="chip" data-n="1-cos(x)" data-d="x^2" data-a="0">(1−cos x)/x²</button>
+        <button class="chip" data-n="log(x)" data-d="x-1" data-a="1">ln(x)/(x−1)</button>
+        <button class="chip" data-n="x^2-1" data-d="x-1" data-a="1">(x²−1)/(x−1)</button>
+        <button class="chip" data-n="x" data-d="exp(x)" data-a="inf">x/eˣ → ∞</button>
+      </div>
+
+      <div style="margin-top:14px">
+        <label for="num">Numerator f(x)</label>
+        <input id="num" type="text" value="sin(x)">
+      </div>
+
+      <div style="margin-top:10px">
+        <label for="den">Denominator g(x)</label>
+        <input id="den" type="text" value="x">
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <div class="third">
+          <label for="target">Target x →</label>
+          <input id="target" type="text" value="0" placeholder="0, 1, inf, -inf">
+        </div>
+        <div class="third">
+          <label for="maxSteps">Max derivative steps</label>
+          <select id="maxSteps">
+            <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <button id="checkBtn" class="primary">Check limit</button>
+        <button id="stepBtn" class="soft">Apply one L’Hôpital step</button>
+        <button id="autoBtn">Auto solve</button>
+        <button id="resetBtn">Reset steps</button>
+      </div>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section">
+      <label>Current expression</label>
+      <div class="fraction">
+        <div class="expr" id="currentNum">sin(x)</div>
+        <div class="fracline"></div>
+        <div class="expr" id="currentDen">x</div>
+      </div>
+
+      <div class="mini-grid">
+        <div class="mini"><div class="k">Numerator near target</div><div class="v" id="nNear">—</div></div>
+        <div class="mini"><div class="k">Denominator near target</div><div class="v" id="dNear">—</div></div>
+        <div class="mini"><div class="k">Detected form</div><div class="v" id="formVal">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section">
+      <label>Step-by-step solution</label>
+      <div class="steps" id="steps"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section">
+      <div class="help">
+        <b>Teaching note:</b> L’Hôpital’s rule applies directly only to quotient limits of the forms
+        <b>0/0</b> or <b>∞/∞</b>, under the usual differentiability conditions.
+        Forms such as <b>0·∞</b>, <b>∞−∞</b>, <b>1<sup>∞</sup></b>, <b>0<sup>0</sup></b>, and <b>∞<sup>0</sup></b>
+        must first be rewritten into an appropriate quotient form.
+      </div>
+      <p class="muted" style="margin-top:10px">
+        Supported expressions: numbers, x, +, −, *, /, ^, parentheses, sin, cos, tan, exp, log, sqrt.
+        Powers should use a constant exponent, e.g. x^3 or (x+1)^2.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Tiny symbolic parser/differentiator ---------- */
+function tokenize(s){
+  s=s.replace(/π/g,'pi').replace(/\s+/g,'');
+  const out=[]; let i=0;
+  while(i<s.length){
+    const c=s[i];
+    if(/[0-9.]/.test(c)){
+      let j=i+1; while(j<s.length && /[0-9.]/.test(s[j])) j++;
+      out.push({t:'num',v:parseFloat(s.slice(i,j))}); i=j; continue;
+    }
+    if(/[A-Za-z]/.test(c)){
+      let j=i+1; while(j<s.length && /[A-Za-z]/.test(s[j])) j++;
+      out.push({t:'id',v:s.slice(i,j).toLowerCase()}); i=j; continue;
+    }
+    if('+-*/^(),'.includes(c)){ out.push({t:c,v:c}); i++; continue; }
+    throw new Error('Unsupported character: '+c);
+  }
+  return out;
+}
+function Parser(tokens){ this.t=tokens; this.i=0; }
+Parser.prototype.peek=function(){ return this.t[this.i]; }
+Parser.prototype.eat=function(type){ const p=this.peek(); if(!p||p.t!==type) throw new Error('Expected '+type); this.i++; return p; }
+Parser.prototype.parse=function(){ const n=this.expr(); if(this.peek()) throw new Error('Unexpected input'); return n; }
+Parser.prototype.expr=function(){
+  let n=this.term();
+  while(this.peek() && (this.peek().t==='+'||this.peek().t==='-')){
+    const op=this.eat(this.peek().t).t; n={k:op,a:n,b:this.term()};
+  }
+  return n;
+}
+Parser.prototype.term=function(){
+  let n=this.power();
+  while(this.peek() && (this.peek().t==='*'||this.peek().t==='/')){
+    const op=this.eat(this.peek().t).t; n={k:op,a:n,b:this.power()};
+  }
+  return n;
+}
+Parser.prototype.power=function(){
+  let n=this.unary();
+  if(this.peek() && this.peek().t==='^'){ this.eat('^'); n={k:'^',a:n,b:this.power()}; }
+  return n;
+}
+Parser.prototype.unary=function(){
+  if(this.peek() && this.peek().t==='+'){ this.eat('+'); return this.unary(); }
+  if(this.peek() && this.peek().t==='-'){ this.eat('-'); return {k:'neg',a:this.unary()}; }
+  return this.primary();
+}
+Parser.prototype.primary=function(){
+  const p=this.peek();
+  if(!p) throw new Error('Unexpected end');
+  if(p.t==='num'){ this.i++; return {k:'num',v:p.v}; }
+  if(p.t==='id'){
+    this.i++;
+    const id=p.v;
+    if(this.peek() && this.peek().t==='('){
+      this.eat('('); const a=this.expr(); this.eat(')');
+      return {k:'fn',f:id,a};
+    }
+    return {k:'var',v:id};
+  }
+  if(p.t==='('){ this.eat('('); const n=this.expr(); this.eat(')'); return n; }
+  throw new Error('Unexpected token');
+}
+function parseExpr(s){ return new Parser(tokenize(s)).parse(); }
+
+function num(v){ return {k:'num',v}; }
+function add(a,b){ return simp({k:'+',a,b}); }
+function sub(a,b){ return simp({k:'-',a,b}); }
+function mul(a,b){ return simp({k:'*',a,b}); }
+function div(a,b){ return simp({k:'/',a,b}); }
+function pow(a,b){ return simp({k:'^',a,b}); }
+function neg(a){ return simp({k:'neg',a}); }
+
+function diff(n){
+  switch(n.k){
+    case 'num': return num(0);
+    case 'var':
+      if(n.v==='x') return num(1);
+      if(n.v==='pi'||n.v==='e') return num(0);
+      throw new Error('Unknown variable: '+n.v);
+    case '+': return add(diff(n.a),diff(n.b));
+    case '-': return sub(diff(n.a),diff(n.b));
+    case '*': return add(mul(diff(n.a),n.b),mul(n.a,diff(n.b)));
+    case '/': return div(sub(mul(diff(n.a),n.b),mul(n.a,diff(n.b))),pow(n.b,num(2)));
+    case 'neg': return neg(diff(n.a));
+    case '^':
+      if(n.b.k==='num') return mul(mul(num(n.b.v),pow(n.a,num(n.b.v-1))),diff(n.a));
+      throw new Error('Only constant exponents are supported for symbolic differentiation.');
+    case 'fn': {
+      const u=n.a, du=diff(u);
+      if(n.f==='sin') return mul({k:'fn',f:'cos',a:u},du);
+      if(n.f==='cos') return mul(neg({k:'fn',f:'sin',a:u}),du);
+      if(n.f==='tan') return mul(div(num(1),pow({k:'fn',f:'cos',a:u},num(2))),du);
+      if(n.f==='exp') return mul({k:'fn',f:'exp',a:u},du);
+      if(n.f==='log') return div(du,u);
+      if(n.f==='sqrt') return div(du,mul(num(2),{k:'fn',f:'sqrt',a:u}));
+      throw new Error('Unsupported function: '+n.f);
+    }
+  }
+}
+function simp(n){
+  if(!n || !n.k) return n;
+  if(n.k==='neg'){
+    n.a=simp(n.a);
+    if(n.a.k==='num') return num(-n.a.v);
+    if(n.a.k==='neg') return n.a.a;          // --x = x
+    return n;
+  }
+  if(['+','-','*','/','^'].includes(n.k)){
+    n.a=simp(n.a); n.b=simp(n.b);
+    if(n.a.k==='num' && n.b.k==='num'){
+      if(n.k==='+') return num(n.a.v+n.b.v);
+      if(n.k==='-') return num(n.a.v-n.b.v);
+      if(n.k==='*') return num(n.a.v*n.b.v);
+      if(n.k==='/') return num(n.a.v/n.b.v);
+      if(n.k==='^') return num(Math.pow(n.a.v,n.b.v));
+    }
+    if(n.k==='-' && n.b.k==='neg') return add(n.a, n.b.a);   // a - (-b) = a + b
+    if(n.k==='-' && n.a.k==='num'&&n.a.v===0) return neg(n.b); // 0 - b = -b
+    if(n.k==='+' && n.a.k==='num'&&n.a.v===0) return n.b;
+    if(n.k==='+' && n.b.k==='num'&&n.b.v===0) return n.a;
+    if(n.k==='-' && n.b.k==='num'&&n.b.v===0) return n.a;
+    if(n.k==='*' && ((n.a.k==='num'&&n.a.v===0)||(n.b.k==='num'&&n.b.v===0))) return num(0);
+    if(n.k==='*' && n.a.k==='num'&&n.a.v===1) return n.b;
+    if(n.k==='*' && n.b.k==='num'&&n.b.v===1) return n.a;
+    if(n.k==='/' && n.a.k==='num'&&n.a.v===0) return num(0);
+    if(n.k==='/' && n.b.k==='num'&&n.b.v===1) return n.a;
+    if(n.k==='^' && n.b.k==='num'&&n.b.v===1) return n.a;
+    if(n.k==='^' && n.b.k==='num'&&n.b.v===0) return num(1);
+    return n;
+  }
+  if(n.k==='fn'){ n.a=simp(n.a); return n; }
+  return n;
+}
+function prec(n){
+  if(n.k==='+'||n.k==='-') return 1;
+  if(n.k==='*'||n.k==='/') return 2;
+  if(n.k==='^') return 3;
+  if(n.k==='neg') return 4;
+  return 5;
+}
+function toStr(n,p=0){
+  let s='';
+  switch(n.k){
+    case 'num': s=Number(n.v.toFixed(8)).toString(); break;
+    case 'var': s=n.v==='pi'?'pi':n.v; break;
+    case 'fn': s=n.f+'('+toStr(n.a,0)+')'; break;
+    case 'neg': s='-'+toStr(n.a,prec(n)); break;
+    case '+': s=toStr(n.a,1)+' + '+toStr(n.b,1); break;
+    case '-': s=toStr(n.a,1)+' - '+toStr(n.b,2); break;
+    case '*': s=toStr(n.a,2)+' * '+toStr(n.b,2); break;
+    case '/': s=toStr(n.a,2)+' / '+toStr(n.b,3); break;
+    case '^': s=toStr(n.a,3)+'^'+toStr(n.b,3); break;
+  }
+  return prec(n)<p?'('+s+')':s;
+}
+function evalAst(n,x){
+  switch(n.k){
+    case 'num': return n.v;
+    case 'var':
+      if(n.v==='x') return x;
+      if(n.v==='pi') return Math.PI;
+      if(n.v==='e') return Math.E;
+      return NaN;
+    case '+': return evalAst(n.a,x)+evalAst(n.b,x);
+    case '-': return evalAst(n.a,x)-evalAst(n.b,x);
+    case '*': return evalAst(n.a,x)*evalAst(n.b,x);
+    case '/': return evalAst(n.a,x)/evalAst(n.b,x);
+    case '^': return Math.pow(evalAst(n.a,x),evalAst(n.b,x));
+    case 'neg': return -evalAst(n.a,x);
+    case 'fn': {
+      const u=evalAst(n.a,x);
+      if(n.f==='sin') return Math.sin(u);
+      if(n.f==='cos') return Math.cos(u);
+      if(n.f==='tan') return Math.tan(u);
+      if(n.f==='exp') return Math.exp(u);
+      if(n.f==='log') return Math.log(u);
+      if(n.f==='sqrt') return Math.sqrt(u);
+      return NaN;
+    }
+  }
+}
+
+/* ---------- Limit helpers ---------- */
+function parseTarget(s){
+  s=s.trim().toLowerCase();
+  if(['inf','infinity','∞','+inf','+infinity','+∞'].includes(s)) return Infinity;
+  if(['-inf','-infinity','-∞'].includes(s)) return -Infinity;
+  const v=Number(s); if(!Number.isFinite(v)) throw new Error('Invalid target.');
+  return v;
+}
+function classifyVal(v){
+  if(Number.isNaN(v)) return 'undefined';
+  if(v===Infinity||v===-Infinity) return '∞';
+  if(Math.abs(v)<1e-7) return '0';
+  if(Math.abs(v)>1e7) return '∞';
+  return 'finite';
+}
+function nearValues(ast,target){
+  if(Number.isFinite(target)){
+    const h=1e-5*Math.max(1,Math.abs(target));
+    const l=evalAst(ast,target-h), r=evalAst(ast,target+h);
+    const mid=evalAst(ast,target);
+    return {l,r,mid,kind:classifyVal(mid), approx:(Number.isFinite(l)&&Number.isFinite(r))?(l+r)/2:NaN};
+  }
+  const xs = target===Infinity ? [20,40,80] : [-20,-40,-80];
+  const vals=xs.map(x=>evalAst(ast,x));
+  const last=vals[vals.length-1];
+  return {l:vals[1],r:vals[2],mid:last,kind:classifyVal(last),approx:last};
+}
+function quotientEstimate(n,d,target){
+  if(Number.isFinite(target)){
+    const hs=[1e-2,1e-3,1e-4,1e-5].map(k=>k*Math.max(1,Math.abs(target)));
+    const vals=[];
+    for(const h of hs){
+      const q1=evalAst(n,target-h)/evalAst(d,target-h);
+      const q2=evalAst(n,target+h)/evalAst(d,target+h);
+      if(Number.isFinite(q1)) vals.push(q1);
+      if(Number.isFinite(q2)) vals.push(q2);
+    }
+    if(!vals.length) return NaN;
+    return vals.slice(-4).reduce((a,b)=>a+b,0)/Math.min(4,vals.length);
+  } else {
+    const xs=target===Infinity?[20,40,80,120]:[-20,-40,-80,-120];
+    const vals=xs.map(x=>evalAst(n,x)/evalAst(d,x)).filter(Number.isFinite);
+    return vals.length?vals[vals.length-1]:NaN;
+  }
+}
+function detectedForm(n,d,target){
+  const a=nearValues(n,target), b=nearValues(d,target);
+  let nk=a.kind, dk=b.kind;
+
+  if(Number.isFinite(target)){
+    const nv=evalAst(n,target), dv=evalAst(d,target);
+    if(Math.abs(nv)<1e-9) nk='0';
+    if(Math.abs(dv)<1e-9) dk='0';
+  } else {
+    const n2=Math.abs(a.mid), d2=Math.abs(b.mid);
+    if(n2>1e5) nk='∞';
+    if(d2>1e5) dk='∞';
+    // also detect clear growth at finite large values
+    if(Math.abs(a.r)>Math.abs(a.l)*1.3 && Math.abs(a.r)>20) nk='∞';
+    if(Math.abs(b.r)>Math.abs(b.l)*1.3 && Math.abs(b.r)>20) dk='∞';
+  }
+  if(nk==='0'&&dk==='0') return '0/0';
+  if(nk==='∞'&&dk==='∞') return '∞/∞';
+  return nk+'/'+dk;
+}
+function fmt(v){
+  if(Number.isNaN(v)) return 'undefined';
+  if(v===Infinity) return '∞';
+  if(v===-Infinity) return '−∞';
+  if(!Number.isFinite(v)) return 'undefined';
+  let n=Number(v.toPrecision(7));
+  if(Object.is(n,-0)) n=0;
+  return String(n);
+}
+
+/* ---------- UI ---------- */
+const numEl=document.getElementById('num');
+const denEl=document.getElementById('den');
+const targetEl=document.getElementById('target');
+const maxStepsEl=document.getElementById('maxSteps');
+const statusEl=document.getElementById('status');
+const currentNumEl=document.getElementById('currentNum');
+const currentDenEl=document.getElementById('currentDen');
+const nNearEl=document.getElementById('nNear');
+const dNearEl=document.getElementById('dNear');
+const formValEl=document.getElementById('formVal');
+const stepsEl=document.getElementById('steps');
+
+let nAst,dAst,target,stepCount=0;
+
+function renderCurrent(){
+  currentNumEl.textContent=toStr(nAst);
+  currentDenEl.textContent=toStr(dAst);
+  const nv=nearValues(nAst,target), dv=nearValues(dAst,target);
+  nNearEl.textContent=fmt(nv.mid);
+  dNearEl.textContent=fmt(dv.mid);
+  const form=detectedForm(nAst,dAst,target);
+  formValEl.innerHTML=form==='0/0'||form==='∞/∞'
+    ? `<span class="badge ok">${form}</span>`
+    : `<span class="badge warn">${form}</span>`;
+}
+function addStep(title,body,badgeClass='ok',badgeText=''){
+  const div=document.createElement('div');
+  div.className='step';
+  div.innerHTML=`<div class="stephead"><div class="stepnum">${title}</div>${badgeText?`<span class="badge ${badgeClass}">${badgeText}</span>`:''}</div>${body}`;
+  stepsEl.appendChild(div);
+}
+function initialize(){
+  statusEl.textContent='';
+  stepsEl.innerHTML='';
+  stepCount=0;
+  try{
+    nAst=simp(parseExpr(numEl.value));
+    dAst=simp(parseExpr(denEl.value));
+    target=parseTarget(targetEl.value);
+    renderCurrent();
+    const form=detectedForm(nAst,dAst,target);
+    const q=quotientEstimate(nAst,dAst,target);
+    addStep('Step 0 — Inspect the original quotient',
+      `<div class="expr">${toStr(nAst)} / (${toStr(dAst)})</div>
+       <div class="muted" style="margin-top:7px">As x approaches ${target===Infinity?'∞':target===-Infinity?'−∞':fmt(target)}, inspect numerator and denominator separately.</div>
+       <div class="value">Detected form: ${form}</div>
+       <div class="muted">Numerical quotient estimate near the target: ${fmt(q)}</div>`,
+      (form==='0/0'||form==='∞/∞')?'ok':'warn',
+      (form==='0/0'||form==='∞/∞')?'L’Hôpital applicable':'Check form');
+  }catch(e){ statusEl.textContent=e.message; }
+}
+function oneStep(){
+  if(!nAst||!dAst) initialize();
+  const form=detectedForm(nAst,dAst,target);
+  if(!(form==='0/0'||form==='∞/∞')){
+    const q=quotientEstimate(nAst,dAst,target);
+    addStep(`Stop — no further L’Hôpital step needed`,
+      `<div class="muted">The current expression is not of indeterminate form 0/0 or ∞/∞.</div>
+       <div class="value">Estimated limit: ${fmt(q)}</div>`,
+      'warn','Stop');
+    return false;
+  }
+  try{
+    const oldN=toStr(nAst), oldD=toStr(dAst);
+    nAst=simp(diff(nAst)); dAst=simp(diff(dAst)); stepCount++;
+    const newForm=detectedForm(nAst,dAst,target);
+    const q=quotientEstimate(nAst,dAst,target);
+    addStep(`Step ${stepCount} — Differentiate numerator and denominator`,
+      `<div class="muted">Differentiate separately:</div>
+       <div class="expr" style="margin-top:6px">d/dx [${oldN}] = ${toStr(nAst)}</div>
+       <div class="expr" style="margin-top:6px">d/dx [${oldD}] = ${toStr(dAst)}</div>
+       <div class="value">New quotient: ${toStr(nAst)} / (${toStr(dAst)})</div>
+       <div class="muted">New form: ${newForm}. Numerical estimate: ${fmt(q)}</div>`,
+      (newForm==='0/0'||newForm==='∞/∞')?'warn':'ok',
+      (newForm==='0/0'||newForm==='∞/∞')?'Still indeterminate':'Evaluable');
+    renderCurrent();
+    return true;
+  }catch(e){
+    statusEl.textContent=e.message;
+    return false;
+  }
+}
+function autoSolve(){
+  initialize();
+  const max=Number(maxStepsEl.value);
+  for(let i=0;i<max;i++){
+    const form=detectedForm(nAst,dAst,target);
+    if(!(form==='0/0'||form==='∞/∞')) break;
+    if(!oneStep()) break;
+  }
+  const form=detectedForm(nAst,dAst,target);
+  const q=quotientEstimate(nAst,dAst,target);
+  if(form==='0/0'||form==='∞/∞'){
+    addStep('Result after maximum steps',
+      `<div class="muted">The quotient is still indeterminate after ${max} derivative step(s).</div>
+       <div class="value">Current numerical estimate: ${fmt(q)}</div>`,
+      'warn','More work needed');
+  }else{
+    let direct;
+    if(Number.isFinite(target)){
+      const n=evalAst(nAst,target),d=evalAst(dAst,target);
+      direct=n/d;
+    } else direct=q;
+    addStep('Final result',
+      `<div class="muted">The quotient is no longer in indeterminate form.</div>
+       <div class="value">Limit ≈ ${fmt(Number.isFinite(direct)?direct:q)}</div>`,
+      'ok','Solved');
+  }
+}
+
+document.getElementById('checkBtn').addEventListener('click',initialize);
+document.getElementById('stepBtn').addEventListener('click',()=>{
+  if(!nAst||!dAst||stepsEl.children.length===0) initialize();
+  oneStep();
+});
+document.getElementById('autoBtn').addEventListener('click',autoSolve);
+document.getElementById('resetBtn').addEventListener('click',initialize);
+
+document.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{
+  numEl.value=b.dataset.n; denEl.value=b.dataset.d; targetEl.value=b.dataset.a; initialize();
+}));
+
+initialize();
+</script>
+
+<footer>
+  <span>Department of Computer Science and Engineering · University of Scholars</span>
+  <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+</footer>
+
+</body>
+</html>
