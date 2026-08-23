@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Limit of a Function — Approach from Left and Right | MATH-1111, CSE, University of Scholars</title>
+<meta name="description" content="Approach a point from the left and right and watch function values converge — or fail to. An interactive limit visualiser for MATH-1111 students at CSE, University of Scholars." />
+<meta name="keywords" content="limit, function limit, left-hand limit, right-hand limit, continuity, removable discontinuity, calculus, MATH-1111, CSE, University of Scholars" />
+<meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+<meta name="robots" content="index, follow" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Limit of a Function — Approach from Left and Right | MATH-1111, CSE, University of Scholars" />
+<meta property="og:description" content="Interactive limit visualiser for CSE students at University of Scholars. Watch left and right approaches converge or diverge." />
+<meta property="og:locale" content="en_GB" />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Limit Visualiser — MATH-1111, CSE, University of Scholars" />
+<meta name="twitter:description" content="Interactive simulation showing left and right limits of a function." />
+
+<!-- JSON-LD structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Limit of a Function — Approach from Left and Right",
+  "description": "Browser-based interactive simulation for exploring limits of functions by approaching a point from the left and right, covering removable discontinuities, jump discontinuities, and oscillation.",
+  "inLanguage": "en",
+  "educationalLevel": "undergraduate",
+  "learningResourceType": "Simulation",
+  "author": {
+    "@type": "Person",
+    "name": "Hasan Sarwer",
+    "jobTitle": "Adjunct Faculty",
+    "worksFor": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  },
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Mathematics",
+    "courseCode": "MATH-1111",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  }
+}
+</script>
+
+<style>
+  /* salt-theme-gen — preset: ocean, radius: rounded */
+  :root {
+    --bg:           #f3f5f7;
+    --card:         #fcfcfa;
+    --text:         #060809;
+    --muted:        #6a7379;
+    --border:       #d4d8db;
+    --accent:       #0078a9;
+    --accent-hover: #006088;
+    --accent-soft:  #b7cee2;
+    --on-accent:    #ffffff;
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+
+    /* approach colours */
+    --cleft:  #1d4ed8;
+    --cright: #b45309;
+    --cpoint: #0f766e;
+    --ccurve: #111827;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:           #090b0d;
+      --card:         #1a1e20;
+      --text:         #f3f5f7;
+      --muted:        #879197;
+      --border:       #2b2e30;
+      --accent:       #5bbaee;
+      --accent-hover: #3fa1d3;
+      --accent-soft:  #233848;
+      --on-accent:    #444444;
+
+      --cleft:  #60a5fa;
+      --cright: #fbbf24;
+      --cpoint: #34d399;
+      --ccurve: #e5e7eb;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+  }
+
+  .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: .9rem; }
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb .sep { color: var(--border); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+  .app { max-width: 820px; margin: 0 auto; padding: 24px 16px; }
+
+  .page-title { font-size: 1.45rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 6px; }
+  .sub { color: var(--muted); font-size: .96rem; line-height: 1.5; margin-bottom: 20px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .section { padding: 16px; }
+
+  label { display: block; font-weight: 700; font-size: .95rem; margin: 0 0 8px; }
+
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  input[type=text], select, input[type=range] {
+    width: 100%; min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 12px;
+    font-size: 16px;
+    background: var(--card);
+    color: var(--text);
+  }
+  input[type=range] { padding: 0; height: 44px; }
+
+  button {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  button.soft { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); }
+
+  .grow { flex: 1 1 220px; }
+  .half { flex: 1 1 130px; }
+
+  .plot-wrap { padding: 14px; }
+
+  canvas {
+    width: 100%;
+    height: 400px;
+    display: block;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    touch-action: manipulation;
+  }
+
+  .metric-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 14px; }
+  @media(min-width: 600px) { .metric-grid { grid-template-columns: 1fr 1fr; } }
+
+  .metric {
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+  }
+  .metric .title { font-size: .85rem; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+  .metric .value { font-size: 1rem; font-weight: 700; line-height: 1.4; word-break: break-word; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 12px; color: var(--muted); font-size: .92rem;
+  }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 999px; margin-right: 5px; }
+
+  .help {
+    background: #fff9ed;
+    border-left: 4px solid #d97706;
+    color: #7c2d12;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: .92rem;
+    line-height: 1.5;
+  }
+  @media (prefers-color-scheme: dark) {
+    .help { background: #2a1f0a; color: #fbbf24; border-color: #d97706; }
+    canvas { background: #0f1117; }
+  }
+
+  .status { min-height: 1.4em; margin-top: 8px; color: #b91c1c; font-size: .92rem; font-weight: 600; }
+  .small { font-size: .88rem; color: var(--muted); }
+
+  footer {
+    text-align: center;
+    padding: 28px 16px;
+    font-size: .85rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .theme-credit { font-size: .8rem; }
+  .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .theme-credit a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../">UOS Simulations</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="../">Mathematics</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="current" aria-current="page">Limit Visualiser</span>
+  </nav>
+</header>
+
+<div class="app">
+  <h1 class="page-title">Limit of a function</h1>
+  <p class="sub">Approach a point from the left and right, then watch the function values move toward a common value — or fail to do so.</p>
+
+  <div class="card">
+    <div class="section">
+      <label for="preset">Choose a function</label>
+      <select id="preset" class="grow">
+        <option value="removable">Removable discontinuity: (x²−1)/(x−1)</option>
+        <option value="step">Jump discontinuity: x &lt; 1 ? 2 : 5</option>
+        <option value="absolute">Continuous: |x|</option>
+        <option value="reciprocal">No two-sided limit at x=0: 1/x</option>
+        <option value="oscillate">Oscillation near 0: sin(1/x)</option>
+        <option value="custom">Custom function</option>
+      </select>
+
+      <div id="customBox" style="display:none;margin-top:12px">
+        <label for="expr">Custom function f(x)</label>
+        <div class="row">
+          <input id="expr" class="grow" type="text" value="(x*x-1)/(x-1)" placeholder="e.g. sin(x), abs(x), (x^2-1)/(x-1)">
+          <button id="plotBtn" class="primary">Plot</button>
+        </div>
+        <p class="small" style="margin-top:6px">Allowed: sin, cos, tan, sqrt, log, exp, abs, pi, e. Piecewise: x&lt;1 ? 2 : 5</p>
+      </div>
+
+      <div class="row" style="margin-top:14px">
+        <div class="half">
+          <div class="small">x-min</div>
+          <input id="xmin" type="text" value="-4">
+        </div>
+        <div class="half">
+          <div class="small">x-max</div>
+          <input id="xmax" type="text" value="4">
+        </div>
+      </div>
+
+      <label for="aSlider" style="margin-top:14px">Target point &nbsp;<b>a = <span id="aVal">1</span></b></label>
+      <input id="aSlider" type="range" min="-3" max="3" step="0.01" value="1">
+
+      <label for="hSlider" style="margin-top:12px">Distance &nbsp;<b>h = <span id="hVal">1.0000</span></b></label>
+      <input id="hSlider" type="range" min="0.01" max="2.5" step="0.01" value="1">
+
+      <label for="speedSel" style="margin-top:12px">Animation speed</label>
+      <select id="speedSel">
+        <option value="slow" selected>Slow</option>
+        <option value="normal">Normal</option>
+        <option value="fast">Fast</option>
+      </select>
+
+      <div class="row" style="margin-top:12px">
+        <button id="playBtn" class="primary">▶ Animate h → 0</button>
+        <button id="pauseBtn" class="soft">⏸ Pause</button>
+        <button id="resetBtn">↺ Reset</button>
+      </div>
+
+      <div class="legend">
+        <span><span class="dot" style="background:var(--ccurve)"></span>f(x)</span>
+        <span><span class="dot" style="background:var(--cleft)"></span>left: x = a − h</span>
+        <span><span class="dot" style="background:var(--cright)"></span>right: x = a + h</span>
+        <span><span class="dot" style="background:var(--cpoint)"></span>x = a</span>
+      </div>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="title" style="color:var(--cleft)">Left-side value</div>
+      <div class="value" id="leftVal">—</div>
+    </div>
+    <div class="metric">
+      <div class="title" style="color:var(--cright)">Right-side value</div>
+      <div class="value" id="rightVal">—</div>
+    </div>
+    <div class="metric">
+      <div class="title" style="color:var(--cpoint)">Function value at a</div>
+      <div class="value" id="faVal">—</div>
+    </div>
+    <div class="metric">
+      <div class="title">Observation</div>
+      <div class="value" id="obsVal">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="plot-wrap">
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section">
+      <div class="help">
+        <b>Classroom idea:</b> Pause the marker and ask students: "Do the left-hand and right-hand y-values approach the same number?" If yes, discuss the limit. If not, ask whether the problem is a jump, asymptote, or oscillation.
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Department of Computer Science and Engineering · University of Scholars</span>
+  <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+</footer>
+
+<script>
+const presetEl   = document.getElementById('preset');
+const customBox  = document.getElementById('customBox');
+const exprEl     = document.getElementById('expr');
+const plotBtn    = document.getElementById('plotBtn');
+const xminEl     = document.getElementById('xmin');
+const xmaxEl     = document.getElementById('xmax');
+const aSlider    = document.getElementById('aSlider');
+const hSlider    = document.getElementById('hSlider');
+const speedSel   = document.getElementById('speedSel');
+const aValEl     = document.getElementById('aVal');
+const hValEl     = document.getElementById('hVal');
+const leftValEl  = document.getElementById('leftVal');
+const rightValEl = document.getElementById('rightVal');
+const faValEl    = document.getElementById('faVal');
+const obsValEl   = document.getElementById('obsVal');
+const statusEl   = document.getElementById('status');
+const canvas     = document.getElementById('canvas');
+const ctx        = canvas.getContext('2d');
+const playBtn    = document.getElementById('playBtn');
+const pauseBtn   = document.getElementById('pauseBtn');
+const resetBtn   = document.getElementById('resetBtn');
+
+let f       = null;
+let animId  = null;
+let samples = [];
+let yView   = {min:-3, max:3};
+let cssW    = 760, cssH = 400;
+
+function preprocess(s){
+  return s.replace(/π/g,'PI').replace(/\bpi\b/gi,'PI').replace(/\be\b/g,'E').replace(/\^/g,'**');
+}
+function buildFunc(expr){
+  const raw = preprocess(expr);
+  return new Function('x', "const {sin,cos,tan,asin,acos,atan,sqrt,log,exp,abs,floor,ceil,round,PI,E}=Math; return ("+raw+");");
+}
+function fmt(v){
+  if(!Number.isFinite(v)) return 'undefined';
+  let n = Number(v.toFixed(4));
+  if(Object.is(n,-0)) n = 0;
+  return String(n);
+}
+function getView(){
+  let xmin=parseFloat(xminEl.value), xmax=parseFloat(xmaxEl.value);
+  if(!Number.isFinite(xmin)||!Number.isFinite(xmax)||xmin===xmax){ xmin=-4; xmax=4; }
+  if(xmin>xmax){ const t=xmin; xmin=xmax; xmax=t; }
+  xminEl.value=xmin; xmaxEl.value=xmax;
+  return {xmin,xmax};
+}
+function sx(x, view){ return (x-view.xmin)/(view.xmax-view.xmin)*cssW; }
+function sy(y, yv)  { return cssH - (y-yv.min)/(yv.max-yv.min)*cssH; }
+function wx(px, view){ return view.xmin + (px/cssW)*(view.xmax-view.xmin); }
+
+function niceStep(span){
+  const rough=span/8;
+  const p=Math.pow(10, Math.floor(Math.log10(Math.abs(rough)||1)));
+  const m=rough/p;
+  let step=1;
+  if(m>5) step=10; else if(m>2) step=5; else if(m>1) step=2;
+  return step*p;
+}
+
+function sampleFunction(view){
+  samples=[];
+  const ys=[];
+  for(let px=0; px<=cssW; px++){
+    const x=wx(px, view);
+    let y=NaN;
+    try{ y=f(x); }catch(e){}
+    const valid=Number.isFinite(y) && Math.abs(y)<1e5;
+    samples.push({x,y,valid});
+    if(valid && Math.abs(y)<50) ys.push(y);
+  }
+  if(ys.length){
+    let ymin=Math.min(...ys), ymax=Math.max(...ys);
+    if(ymin===ymax){ ymin-=1; ymax+=1; }
+    const pad=0.15*(ymax-ymin||1);
+    yView={min:ymin-pad, max:ymax+pad};
+  } else {
+    yView={min:-3, max:3};
+  }
+}
+
+function getColor(cssVar){
+  return getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+}
+
+function drawAxes(view){
+  ctx.clearRect(0,0,cssW,cssH);
+  ctx.fillStyle='#fff';
+  ctx.fillRect(0,0,cssW,cssH);
+
+  const xStep=niceStep(view.xmax-view.xmin);
+  const yStep=niceStep(yView.max-yView.min);
+
+  ctx.strokeStyle='#e7edf4'; ctx.lineWidth=1;
+  for(let x=Math.ceil(view.xmin/xStep)*xStep; x<=view.xmax; x+=xStep){
+    const X=sx(x,view); ctx.beginPath(); ctx.moveTo(X,0); ctx.lineTo(X,cssH); ctx.stroke();
+  }
+  for(let y=Math.ceil(yView.min/yStep)*yStep; y<=yView.max; y+=yStep){
+    const Y=sy(y,yView); ctx.beginPath(); ctx.moveTo(0,Y); ctx.lineTo(cssW,Y); ctx.stroke();
+  }
+
+  ctx.strokeStyle='#64748b'; ctx.lineWidth=1.4;
+  if(yView.min<0&&yView.max>0){
+    const Y=sy(0,yView); ctx.beginPath(); ctx.moveTo(0,Y); ctx.lineTo(cssW,Y); ctx.stroke();
+  }
+  if(view.xmin<0&&view.xmax>0){
+    const X=sx(0,view); ctx.beginPath(); ctx.moveTo(X,0); ctx.lineTo(X,cssH); ctx.stroke();
+  }
+}
+
+function drawCurve(view){
+  ctx.strokeStyle=getColor('--ccurve'); ctx.lineWidth=2.4;
+  ctx.beginPath();
+  let open=false;
+  for(let i=0;i<samples.length;i++){
+    const p=samples[i];
+    if(!p.valid||p.y<yView.min-2||p.y>yView.max+2){ open=false; continue; }
+    const X=sx(p.x,view), Y=sy(p.y,yView);
+    if(!open){ ctx.moveTo(X,Y); open=true; }
+    else{
+      const prev=samples[i-1];
+      if(prev&&prev.valid&&Math.abs(p.y-prev.y)<(yView.max-yView.min)*1.7) ctx.lineTo(X,Y);
+      else ctx.moveTo(X,Y);
+    }
+  }
+  ctx.stroke();
+}
+
+function drawApproach(view){
+  const a=parseFloat(aSlider.value);
+  const h=parseFloat(hSlider.value);
+  const xl=a-h, xr=a+h;
+
+  const drawVLine=(x,color)=>{
+    const X=sx(x,view);
+    ctx.setLineDash([6,6]);
+    ctx.strokeStyle=color; ctx.lineWidth=1.8;
+    ctx.beginPath(); ctx.moveTo(X,0); ctx.lineTo(X,cssH); ctx.stroke();
+    ctx.setLineDash([]);
+  };
+
+  drawVLine(a,  getColor('--cpoint'));
+  drawVLine(xl, getColor('--cleft'));
+  drawVLine(xr, getColor('--cright'));
+
+  let yl=NaN, yr=NaN, ya=NaN;
+  try{ yl=f(xl); }catch(e){}
+  try{ yr=f(xr); }catch(e){}
+  try{ ya=f(a);  }catch(e){}
+
+  const dot=(x,y,color)=>{
+    if(!Number.isFinite(y)||y<yView.min-5||y>yView.max+5) return;
+    ctx.fillStyle=color;
+    ctx.beginPath(); ctx.arc(sx(x,view), sy(y,yView), 5.5, 0, Math.PI*2); ctx.fill();
+  };
+  dot(xl, yl, getColor('--cleft'));
+  dot(xr, yr, getColor('--cright'));
+  dot(a,  ya, getColor('--cpoint'));
+
+  leftValEl.textContent  = `x = ${fmt(xl)},  f(x) = ${fmt(yl)}`;
+  rightValEl.textContent = `x = ${fmt(xr)},  f(x) = ${fmt(yr)}`;
+  faValEl.textContent    = `f(${fmt(a)}) = ${fmt(ya)}`;
+
+  let obs='';
+  if(Number.isFinite(yl) && Number.isFinite(yr)){
+    const diff=Math.abs(yl-yr);
+    obs = diff<0.08
+      ? `Left and right values are converging to about ${fmt((yl+yr)/2)}.`
+      : `Left ≈ ${fmt(yl)}, Right ≈ ${fmt(yr)} — values differ, limit may not exist.`;
+  } else if(!Number.isFinite(yl) && !Number.isFinite(yr)){
+    obs='Both sides are undefined or unbounded near this point.';
+  } else {
+    obs='One side is undefined or unbounded — the two-sided limit does not exist.';
+  }
+  obsValEl.textContent=obs;
+}
+
+function render(){
+  if(!f) return;
+  const view=getView();
+  aValEl.textContent=fmt(parseFloat(aSlider.value));
+  hValEl.textContent=fmt(parseFloat(hSlider.value));
+  sampleFunction(view);
+  drawAxes(view);
+  drawCurve(view);
+  drawApproach(view);
+}
+
+function applyPreset(name){
+  statusEl.textContent='';
+  customBox.style.display=name==='custom'?'block':'none';
+  try{
+    if(name==='removable'){
+      f=x=>(x*x-1)/(x-1);
+      xminEl.value=-2; xmaxEl.value=4;
+      aSlider.min=-1; aSlider.max=3; aSlider.value=1; hSlider.value=1;
+    } else if(name==='step'){
+      f=x=>x<1?2:5;
+      xminEl.value=-2; xmaxEl.value=4;
+      aSlider.min=-1; aSlider.max=3; aSlider.value=1; hSlider.value=1;
+    } else if(name==='absolute'){
+      f=x=>Math.abs(x);
+      xminEl.value=-4; xmaxEl.value=4;
+      aSlider.min=-3; aSlider.max=3; aSlider.value=0; hSlider.value=1.5;
+    } else if(name==='reciprocal'){
+      f=x=>1/x;
+      xminEl.value=-4; xmaxEl.value=4;
+      aSlider.min=-2; aSlider.max=2; aSlider.value=0; hSlider.value=1;
+    } else if(name==='oscillate'){
+      f=x=>Math.sin(1/x);
+      xminEl.value=-1; xmaxEl.value=1;
+      aSlider.min=-0.5; aSlider.max=0.5; aSlider.value=0; hSlider.value=0.2;
+    } else {
+      f=buildFunc(exprEl.value.trim());
+    }
+    render();
+  } catch(e){
+    statusEl.textContent='Invalid function expression.';
+  }
+}
+
+presetEl.addEventListener('change', ()=>applyPreset(presetEl.value));
+plotBtn.addEventListener('click', ()=>{
+  try{
+    f=buildFunc(exprEl.value.trim());
+    statusEl.textContent=''; render();
+  } catch(e){ statusEl.textContent='Invalid function expression. Please check the syntax.'; }
+});
+
+aSlider.addEventListener('input', render);
+hSlider.addEventListener('input', render);
+[xminEl, xmaxEl].forEach(el=>el.addEventListener('change', render));
+
+const duration = { fast: 10, normal: 20, slow: 30 };
+
+playBtn.addEventListener('click', ()=>{
+  if(animId){ cancelAnimationFrame(animId); animId=null; }
+  const startH = parseFloat(hSlider.value);
+  if(startH <= 0.011) return;
+  const T = duration[speedSel.value] || 20;
+  const k = Math.log(startH / 0.01) / T;  // exact duration from current h
+  let startT = null;
+  function run(now){
+    if(!startT) startT = now;
+    const elapsed = (now - startT) / 1000;
+    const h = Math.max(0.01, startH * Math.exp(-k * elapsed));
+    hSlider.value = h;
+    render();
+    if(h <= 0.011){ animId = null; return; }
+    animId = requestAnimationFrame(run);
+  }
+  animId = requestAnimationFrame(run);
+});
+pauseBtn.addEventListener('click', ()=>{ if(animId){ cancelAnimationFrame(animId); animId=null; } });
+resetBtn.addEventListener('click', ()=>{ if(animId){ cancelAnimationFrame(animId); animId=null; } applyPreset(presetEl.value); });
+
+canvas.addEventListener('click', e=>{
+  if(!f) return;
+  const view=getView();
+  const rect=canvas.getBoundingClientRect();
+  const px=e.clientX-rect.left;   // CSS pixels — matches cssW coordinate space
+  const x=wx(px, view);
+  let y=NaN;
+  try{ y=f(x); }catch(e){}
+  statusEl.textContent=Number.isFinite(y)?`At x = ${fmt(x)}, f(x) ≈ ${fmt(y)}.`:`At x = ${fmt(x)}, the function is not defined.`;
+});
+
+new ResizeObserver(()=>{
+  const rect=canvas.getBoundingClientRect();
+  const dpr=window.devicePixelRatio||1;
+  cssW=rect.width; cssH=rect.height;
+  canvas.width=Math.round(cssW*dpr);
+  canvas.height=Math.round(cssH*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  render();
+}).observe(canvas);
+
+applyPreset('removable');
+</script>
+</body>
+</html>
