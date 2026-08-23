@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Function Grapher — Domain &amp; Range Explorer | MATH-1111, CSE, University of Scholars</title>
+<meta name="description" content="Plot any mathematical expression and instantly explore its domain, range, and intercepts. An interactive tool for MATH-1111 students at the Department of CSE, University of Scholars." />
+<meta name="keywords" content="function grapher, domain, range, intercepts, calculus, graphing tool, interactive math, MATH-1111, CSE, University of Scholars" />
+<meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+<meta name="robots" content="index, follow" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Function Grapher — Domain &amp; Range Explorer | MATH-1111, CSE, University of Scholars" />
+<meta property="og:description" content="Interactive function graphing tool for CSE students at University of Scholars. Explore domain, range, intercepts and more." />
+<meta property="og:locale" content="en_GB" />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Function Grapher — MATH-1111, CSE, University of Scholars" />
+<meta name="twitter:description" content="Interactive function graphing tool for CSE students at University of Scholars." />
+
+<!-- JSON-LD structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Function Grapher — Domain & Range Explorer",
+  "description": "Browser-based interactive tool for plotting mathematical functions and exploring domain, range, intercepts, trig, logarithms and more.",
+  "inLanguage": "en",
+  "educationalLevel": "undergraduate",
+  "learningResourceType": "Simulation",
+  "author": {
+    "@type": "Person",
+    "name": "Hasan Sarwer",
+    "jobTitle": "Adjunct Faculty",
+    "worksFor": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  },
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Mathematics",
+    "courseCode": "MATH-1111",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  }
+}
+</script>
+<style>
+  :root{
+    --bg:#f6f8fb; --card:#ffffff; --text:#162033; --muted:#5e6b7d; --line:#d9e1eb;
+    --accent:#0f766e; --accent-soft:#eef8f6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+  .app{max-width:760px;margin:0 auto;padding:14px}
+  h1{margin:0;font-size:1.55rem;line-height:1.2}
+  .sub{margin:6px 0 12px;color:var(--muted);font-size:.96rem;line-height:1.45}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 24px rgba(16,24,40,.06);margin-bottom:12px;overflow:hidden}
+  .section{padding:14px}
+  label{display:block;font-weight:700;margin:0 0 8px;font-size:.95rem}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  input[type=text],select{width:100%;min-width:0;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;background:#fff;color:var(--text)}
+  .grow{flex:1 1 250px}.half{flex:1 1 120px}
+  button{border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;font-weight:700;background:#fff;color:var(--text);cursor:pointer}
+  button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.soft{background:var(--accent-soft);color:var(--accent);border-color:#cfe9e4}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chip{background:#f8fafc;border:1px solid var(--line);color:#334155;border-radius:999px;padding:8px 12px;font-size:14px;cursor:pointer}
+  .canvas-wrap{padding:12px}
+  canvas{width:100%;height:auto;display:block;background:#fff;border-radius:14px;border:1px solid var(--line);touch-action:manipulation}
+  .grid{display:grid;grid-template-columns:1fr;gap:10px}
+  .metric{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fbfcfe}
+  .metric .title{font-size:.85rem;color:var(--muted);margin-bottom:6px;font-weight:700}
+  .metric .value{font-size:1rem;font-weight:700;line-height:1.4;word-break:break-word}
+  .note{color:var(--muted);font-size:.9rem;line-height:1.5}
+  .help{background:#fff9ed;border-left:4px solid #d97706;color:#7c2d12;padding:12px;border-radius:10px;font-size:.92rem;line-height:1.45}
+  .status{min-height:1.5em;color:#b91c1c;font-size:.92rem;font-weight:600;margin-top:8px}
+  .small{font-size:.88rem;color:var(--muted)}
+  @media (min-width:680px){.grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>Graph of any function</h1>
+  <p class="sub">Function grapher for class use. Type a function, graph it, and read the apparent domain and range from the current viewing window.</p>
+
+  <div class="card">
+    <div class="section">
+      <label for="expr">Function y = f(x)</label>
+      <div class="row">
+        <input id="expr" class="grow" type="text" value="sqrt(4-x^2)" placeholder="Example: sin(x), x^2, 1/(x-2), log(x), sqrt(4-x^2)">
+        <button id="plotBtn" class="primary">Plot</button>
+      </div>
+      <div class="chips">
+        <button class="chip" data-expr="x^2">x²</button>
+        <button class="chip" data-expr="sin(x)">sin(x)</button>
+        <button class="chip" data-expr="1/(x-2)">1/(x−2)</button>
+        <button class="chip" data-expr="log(x)">log(x)</button>
+        <button class="chip" data-expr="sqrt(4-x^2)">sqrt(4−x²)</button>
+        <button class="chip" data-expr="abs(x)">abs(x)</button>
+      </div>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section">
+      <label>View window</label>
+      <div class="row">
+        <div class="half"><div class="small">x-min</div><input id="xmin" type="text" value="-6"></div>
+        <div class="half"><div class="small">x-max</div><input id="xmax" type="text" value="6"></div>
+        <div class="half"><div class="small">y-min</div><input id="ymin" type="text" value="-6"></div>
+        <div class="half"><div class="small">y-max</div><input id="ymax" type="text" value="6"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="zoomIn" class="soft">Zoom in</button>
+        <button id="zoomOut" class="soft">Zoom out</button>
+        <button id="resetView">Reset view</button>
+      </div>
+    </div>
+    <div class="canvas-wrap"><canvas id="plot"></canvas></div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><div class="section">
+      <div class="metric"><div class="title">Domain (current graph window)</div><div class="value" id="domainVal">—</div></div>
+      <div class="metric" style="margin-top:10px"><div class="title">Range (current graph window)</div><div class="value" id="rangeVal">—</div></div>
+    </div></div>
+    <div class="card"><div class="section">
+      <div class="metric"><div class="title">Intercepts in the current window</div><div class="value" id="interceptsVal">—</div></div>
+      <div class="metric" style="margin-top:10px"><div class="title">Quick reading</div><div class="value" id="summaryVal">—</div></div>
+    </div></div>
+  </div>
+
+  <div class="card"><div class="section">
+    <div class="help"><b>Classroom note:</b> the displayed domain and range are read from the <b>current viewing window</b> and are numerically estimated from the graph. For exact answers, students should still derive the domain/range analytically.</div>
+    <p class="note" style="margin-top:12px">Supported syntax: +, -, *, /, ^, parentheses, and functions such as sin, cos, tan, asin, acos, atan, sqrt, log, exp, abs. Constants: pi, e. <b>Note:</b> <code>log(x)</code> is the natural logarithm (base e). For log base 10 use <code>log(x)/log(10)</code>.</p>
+  </div></div>
+</div>
+
+<script>
+const exprInput = document.getElementById('expr');
+const plotBtn = document.getElementById('plotBtn');
+const canvas = document.getElementById('plot');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const domainEl = document.getElementById('domainVal');
+const rangeEl = document.getElementById('rangeVal');
+const interceptsEl = document.getElementById('interceptsVal');
+const summaryEl = document.getElementById('summaryVal');
+const xminEl = document.getElementById('xmin');
+const xmaxEl = document.getElementById('xmax');
+const yminEl = document.getElementById('ymin');
+const ymaxEl = document.getElementById('ymax');
+let compiled = null;
+let currentSamples = [];
+// CSS-pixel dimensions — updated by ResizeObserver
+let cssW = 720, cssH = 480;
+
+function preprocess(s){ return s.replace(/π/g,'PI').replace(/\bpi\b/gi,'PI').replace(/\be\b/g,'E').replace(/\^/g,'**'); }
+function buildFunction(expr){
+  const raw = preprocess(expr);
+  return new Function('x', "const {sin,cos,tan,asin,acos,atan,sqrt,log,exp,abs,floor,ceil,round,pow,max,min,PI,E}=Math; return ("+raw+");");
+}
+function getView(){
+  let xmin=parseFloat(xminEl.value), xmax=parseFloat(xmaxEl.value), ymin=parseFloat(yminEl.value), ymax=parseFloat(ymaxEl.value);
+  if(!Number.isFinite(xmin)||!Number.isFinite(xmax)||xmin===xmax){xmin=-6;xmax=6;}
+  if(!Number.isFinite(ymin)||!Number.isFinite(ymax)||ymin===ymax){ymin=-6;ymax=6;}
+  if(xmin>xmax)[xmin,xmax]=[xmax,xmin];
+  if(ymin>ymax)[ymin,ymax]=[ymax,ymin];
+  xminEl.value=xmin; xmaxEl.value=xmax; yminEl.value=ymin; ymaxEl.value=ymax;
+  return {xmin,xmax,ymin,ymax};
+}
+function sx(x,v){ return (x-v.xmin)/(v.xmax-v.xmin)*cssW; }
+function sy(y,v){ return cssH-(y-v.ymin)/(v.ymax-v.ymin)*cssH; }
+function wx(px,v){ return v.xmin + (px/cssW)*(v.xmax-v.xmin); }
+function niceStep(span){
+  const rough=span/8, p=Math.pow(10, Math.floor(Math.log10(rough))), m=rough/p;
+  let step=1; if(m>5) step=10; else if(m>2) step=5; else if(m>1) step=2;
+  return step*p;
+}
+function drawAxes(v){
+  ctx.clearRect(0,0,cssW,cssH);
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,cssW,cssH);
+  const xStep=niceStep(v.xmax-v.xmin), yStep=niceStep(v.ymax-v.ymin);
+  ctx.strokeStyle='#e6ebf2'; ctx.lineWidth=1;
+  for(let x=Math.ceil(v.xmin/xStep)*xStep; x<=v.xmax; x+=xStep){ const X=sx(x,v); ctx.beginPath(); ctx.moveTo(X,0); ctx.lineTo(X,cssH); ctx.stroke(); }
+  for(let y=Math.ceil(v.ymin/yStep)*yStep; y<=v.ymax; y+=yStep){ const Y=sy(y,v); ctx.beginPath(); ctx.moveTo(0,Y); ctx.lineTo(cssW,Y); ctx.stroke(); }
+  ctx.strokeStyle='#64748b'; ctx.lineWidth=1.4;
+  if(v.ymin<0&&v.ymax>0){ const Y=sy(0,v); ctx.beginPath(); ctx.moveTo(0,Y); ctx.lineTo(cssW,Y); ctx.stroke(); }
+  if(v.xmin<0&&v.xmax>0){ const X=sx(0,v); ctx.beginPath(); ctx.moveTo(X,0); ctx.lineTo(X,cssH); ctx.stroke(); }
+}
+function sampleAndDraw(v){
+  currentSamples=[]; let pathOpen=false; ctx.strokeStyle='#0f766e'; ctx.lineWidth=2.5; ctx.beginPath();
+  for(let px=0; px<=cssW; px++){
+    const x=wx(px,v); let y; try{ y=compiled(x); } catch{ y=NaN; }
+    const valid=Number.isFinite(y)&&!Number.isNaN(y); currentSamples.push({x,y,valid});
+    if(!valid||Math.abs(y)>1e6){ pathOpen=false; continue; }
+    const Y=sy(y,v);
+    if(!pathOpen){ ctx.moveTo(px,Y); pathOpen=true; }
+    else{
+      const prev=currentSamples[currentSamples.length-2];
+      if(prev&&prev.valid){
+        // Break path at likely vertical asymptotes: large jump with sign change
+        const jump=Math.abs(y-prev.y);
+        const asymptote = jump>(v.ymax-v.ymin)*0.5 && prev.y*y<0;
+        if(asymptote) ctx.moveTo(px,Y); else ctx.lineTo(px,Y);
+      } else { ctx.moveTo(px,Y); }
+    }
+  }
+  ctx.stroke();
+}
+function makeIntervals(validXs, tol){
+  if(!validXs.length) return [];
+  let out=[], a=validXs[0], prev=validXs[0];
+  for(let i=1;i<validXs.length;i++){ if(validXs[i]-prev>tol){ out.push([a,prev]); a=validXs[i]; } prev=validXs[i]; }
+  out.push([a,prev]); return out;
+}
+function fmt(n,d=3){ if(!Number.isFinite(n)) return 'undefined'; let v=Number(n.toFixed(d)); if(Object.is(v,-0)) v=0; return String(v); }
+function analyze(v){
+  const valids=currentSamples.filter(p=>p.valid&&Number.isFinite(p.y)&&p.y>=v.ymin-1e-9&&p.y<=v.ymax+1e-9);
+  const validXs=valids.map(p=>p.x), validYs=valids.map(p=>p.y);
+  if(!valids.length){ domainEl.textContent='No real points visible in this window.'; rangeEl.textContent='No real points visible in this window.'; interceptsEl.textContent='No intercept visible.'; summaryEl.textContent='Try another function or change the window.'; return; }
+  const xTol=(v.xmax-v.xmin)/25;
+  const intervals=makeIntervals(validXs,xTol).map(([a,b])=>{ const left=Math.abs(a-v.xmin)<1e-2?'[':'('; const right=Math.abs(b-v.xmax)<1e-2?']':')'; return `${left}${fmt(a)}, ${fmt(b)}${right}`; });
+  domainEl.textContent=intervals.join(' ∪ ');
+  const ymin=Math.min(...validYs), ymax=Math.max(...validYs);
+  rangeEl.textContent=`[${fmt(ymin)}, ${fmt(ymax)}] (estimated)`;
+  let yInt='none'; try{ const y0=compiled(0); if(Number.isFinite(y0)&&y0>=v.ymin&&y0<=v.ymax) yInt=`(0, ${fmt(y0)})`; }catch{}
+  const roots=[];
+  for(let i=1;i<currentSamples.length;i++){
+    const a=currentSamples[i-1], b=currentSamples[i];
+    if(!(a.valid&&b.valid)) continue;
+    if((a.y===0||b.y===0)||(a.y<0&&b.y>0)||(a.y>0&&b.y<0)){
+      const t=a.y===b.y?0:-a.y/(b.y-a.y), xr=a.x+t*(b.x-a.x);
+      if(Number.isFinite(xr)&&xr>=v.xmin&&xr<=v.xmax) roots.push(xr);
+    }
+  }
+  const dedup=[]; for(const r of roots){ if(!dedup.some(k=>Math.abs(k-r)<(v.xmax-v.xmin)/120)) dedup.push(r); }
+  const xIntText=dedup.length?dedup.slice(0,8).map(x=>`(${fmt(x)}, 0)`).join(', '):'none';
+  interceptsEl.textContent=`x-intercepts: ${xIntText}; y-intercept: ${yInt}`;
+  let summary='';
+  if(intervals.length===1 && Math.abs(validXs[0]-v.xmin)<0.05 && Math.abs(validXs[validXs.length-1]-v.xmax)<0.05) summary+='Looks defined throughout the whole x-window. ';
+  else summary+='The graph breaks, so the function is not defined for some x-values in this window. ';
+  summary += `Visible y-values go roughly from ${fmt(ymin)} to ${fmt(ymax)}.`;
+  summaryEl.textContent=summary;
+}
+function plot(){
+  const expr=exprInput.value.trim(); statusEl.textContent='';
+  try{ compiled=buildFunction(expr); compiled(1); }catch(err){ statusEl.textContent='Invalid expression. Please check the syntax.'; return; }
+  const view=getView(); drawAxes(view); sampleAndDraw(view); analyze(view);
+}
+plotBtn.addEventListener('click', plot);
+exprInput.addEventListener('keydown', e=>{ if(e.key==='Enter') plot(); });
+[xminEl,xmaxEl,yminEl,ymaxEl].forEach(el=>el.addEventListener('change', plot));
+document.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click', ()=>{
+  exprInput.value=btn.dataset.expr;
+  if(btn.dataset.expr==='sqrt(4-x^2)'){ xminEl.value=-3; xmaxEl.value=3; yminEl.value=-1; ymaxEl.value=3; }
+  else if(btn.dataset.expr==='1/(x-2)'){ xminEl.value=-4; xmaxEl.value=8; yminEl.value=-6; ymaxEl.value=6; }
+  else if(btn.dataset.expr==='log(x)'){ xminEl.value=-1; xmaxEl.value=8; yminEl.value=-4; ymaxEl.value=4; }
+  else { xminEl.value=-6; xmaxEl.value=6; yminEl.value=-6; ymaxEl.value=6; }
+  plot();
+}));
+function zoom(factor){
+  const v=getView(), cx=(v.xmin+v.xmax)/2, cy=(v.ymin+v.ymax)/2, hx=(v.xmax-v.xmin)*factor/2, hy=(v.ymax-v.ymin)*factor/2;
+  xminEl.value=cx-hx; xmaxEl.value=cx+hx; yminEl.value=cy-hy; ymaxEl.value=cy+hy; plot();
+}
+document.getElementById('zoomIn').addEventListener('click', ()=>zoom(0.7));
+document.getElementById('zoomOut').addEventListener('click', ()=>zoom(1.4));
+document.getElementById('resetView').addEventListener('click', ()=>{ xminEl.value=-6; xmaxEl.value=6; yminEl.value=-6; ymaxEl.value=6; plot(); });
+canvas.addEventListener('click', e=>{
+  if(!compiled) return;
+  const rect=canvas.getBoundingClientRect(), px=e.clientX-rect.left, view=getView(), x=wx(px,view);
+  let y; try{ y=compiled(x);}catch{ y=NaN; }
+  statusEl.textContent = Number.isFinite(y) ? `At x = ${fmt(x)}, y ≈ ${fmt(y)}.` : `At x = ${fmt(x)}, the function is not defined.`;
+});
+new ResizeObserver(()=>{
+  const rect=canvas.getBoundingClientRect();
+  const dpr=window.devicePixelRatio||1;
+  cssW=rect.width; cssH=rect.height;
+  canvas.width=Math.round(cssW*dpr);
+  canvas.height=Math.round(cssH*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  plot();
+}).observe(canvas);
+</script>
+</body>
+</html>
