@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Position, Velocity &amp; Acceleration — Rates of Change | MATH-1111, CSE, University of Scholars</title>
+<meta name="description" content="Visualise how position, velocity, and acceleration relate as derivatives of each other on a shared time axis. An interactive simulation for MATH-1111 students at CSE, University of Scholars." />
+<meta name="keywords" content="position velocity acceleration, rates of change, derivative, calculus, s(t) v(t) a(t), interactive math, MATH-1111, CSE, University of Scholars" />
+<meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+<meta name="robots" content="index, follow" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Position, Velocity &amp; Acceleration — Rates of Change | MATH-1111, CSE, University of Scholars" />
+<meta property="og:description" content="Interactive simulation showing position, velocity and acceleration on a shared time axis for CSE students at University of Scholars." />
+<meta property="og:locale" content="en_GB" />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Position, Velocity &amp; Acceleration — MATH-1111, CSE, University of Scholars" />
+<meta name="twitter:description" content="Interactive simulation showing how s(t), v(t) and a(t) relate on a shared time axis." />
+
+<!-- JSON-LD structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Position, Velocity and Acceleration — Rates of Change",
+  "description": "Browser-based interactive simulation showing position, velocity, and acceleration on a shared time axis, demonstrating derivatives as rates of change.",
+  "inLanguage": "en",
+  "educationalLevel": "undergraduate",
+  "learningResourceType": "Simulation",
+  "author": {
+    "@type": "Person",
+    "name": "Hasan Sarwer",
+    "jobTitle": "Adjunct Faculty",
+    "worksFor": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  },
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Mathematics",
+    "courseCode": "MATH-1111",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "University of Scholars",
+      "department": "Department of Computer Science and Engineering"
+    }
+  }
+}
+</script>
+
+<style>
+  /* salt-theme-gen — preset: ocean, radius: rounded */
+  :root {
+    --bg:           #f3f5f7;
+    --card:         #fcfcfa;
+    --text:         #060809;
+    --muted:        #6a7379;
+    --border:       #d4d8db;
+    --accent:       #0078a9;
+    --accent-hover: #006088;
+    --accent-soft:  #b7cee2;
+    --on-accent:    #ffffff;
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+
+    /* graph semantic colours */
+    --pos: #0f766e;
+    --vel: #1d4ed8;
+    --acc: #b45309;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:           #090b0d;
+      --card:         #1a1e20;
+      --text:         #f3f5f7;
+      --muted:        #879197;
+      --border:       #2b2e30;
+      --accent:       #5bbaee;
+      --accent-hover: #3fa1d3;
+      --accent-soft:  #233848;
+      --on-accent:    #444444;
+
+      --pos: #34d399;
+      --vel: #60a5fa;
+      --acc: #fbbf24;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+  }
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb .sep { color: var(--border); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+  .app { max-width: 820px; margin: 0 auto; padding: 24px 16px; }
+
+  .page-title { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .sub { color: var(--muted); font-size: .96rem; line-height: 1.5; margin-bottom: 20px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .section { padding: 16px; }
+
+  label { display: block; font-weight: 700; font-size: .95rem; margin: 0 0 8px; }
+
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  input[type=text], select, input[type=range] {
+    width: 100%; min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 12px;
+    font-size: 16px;
+    background: var(--card);
+    color: var(--text);
+  }
+  input[type=range] { padding: 0; height: 44px; }
+
+  button {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  button.soft { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); }
+
+  .grow { flex: 1 1 220px; }
+  .half { flex: 1 1 130px; }
+
+  .plot-wrap { padding: 14px; }
+
+  canvas {
+    width: 100%;
+    height: 200px;
+    display: block;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  @media(min-width: 600px) { .metric-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+  .metric {
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+  }
+  .metric .title { font-size: .85rem; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+  .metric .value { font-size: 1rem; font-weight: 700; line-height: 1.4; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: .92rem;
+  }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 999px; margin-right: 5px; }
+
+  .help {
+    background: #fff9ed;
+    border-left: 4px solid #d97706;
+    color: #7c2d12;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: .92rem;
+    line-height: 1.5;
+  }
+  @media (prefers-color-scheme: dark) {
+    .help { background: #2a1f0a; color: #fbbf24; border-color: #d97706; }
+  }
+
+  .status { min-height: 1.4em; margin-top: 8px; color: #b91c1c; font-size: .92rem; font-weight: 600; }
+  .small { font-size: .88rem; color: var(--muted); }
+
+  footer {
+    text-align: center;
+    padding: 28px 16px;
+    font-size: .85rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .theme-credit { font-size: .8rem; }
+  .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .theme-credit a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="../../">UOS Simulations</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="../">Mathematics</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="current" aria-current="page">Rates of Change</span>
+  </nav>
+</header>
+
+<div class="app">
+  <h1 class="page-title">Position, velocity, and acceleration</h1>
+  <p class="sub">Three graphs on a shared time axis — compare <b>s(t)</b>, <b>v(t) = s′(t)</b>, and <b>a(t) = v′(t)</b> at exactly the same instant.</p>
+
+  <div class="card">
+    <div class="section">
+      <label for="preset">Motion model</label>
+      <div class="row">
+        <select id="preset" class="grow">
+          <option value="poly">s(t) = t³ − 6t² + 9t</option>
+          <option value="quad">s(t) = 2t² − 4t + 1</option>
+          <option value="harmonic">s(t) = 3 sin(t)</option>
+          <option value="custom">Custom position function</option>
+        </select>
+      </div>
+
+      <div id="customBox" style="display:none;margin-top:12px">
+        <label for="expr">Custom position function s(t)</label>
+        <div class="row">
+          <input id="expr" class="grow" type="text" value="t^3 - 6*t^2 + 9*t" placeholder="e.g. 3*sin(t) or t^3 - 6*t^2 + 9*t">
+          <button id="plotBtn" class="primary">Plot</button>
+        </div>
+        <p class="small" style="margin-top:6px">Allowed: sin, cos, tan, sqrt, log, exp, abs, pi, e. Use ^ for powers.</p>
+      </div>
+
+      <div class="row" style="margin-top:14px">
+        <div class="half">
+          <div class="small">t-min</div>
+          <input id="tmin" type="text" value="0">
+        </div>
+        <div class="half">
+          <div class="small">t-max</div>
+          <input id="tmax" type="text" value="5">
+        </div>
+      </div>
+
+      <label for="timeSlider" style="margin-top:14px">Current time &nbsp;<b>t = <span id="tVal">2.000</span></b></label>
+      <input id="timeSlider" type="range" min="0" max="5" step="0.01" value="2">
+
+      <div class="row" style="margin-top:12px">
+        <button id="playBtn" class="primary">▶ Play</button>
+        <button id="pauseBtn" class="soft">⏸ Pause</button>
+        <button id="resetBtn">↺ Reset</button>
+      </div>
+
+      <div class="legend">
+        <span><span class="dot" style="background:var(--pos)"></span>position s(t)</span>
+        <span><span class="dot" style="background:var(--vel)"></span>velocity v(t)</span>
+        <span><span class="dot" style="background:var(--acc)"></span>acceleration a(t)</span>
+      </div>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="title" style="color:var(--pos)">Position s(t)</div>
+      <div class="value" id="sNow">—</div>
+    </div>
+    <div class="metric">
+      <div class="title" style="color:var(--vel)">Velocity v(t) = s′(t)</div>
+      <div class="value" id="vNow">—</div>
+    </div>
+    <div class="metric">
+      <div class="title" style="color:var(--acc)">Acceleration a(t) = v′(t)</div>
+      <div class="value" id="aNow">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="plot-wrap" style="display:grid;gap:12px">
+      <canvas id="posCanvas"></canvas>
+      <canvas id="velCanvas"></canvas>
+      <canvas id="accCanvas"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section">
+      <div class="help">
+        <b>Teaching idea:</b> Pause the marker at one instant and ask: "If the position graph is rising, what should the sign of velocity be?" Then: "If velocity is decreasing, what is the sign of acceleration?"
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Department of Computer Science and Engineering · University of Scholars</span>
+  <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+</footer>
+
+<script>
+const presetEl   = document.getElementById('preset');
+const customBox  = document.getElementById('customBox');
+const exprEl     = document.getElementById('expr');
+const plotBtn    = document.getElementById('plotBtn');
+const tminEl     = document.getElementById('tmin');
+const tmaxEl     = document.getElementById('tmax');
+const timeSlider = document.getElementById('timeSlider');
+const tValEl     = document.getElementById('tVal');
+const sNowEl     = document.getElementById('sNow');
+const vNowEl     = document.getElementById('vNow');
+const aNowEl     = document.getElementById('aNow');
+const statusEl   = document.getElementById('status');
+const playBtn    = document.getElementById('playBtn');
+const pauseBtn   = document.getElementById('pauseBtn');
+const resetBtn   = document.getElementById('resetBtn');
+const posCanvas  = document.getElementById('posCanvas');
+const velCanvas  = document.getElementById('velCanvas');
+const accCanvas  = document.getElementById('accCanvas');
+
+let sFunc  = null;
+let animId = null;
+let plotW  = 760, plotH = 200;
+
+function resizeCanvases(){
+  const rect = posCanvas.getBoundingClientRect();
+  const dpr  = window.devicePixelRatio || 1;
+  plotW = rect.width || 760;
+  for(const c of [posCanvas, velCanvas, accCanvas]){
+    c.width  = Math.round(plotW * dpr);
+    c.height = Math.round(plotH * dpr);
+    c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+}
+
+function preprocess(s){
+  return s.replace(/π/g,'PI').replace(/\bpi\b/gi,'PI').replace(/\be\b/g,'E').replace(/\^/g,'**');
+}
+function buildFunc(expr){
+  const raw = preprocess(expr);
+  return new Function('t', "const {sin,cos,tan,asin,acos,atan,sqrt,log,exp,abs,floor,ceil,round,PI,E}=Math; return ("+raw+");");
+}
+function derivative(f, t){
+  const h = 1e-4;
+  return (f(t+h) - f(t-h)) / (2*h);
+}
+function secondDerivative(f, t){
+  const h = 1e-3;
+  return (f(t+h) - 2*f(t) + f(t-h)) / (h*h);
+}
+function fmt(v){
+  if(!Number.isFinite(v)) return 'undefined';
+  let n = Number(v.toFixed(3));
+  if(Object.is(n,-0)) n = 0;
+  return String(n);
+}
+function getRange(arr){
+  const vals = arr.filter(Number.isFinite);
+  if(!vals.length) return {min:-1,max:1};
+  let mn = Math.min(...vals), mx = Math.max(...vals);
+  if(mn === mx){ mn -= 1; mx += 1; }
+  const pad = 0.12*(mx-mn);
+  return {min:mn-pad, max:mx+pad};
+}
+function sx(t, view){ return (t-view.tmin)/(view.tmax-view.tmin)*plotW; }
+function sy(y, yr)  { return plotH - (y-yr.min)/(yr.max-yr.min)*plotH; }
+
+function niceStep(span){
+  const rough = span/6;
+  const p = Math.pow(10, Math.floor(Math.log10(Math.abs(rough)||1)));
+  const m = rough/p;
+  let step = 1;
+  if(m>5) step=10; else if(m>2) step=5; else if(m>1) step=2;
+  return step*p;
+}
+
+function getGraphColor(cssVar){
+  return getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+}
+
+function drawOne(canvas, data, cssVar, label, view, yr, tCurrent){
+  const ctx   = canvas.getContext('2d');
+  const color = getGraphColor(cssVar);
+  ctx.clearRect(0, 0, plotW, plotH);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, plotW, plotH);
+
+  const xStep = niceStep(view.tmax - view.tmin);
+  const yStep = niceStep(yr.max - yr.min);
+
+  ctx.strokeStyle = '#e7edf4';
+  ctx.lineWidth = 1;
+  for(let t=Math.ceil(view.tmin/xStep)*xStep; t<=view.tmax; t+=xStep){
+    const X=sx(t,view); ctx.beginPath(); ctx.moveTo(X,0); ctx.lineTo(X,plotH); ctx.stroke();
+  }
+  for(let y=Math.ceil(yr.min/yStep)*yStep; y<=yr.max; y+=yStep){
+    const Y=sy(y,yr); ctx.beginPath(); ctx.moveTo(0,Y); ctx.lineTo(plotW,Y); ctx.stroke();
+  }
+
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 1.2;
+  if(yr.min<0 && yr.max>0){
+    const Y=sy(0,yr); ctx.beginPath(); ctx.moveTo(0,Y); ctx.lineTo(plotW,Y); ctx.stroke();
+  }
+
+  ctx.fillStyle = color;
+  ctx.font = 'bold 13px system-ui';
+  ctx.fillText(label, 10, 18);
+
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  let open = false;
+  for(const p of data){
+    if(!Number.isFinite(p.y)){ open=false; continue; }
+    const X=sx(p.t,view), Y=sy(p.y,yr);
+    if(!open){ ctx.moveTo(X,Y); open=true; } else ctx.lineTo(X,Y);
+  }
+  ctx.stroke();
+
+  const markerX = sx(tCurrent, view);
+  ctx.strokeStyle = '#374151';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5,5]);
+  ctx.beginPath(); ctx.moveTo(markerX,0); ctx.lineTo(markerX,plotH); ctx.stroke();
+  ctx.setLineDash([]);
+
+  let yCurrent = NaN;
+  for(let i=1;i<data.length;i++){
+    const p0=data[i-1], p1=data[i];
+    if(p0.t<=tCurrent && tCurrent<=p1.t){
+      const r=(tCurrent-p0.t)/(p1.t-p0.t);
+      yCurrent = p0.y + r*(p1.y-p0.y);
+      break;
+    }
+  }
+  if(Number.isFinite(yCurrent)){
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(markerX, sy(yCurrent,yr), 5, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  ctx.fillStyle = '#64748b';
+  ctx.font = '11px system-ui';
+  ctx.fillText('t', plotW-12, plotH-6);
+}
+
+function generate(){
+  if(!sFunc) return;
+  let tmin=parseFloat(tminEl.value), tmax=parseFloat(tmaxEl.value);
+  if(!Number.isFinite(tmin)||!Number.isFinite(tmax)||tmin===tmax){ tmin=0; tmax=5; }
+  if(tmin>tmax){ const tmp=tmin; tmin=tmax; tmax=tmp; }
+  tminEl.value=tmin; tmaxEl.value=tmax;
+  timeSlider.min=tmin; timeSlider.max=tmax;
+  if(parseFloat(timeSlider.value)<tmin || parseFloat(timeSlider.value)>tmax) timeSlider.value=tmin;
+
+  const n=400;
+  const sData=[], vData=[], aData=[];
+  for(let i=0;i<=n;i++){
+    const t=tmin+(tmax-tmin)*i/n;
+    let s=NaN, v=NaN, a=NaN;
+    try{
+      s=sFunc(t);
+      if(Number.isFinite(s)){ v=derivative(sFunc,t); a=secondDerivative(sFunc,t); }
+    }catch(e){}
+    sData.push({t,y:s}); vData.push({t,y:v}); aData.push({t,y:a});
+  }
+
+  const view={tmin,tmax};
+  const tNow=parseFloat(timeSlider.value);
+  drawOne(posCanvas, sData, '--pos', 'Position  s(t)',      view, getRange(sData.map(p=>p.y)), tNow);
+  drawOne(velCanvas, vData, '--vel', 'Velocity  v(t)=s′(t)',view, getRange(vData.map(p=>p.y)), tNow);
+  drawOne(accCanvas, aData, '--acc', 'Acceleration  a(t)',  view, getRange(aData.map(p=>p.y)), tNow);
+
+  // update metric readout
+  tValEl.textContent = fmt(tNow);
+  let s=NaN, v=NaN, a=NaN;
+  try{ s=sFunc(tNow); v=derivative(sFunc,tNow); a=secondDerivative(sFunc,tNow); }catch(e){}
+  sNowEl.textContent = `s(${fmt(tNow)}) = ${fmt(s)}`;
+  vNowEl.textContent = `v(${fmt(tNow)}) = ${fmt(v)}`;
+  aNowEl.textContent = `a(${fmt(tNow)}) = ${fmt(a)}`;
+}
+
+function usePreset(name){
+  statusEl.textContent='';
+  if(name==='poly'){
+    sFunc=t=>t*t*t - 6*t*t + 9*t;
+    exprEl.value='t^3 - 6*t^2 + 9*t';
+    tminEl.value=0; tmaxEl.value=5; timeSlider.value=2;
+  } else if(name==='quad'){
+    sFunc=t=>2*t*t - 4*t + 1;
+    exprEl.value='2*t^2 - 4*t + 1';
+    tminEl.value=-1; tmaxEl.value=4; timeSlider.value=1;
+  } else if(name==='harmonic'){
+    sFunc=t=>3*Math.sin(t);
+    exprEl.value='3*sin(t)';
+    tminEl.value=0; tmaxEl.value=6.28; timeSlider.value=1.57;
+  } else {
+    customBox.style.display='block';
+    try{ sFunc=buildFunc(exprEl.value.trim()); }
+    catch(e){ statusEl.textContent='Invalid custom function.'; }
+  }
+  if(name!=='custom') customBox.style.display='none';
+  generate();
+}
+
+presetEl.addEventListener('change', ()=>usePreset(presetEl.value));
+plotBtn.addEventListener('click', ()=>{
+  try{
+    sFunc=buildFunc(exprEl.value.trim());
+    statusEl.textContent='';
+    generate();
+  } catch(e){ statusEl.textContent='Invalid custom function. Please check the syntax.'; }
+});
+timeSlider.addEventListener('input', generate);
+[tminEl, tmaxEl].forEach(el=>el.addEventListener('change', generate));
+
+playBtn.addEventListener('click', ()=>{
+  if(animId) cancelAnimationFrame(animId);
+  let prev=null;
+  function step(now){
+    if(!prev) prev=now;
+    const dt=(now-prev)/1000; prev=now;
+    const tmin=parseFloat(timeSlider.min), tmax=parseFloat(timeSlider.max);
+    let t=parseFloat(timeSlider.value) + dt*(tmax-tmin)/5;
+    if(t>tmax) t=tmin;
+    timeSlider.value=t;
+    generate();
+    animId=requestAnimationFrame(step);
+  }
+  animId=requestAnimationFrame(step);
+});
+pauseBtn.addEventListener('click', ()=>{ if(animId){ cancelAnimationFrame(animId); animId=null; } });
+resetBtn.addEventListener('click', ()=>{ if(animId){ cancelAnimationFrame(animId); animId=null; } usePreset(presetEl.value); });
+
+new ResizeObserver(()=>{ resizeCanvases(); generate(); }).observe(posCanvas);
+usePreset('poly');
+</script>
+</body>
+</html>
