@@ -35,6 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "/uos/physics-1111",                       priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/physics-1111/shm",                   priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/physics-1111/periodic-motion",        priority: 0.6, changeFrequency: "monthly" as const },
+    { url: "/uos/physics-1111/reference-circle",       priority: 0.6, changeFrequency: "monthly" as const },
   ];
 
   return [...staticPages, ...projectPages, ...uosPages].map((page) => ({
