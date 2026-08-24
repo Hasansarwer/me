@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Pendulum in an Accelerating Lift — PHY-1111, CSE, University of Scholars</title>
+  <meta name="description" content="Interactive simulation showing how horizontal and vertical lift acceleration shifts the effective gravity vector, changes the pendulum's equilibrium direction, and alters its period." />
+  <meta name="keywords" content="pendulum, accelerating lift, effective gravity, non-inertial frame, pseudo-force, PHY-1111, physics simulation, CSE, University of Scholars, oscillation, period" />
+  <meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Pendulum in an Accelerating Lift — PHY-1111, CSE, University of Scholars" />
+  <meta property="og:description" content="Apply horizontal and vertical lift acceleration and watch how effective gravity changes the pendulum's equilibrium direction and period." />
+  <meta property="og:locale" content="en_GB" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Pendulum in an Accelerating Lift — PHY-1111" />
+  <meta name="twitter:description" content="Interactive simulation: pendulum in an accelerating lift showing effective gravity and period changes." />
+
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "Pendulum in an Accelerating Lift",
+    "description": "Browser-based interactive simulation showing how horizontal and vertical lift acceleration creates a pseudo-force that changes effective gravity, shifts the pendulum equilibrium direction, and modifies the oscillation period.",
+    "inLanguage": "en",
+    "educationalLevel": "undergraduate",
+    "learningResourceType": "Simulation",
+    "teaches": ["non-inertial reference frame", "effective gravity", "pseudo-force", "pendulum period", "simple harmonic motion"],
+    "isPartOf": {
+      "@type": "Course",
+      "name": "PHY-1111",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "University of Scholars",
+        "department": "Department of Computer Science and Engineering"
+      }
+    }
+  }
+  </script>
+
+  <style>
+    /* salt-theme-gen — preset: ocean, radius: rounded */
+    :root {
+      --bg:           #f3f5f7;
+      --card:         #fcfcfa;
+      --text:         #060809;
+      --muted:        #6a7379;
+      --border:       #d4d8db;
+      --accent:       #0078a9;
+      --accent-hover: #006088;
+      --accent-soft:  #b7cee2;
+      --on-accent:    #ffffff;
+
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+
+      /* sim-local */
+      --grid:      #e2e8f0;
+      --gravity:   #475569;
+      --lift:      #b45309;
+      --effective: #0f766e;
+      --osc:       #7c3aed;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #090b0d;
+        --card:         #1a1e20;
+        --text:         #f3f5f7;
+        --muted:        #879197;
+        --border:       #2b2e30;
+        --accent:       #5bbaee;
+        --accent-hover: #3fa1d3;
+        --accent-soft:  #233848;
+        --on-accent:    #444444;
+
+        /* sim-local */
+        --grid:      #243147;
+        --gravity:   #cbd5e1;
+        --lift:      #fbbf24;
+        --effective: #5eead4;
+        --osc:       #c4b5fd;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--border); }
+    .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+    .container {
+      width: min(100%, 1020px);
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    h1 { margin: 0 0 6px; font-size: clamp(1.45rem, 5vw, 2.15rem); line-height: 1.15; }
+
+    .intro p { margin: 0; color: var(--muted); line-height: 1.5; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .metric, .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .metric { min-width: 0; padding: 12px; }
+    .metric small { display: block; color: var(--muted); font-size: .78rem; }
+    .metric strong { display: block; margin-top: 3px; font-size: 1.06rem; overflow-wrap: anywhere; }
+
+    .layout { display: grid; gap: 14px; }
+
+    .panel { min-width: 0; padding: 14px; }
+    .panel h2 { margin: 0 0 12px; font-size: 1.05rem; }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .control { margin-bottom: 0; min-width: 0; }
+
+    .control-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+
+    .control-head label { font-weight: 700; }
+    .control-head output { font-weight: 800; color: var(--accent); white-space: nowrap; }
+
+    input[type=range] {
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+      accent-color: var(--accent);
+      touch-action: pan-y;
+    }
+
+    .hint { color: var(--muted); font-size: .82rem; line-height: 1.4; }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    button {
+      min-height: 46px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      padding: 9px 8px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    button:hover { border-color: var(--accent); }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--on-accent);
+      border-color: transparent;
+    }
+
+    button.primary:hover { background: var(--accent-hover); }
+
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      outline-offset: 2px;
+    }
+
+    .equation {
+      background: color-mix(in srgb, var(--card) 86%, var(--grid));
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      text-align: center;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: clamp(.96rem, 3.6vw, 1.22rem);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    svg { display: block; width: 100%; height: auto; }
+
+    .note {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      background: var(--accent-soft);
+      line-height: 1.45;
+    }
+
+    .note strong { display: block; margin-bottom: 4px; }
+
+    .vector-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .sign-note {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.45;
+    }
+
+    .cases {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .case {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 9px;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    .case b { display: block; color: var(--text); margin-bottom: 3px; }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .theme-credit { font-size: 0.8rem; color: var(--muted); }
+    .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .theme-credit a:hover { text-decoration: underline; }
+
+    @media (min-width: 560px) {
+      .controls-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (min-width: 780px) {
+      .container { padding: 28px 24px; }
+      .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .layout { grid-template-columns: 1fr; }
+      .controls-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .panel { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../">UOS Simulations</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="../">PHY-1111</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span class="current" aria-current="page">Pendulum in a Lift</span>
+    </nav>
+  </header>
+
+  <main class="container" id="liftPendulumApp">
+    <section class="intro">
+      <h1>Pendulum in an Accelerating Lift</h1>
+      <p>Apply horizontal and vertical acceleration together. Observe how effective gravity changes the pendulum's equilibrium direction and period.</p>
+    </section>
+
+    <section class="metrics" aria-label="Calculated values">
+      <div class="metric"><small>Effective gravity, g<sub>eff</sub></small><strong id="geffMetric">9.81 m/s²</strong></div>
+      <div class="metric"><small>Equilibrium tilt</small><strong id="tiltMetric">0.0°</strong></div>
+      <div class="metric"><small>Period, T</small><strong id="periodMetric">2.01 s</strong></div>
+      <div class="metric"><small>Current angle from vertical</small><strong id="currentMetric">+10.0°</strong></div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <h2>Lift acceleration</h2>
+
+        <div class="controls-grid">
+          <div class="control">
+            <div class="control-head">
+              <label for="ax">Horizontal acceleration, aₓ</label>
+              <output id="axOut">0.0 m/s²</output>
+            </div>
+            <input id="ax" type="range" min="-8" max="8" value="0" step="0.25" />
+            <div class="hint">Positive = lift accelerates right. Negative = lift accelerates left.</div>
+          </div>
+
+          <div class="control">
+            <div class="control-head">
+              <label for="ay">Vertical acceleration, aᵧ</label>
+              <output id="ayOut">0.0 m/s²</output>
+            </div>
+            <input id="ay" type="range" min="-8" max="8" value="0" step="0.25" />
+            <div class="hint">Positive = upward acceleration. Negative = downward acceleration.</div>
+          </div>
+
+          <div class="control">
+            <div class="control-head">
+              <label for="length">Pendulum length, L</label>
+              <output id="lengthOut">1.00 m</output>
+            </div>
+            <input id="length" type="range" min="0.50" max="2.50" value="1.00" step="0.05" />
+          </div>
+
+          <div class="control">
+            <div class="control-head">
+              <label for="amp">Oscillation amplitude</label>
+              <output id="ampOut">10°</output>
+            </div>
+            <input id="amp" type="range" min="2" max="20" value="10" step="1" />
+            <div class="hint">Measured around the tilted equilibrium direction.</div>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button id="playPause" class="primary" type="button">Pause</button>
+          <button id="step" type="button">Step</button>
+          <button id="reset" type="button">Reset</button>
+        </div>
+
+        <div class="note" id="observe" aria-live="polite">
+          <strong>No lift acceleration</strong>
+          Effective gravity is ordinary gravity, so the equilibrium string is vertical.
+        </div>
+
+        <div class="sign-note">
+          <b>Sign convention:</b> +x is right and +y is upward. In the accelerating lift,
+          the bob feels a pseudo-acceleration opposite to the lift acceleration.
+        </div>
+
+        <div class="cases">
+          <div class="case"><b>Upward acceleration</b>g<sub>eff</sub> increases → period decreases.</div>
+          <div class="case"><b>Downward acceleration</b>g<sub>eff</sub> decreases → period increases.</div>
+          <div class="case"><b>Rightward acceleration</b>pendulum equilibrium tilts left.</div>
+          <div class="case"><b>Leftward acceleration</b>pendulum equilibrium tilts right.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="equation">
+          <b>g</b><sub>eff</sub> = <b>g</b> − <b>a</b><sub>lift</sub><br>
+          g<sub>eff</sub> = √[aₓ² + (g + aᵧ)²],
+          &nbsp;&nbsp;
+          T ≈ 2π√(L/g<sub>eff</sub>)
+        </div>
+
+        <h2>Inside the accelerating lift</h2>
+        <svg viewBox="0 0 780 500" role="img" aria-label="Pendulum in a lift with lift acceleration and effective gravity vectors">
+          <defs>
+            <marker id="arrowLift" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0,2 L12,7 L0,12 z" fill="var(--lift)"/>
+            </marker>
+            <marker id="arrowGravity" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0,2 L12,7 L0,12 z" fill="var(--gravity)"/>
+            </marker>
+            <marker id="arrowEff" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0,2 L12,7 L0,12 z" fill="var(--effective)"/>
+            </marker>
+            <marker id="arrowOsc" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0,2 L12,7 L0,12 z" fill="var(--osc)"/>
+            </marker>
+          </defs>
+
+          <!-- lift car -->
+          <rect x="85" y="35" width="610" height="410" rx="18"
+                fill="none" stroke="var(--border)" stroke-width="4"/>
+          <line x1="105" y1="420" x2="675" y2="420"
+                stroke="var(--border)" stroke-width="5"/>
+
+          <!-- pivot -->
+          <line x1="300" y1="72" x2="480" y2="72"
+                stroke="var(--border)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="390" cy="90" r="8" fill="var(--text)"/>
+
+          <!-- ordinary vertical reference -->
+          <line x1="390" y1="90" x2="390" y2="385"
+                stroke="var(--grid)" stroke-width="2" stroke-dasharray="6 6"/>
+          <text x="402" y="400" fill="var(--muted)" font-size="15">vertical</text>
+
+          <!-- equilibrium guide -->
+          <line id="eqGuide" x1="390" y1="90" x2="390" y2="355"
+                stroke="var(--effective)" stroke-width="3" stroke-dasharray="8 6"/>
+          <text id="eqLabel" x="405" y="340" fill="var(--effective)" font-size="16">equilibrium</text>
+
+          <!-- pendulum -->
+          <line id="string" x1="390" y1="90" x2="435" y2="345"
+                stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+          <circle id="bob" cx="435" cy="345" r="24" fill="var(--accent)"/>
+
+          <!-- current oscillation angle arc -->
+          <path id="oscArc" d="" fill="none" stroke="var(--osc)" stroke-width="4"/>
+          <text id="oscLabel" x="420" y="145" fill="var(--osc)" font-size="16">α</text>
+
+          <!-- lift acceleration vector -->
+          <line id="liftVector" x1="145" y1="125" x2="145" y2="125"
+                stroke="var(--lift)" stroke-width="5" stroke-linecap="round"
+                marker-end="url(#arrowLift)"/>
+          <text id="liftVectorLabel" x="150" y="112" fill="var(--lift)" font-size="16" font-weight="700">a_lift</text>
+
+          <!-- gravity vector -->
+          <line x1="145" y1="220" x2="145" y2="300"
+                stroke="var(--gravity)" stroke-width="5" stroke-linecap="round"
+                marker-end="url(#arrowGravity)"/>
+          <text x="158" y="260" fill="var(--gravity)" font-size="16" font-weight="700">g</text>
+
+          <!-- effective gravity vector -->
+          <line id="effVector" x1="575" y1="145" x2="575" y2="255"
+                stroke="var(--effective)" stroke-width="5" stroke-linecap="round"
+                marker-end="url(#arrowEff)"/>
+          <text id="effVectorLabel" x="590" y="200" fill="var(--effective)" font-size="16" font-weight="700">g_eff</text>
+
+          <!-- tilt arc -->
+          <path id="tiltArc" d="" fill="none" stroke="var(--effective)" stroke-width="3"/>
+          <text id="tiltLabel" x="415" y="145" fill="var(--effective)" font-size="15">β</text>
+        </svg>
+
+        <div class="vector-legend">
+          <span class="key"><span class="dot" style="background:var(--lift)"></span> lift acceleration</span>
+          <span class="key"><span class="dot" style="background:var(--gravity)"></span> gravity</span>
+          <span class="key"><span class="dot" style="background:var(--effective)"></span> effective gravity</span>
+          <span class="key"><span class="dot" style="background:var(--osc)"></span> oscillation about equilibrium</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Department of Computer Science and Engineering · University of Scholars</span>
+    <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+  </footer>
+
+  <script>
+  (() => {
+    const root = document.getElementById('liftPendulumApp');
+    if (!root || root.dataset.ready === '1') return;
+    root.dataset.ready = '1';
+
+    const g = 9.81;
+
+    const ax     = root.querySelector('#ax');
+    const ay     = root.querySelector('#ay');
+    const length = root.querySelector('#length');
+    const amp    = root.querySelector('#amp');
+
+    const axOut     = root.querySelector('#axOut');
+    const ayOut     = root.querySelector('#ayOut');
+    const lengthOut = root.querySelector('#lengthOut');
+    const ampOut    = root.querySelector('#ampOut');
+
+    const geffMetric    = root.querySelector('#geffMetric');
+    const tiltMetric    = root.querySelector('#tiltMetric');
+    const periodMetric  = root.querySelector('#periodMetric');
+    const currentMetric = root.querySelector('#currentMetric');
+
+    const eqGuide = root.querySelector('#eqGuide');
+    const eqLabel = root.querySelector('#eqLabel');
+    const string  = root.querySelector('#string');
+    const bob     = root.querySelector('#bob');
+
+    const liftVector      = root.querySelector('#liftVector');
+    const liftVectorLabel = root.querySelector('#liftVectorLabel');
+    const effVector       = root.querySelector('#effVector');
+    const effVectorLabel  = root.querySelector('#effVectorLabel');
+
+    const tiltArc  = root.querySelector('#tiltArc');
+    const tiltLabel = root.querySelector('#tiltLabel');
+    const oscArc   = root.querySelector('#oscArc');
+    const oscLabel = root.querySelector('#oscLabel');
+
+    const observe  = root.querySelector('#observe');
+    const playPause = root.querySelector('#playPause');
+    const stepBtn  = root.querySelector('#step');
+    const resetBtn = root.querySelector('#reset');
+
+    const pivotX = 390;
+    const pivotY = 90;
+    const pendVisualLength = 265;
+
+    let playing = !(window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    let startedAt = performance.now();
+    let pausedAt = 0;
+    let raf = 0;
+
+    if (!playing) playPause.textContent = 'Play';
+
+    function state() {
+      const axv    = Number(ax.value);
+      const ayv    = Number(ay.value);
+      const L      = Number(length.value);
+      const ampDeg = Number(amp.value);
+      const ampRad = ampDeg * Math.PI / 180;
+
+      const downComponent  = g + ayv;
+      const horizontalEff  = -axv;
+      const geff = Math.sqrt(horizontalEff * horizontalEff + downComponent * downComponent);
+      const beta = Math.atan2(horizontalEff, downComponent);
+      const T    = 2 * Math.PI * Math.sqrt(L / geff);
+
+      return { ax: axv, ay: ayv, L, ampDeg, ampRad, geff, beta, T };
+    }
+
+    function currentTime(now) {
+      return playing ? (now - startedAt) / 1000 : pausedAt;
+    }
+
+    function pointFromDown(angle, r) {
+      return {
+        x: pivotX + r * Math.sin(angle),
+        y: pivotY + r * Math.cos(angle)
+      };
+    }
+
+    function arcFromDown(cx, cy, r, angle) {
+      if (Math.abs(angle) < 0.001) return '';
+      const startX = cx;
+      const startY = cy + r;
+      const endX   = cx + r * Math.sin(angle);
+      const endY   = cy + r * Math.cos(angle);
+      const sweep  = angle > 0 ? 0 : 1;
+      return `M ${startX} ${startY} A ${r} ${r} 0 0 ${sweep} ${endX} ${endY}`;
+    }
+
+    function arcBetween(cx, cy, r, a1, a2) {
+      const p1 = { x: cx + r * Math.sin(a1), y: cy + r * Math.cos(a1) };
+      const p2 = { x: cx + r * Math.sin(a2), y: cy + r * Math.cos(a2) };
+      const delta = a2 - a1;
+      if (Math.abs(delta) < 0.001) return '';
+      const sweep = delta > 0 ? 0 : 1;
+      return `M ${p1.x} ${p1.y} A ${r} ${r} 0 0 ${sweep} ${p2.x} ${p2.y}`;
+    }
+
+    function updateObservation(s) {
+      const h = Math.abs(s.ax) > 0.15;
+      const v = Math.abs(s.ay) > 0.15;
+
+      if (!h && !v) {
+        observe.innerHTML =
+          '<strong>No lift acceleration</strong>Effective gravity is ordinary gravity, so the equilibrium string is vertical.';
+      } else if (h && !v) {
+        observe.innerHTML =
+          '<strong>Horizontal acceleration</strong>The equilibrium string tilts opposite to the lift acceleration. Horizontal acceleration also increases |g_eff|, slightly shortening the period.';
+      } else if (!h && v) {
+        if (s.ay > 0) {
+          observe.innerHTML =
+            '<strong>Lift accelerating upward</strong>Effective gravity is stronger than g, so the pendulum oscillates faster and the period decreases.';
+        } else {
+          observe.innerHTML =
+            '<strong>Lift accelerating downward</strong>Effective gravity is weaker than g, so the pendulum oscillates more slowly and the period increases.';
+        }
+      } else {
+        observe.innerHTML =
+          '<strong>Combined horizontal + vertical acceleration</strong>The horizontal component sets the equilibrium tilt, while both components determine the magnitude of effective gravity and therefore the period.';
+      }
+    }
+
+    function drawAccelerationVector(line, label, s) {
+      const x0 = 145, y0 = 125, scale = 8.5;
+      const dx = s.ax * scale;
+      const dy = -s.ay * scale;
+
+      line.setAttribute('x1', x0);
+      line.setAttribute('y1', y0);
+      line.setAttribute('x2', x0 + dx);
+      line.setAttribute('y2', y0 + dy);
+
+      label.setAttribute('x', x0 + dx + (dx >= 0 ? 10 : -52));
+      label.setAttribute('y', y0 + dy - 10);
+
+      const mag = Math.hypot(s.ax, s.ay);
+      line.style.opacity  = mag < .05 ? '0.2' : '1';
+      label.textContent   = mag < .05 ? 'a_lift = 0' : 'a_lift';
+    }
+
+    function drawEffectiveVector(line, label, s) {
+      const x0 = 575, y0 = 145;
+      const maxLen = 125, scale = maxLen / 18;
+      const dx = (-s.ax) * scale;
+      const dy = (g + s.ay) * scale;
+
+      line.setAttribute('x1', x0);
+      line.setAttribute('y1', y0);
+      line.setAttribute('x2', x0 + dx);
+      line.setAttribute('y2', y0 + dy);
+
+      label.setAttribute('x', x0 + dx + (dx >= 0 ? 10 : -52));
+      label.setAttribute('y', y0 + dy / 2);
+    }
+
+    function drawStatic() {
+      const s = state();
+
+      axOut.textContent     = (s.ax >= 0 ? '+' : '') + s.ax.toFixed(2) + ' m/s²';
+      ayOut.textContent     = (s.ay >= 0 ? '+' : '') + s.ay.toFixed(2) + ' m/s²';
+      lengthOut.textContent = s.L.toFixed(2) + ' m';
+      ampOut.textContent    = s.ampDeg.toFixed(0) + '°';
+
+      geffMetric.textContent   = s.geff.toFixed(2) + ' m/s²';
+      tiltMetric.textContent   = (s.beta >= 0 ? '+' : '') + (s.beta * 180 / Math.PI).toFixed(1) + '°';
+      periodMetric.textContent = s.T.toFixed(2) + ' s';
+
+      const eq = pointFromDown(s.beta, pendVisualLength);
+      eqGuide.setAttribute('x2', eq.x);
+      eqGuide.setAttribute('y2', eq.y);
+      eqLabel.setAttribute('x', eq.x + (s.beta >= 0 ? 12 : -82));
+      eqLabel.setAttribute('y', eq.y - 12);
+
+      tiltArc.setAttribute('d', arcFromDown(pivotX, pivotY, 52, s.beta));
+      const betaText = pointFromDown(s.beta / 2, 73);
+      tiltLabel.setAttribute('x', betaText.x);
+      tiltLabel.setAttribute('y', betaText.y);
+      tiltLabel.textContent = Math.abs(s.beta) < .015 ? '' : 'β';
+
+      drawAccelerationVector(liftVector, liftVectorLabel, s);
+      drawEffectiveVector(effVector, effVectorLabel, s);
+      updateObservation(s);
+      drawFrame(performance.now());
+    }
+
+    function drawFrame(now) {
+      const s = state();
+      const t = currentTime(now);
+
+      const alpha = s.ampRad * Math.cos(2 * Math.PI * t / s.T);
+      const theta = s.beta + alpha;
+
+      const p = pointFromDown(theta, pendVisualLength);
+      string.setAttribute('x2', p.x);
+      string.setAttribute('y2', p.y);
+      bob.setAttribute('cx', p.x);
+      bob.setAttribute('cy', p.y);
+
+      currentMetric.textContent =
+        (theta >= 0 ? '+' : '') + (theta * 180 / Math.PI).toFixed(1) + '°';
+
+      oscArc.setAttribute('d', arcBetween(pivotX, pivotY, 76, s.beta, theta));
+      const mid = (s.beta + theta) / 2;
+      const aText = pointFromDown(mid, 98);
+      oscLabel.setAttribute('x', aText.x);
+      oscLabel.setAttribute('y', aText.y);
+      oscLabel.textContent = Math.abs(alpha) < .012 ? '' : 'α';
+    }
+
+    function loop(now) {
+      drawFrame(now);
+      if (playing) raf = requestAnimationFrame(loop);
+    }
+
+    function startLoop() {
+      cancelAnimationFrame(raf);
+      if (playing) raf = requestAnimationFrame(loop);
+    }
+
+    [ax, ay, length, amp].forEach(el => {
+      el.addEventListener('input', () => {
+        pausedAt  = 0;
+        startedAt = performance.now();
+        drawStatic();
+      });
+    });
+
+    playPause.addEventListener('click', () => {
+      if (playing) {
+        pausedAt = (performance.now() - startedAt) / 1000;
+        playing  = false;
+        cancelAnimationFrame(raf);
+        playPause.textContent = 'Play';
+        drawFrame(performance.now());
+      } else {
+        startedAt = performance.now() - pausedAt * 1000;
+        playing   = true;
+        playPause.textContent = 'Pause';
+        startLoop();
+      }
+    });
+
+    stepBtn.addEventListener('click', () => {
+      if (playing) {
+        pausedAt = (performance.now() - startedAt) / 1000;
+        playing  = false;
+        cancelAnimationFrame(raf);
+        playPause.textContent = 'Play';
+      }
+      pausedAt += state().T / 8;
+      drawFrame(performance.now());
+    });
+
+    resetBtn.addEventListener('click', () => {
+      ax.value     = '0';
+      ay.value     = '0';
+      length.value = '1.00';
+      amp.value    = '10';
+      pausedAt  = 0;
+      startedAt = performance.now();
+      if (!playing) { playing = true; playPause.textContent = 'Pause'; }
+      drawStatic();
+      startLoop();
+    });
+
+    drawStatic();
+    startLoop();
+  })();
+  </script>
+</body>
+</html>

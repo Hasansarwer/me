@@ -39,6 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "/uos/physics-1111/spring-mass",            priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/physics-1111/shm-energy",             priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/physics-1111/simple-pendulum",        priority: 0.6, changeFrequency: "monthly" as const },
+    { url: "/uos/physics-1111/pendulum-lift",          priority: 0.6, changeFrequency: "monthly" as const },
   ];
 
   return [...staticPages, ...projectPages, ...uosPages].map((page) => ({
