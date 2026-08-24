@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Standing Waves on a String — PHY-1111, CSE, University of Scholars</title>
+  <meta name="description" content="Interactive standing-wave simulation for PHY-1111. Change harmonic number, string length, and wave speed to explore how nodes, antinodes, wavelength, and frequency relate on a string fixed at both ends." />
+  <meta name="keywords" content="standing wave, nodes, antinodes, harmonic, fundamental frequency, string vibration, PHY-1111, physics simulation, CSE, University of Scholars, wave equation" />
+  <meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Standing Waves on a String — PHY-1111, CSE, University of Scholars" />
+  <meta property="og:description" content="Change harmonic number, string length and wave speed to explore nodes, antinodes and frequencies on a fixed string." />
+  <meta property="og:locale" content="en_GB" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Standing Waves on a String — PHY-1111" />
+  <meta name="twitter:description" content="Interactive simulation: explore standing wave harmonics, nodes and antinodes on a fixed string." />
+
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "Standing Waves on a String",
+    "description": "Browser-based interactive simulation of standing waves on a string fixed at both ends. Students adjust harmonic number, amplitude, string length, and wave speed to observe how nodes, antinodes, wavelength, and frequency change.",
+    "inLanguage": "en",
+    "educationalLevel": "undergraduate",
+    "learningResourceType": "Simulation",
+    "teaches": ["standing wave", "harmonics", "nodes", "antinodes", "resonance", "wave speed", "wavelength", "frequency"],
+    "isPartOf": {
+      "@type": "Course",
+      "name": "PHY-1111",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "University of Scholars",
+        "department": "Department of Computer Science and Engineering"
+      }
+    }
+  }
+  </script>
+
+  <style>
+    /* salt-theme-gen — preset: ocean, radius: rounded */
+    :root {
+      --bg:           #f3f5f7;
+      --card:         #fcfcfa;
+      --text:         #060809;
+      --muted:        #6a7379;
+      --border:       #d4d8db;
+      --accent:       #0078a9;
+      --accent-hover: #006088;
+      --accent-soft:  #b7cee2;
+      --on-accent:    #ffffff;
+
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+
+      /* sim-local */
+      --grid:     #e2e8f0;
+      --wave:     #0f766e;
+      --node:     #b45309;
+      --antinode: #7c3aed;
+      --envelope: #64748b;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #090b0d;
+        --card:         #1a1e20;
+        --text:         #f3f5f7;
+        --muted:        #879197;
+        --border:       #2b2e30;
+        --accent:       #5bbaee;
+        --accent-hover: #3fa1d3;
+        --accent-soft:  #233848;
+        --on-accent:    #444444;
+
+        /* sim-local */
+        --grid:     #243147;
+        --wave:     #5eead4;
+        --node:     #fbbf24;
+        --antinode: #c4b5fd;
+        --envelope: #94a3b8;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--border); }
+    .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+    .container {
+      width: min(100%, 1040px);
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+
+    h1 { margin: 0 0 6px; font-size: clamp(1.5rem, 5vw, 2.2rem); line-height: 1.15; }
+
+    .intro p { margin: 0; color: var(--muted); line-height: 1.5; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .metric, .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .metric { min-width: 0; padding: 12px; }
+    .metric small { display: block; color: var(--muted); font-size: .78rem; }
+    .metric strong { display: block; margin-top: 3px; font-size: 1.06rem; overflow-wrap: anywhere; }
+
+    .panel { min-width: 0; padding: 14px; }
+    .panel + .panel { margin-top: 14px; }
+    .panel h2 { margin: 0 0 12px; font-size: 1.06rem; }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .control { min-width: 0; }
+
+    .control-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .control-head label { font-weight: 700; font-size: .94rem; }
+    .control-head output { color: var(--accent); font-weight: 800; white-space: nowrap; }
+
+    input[type=range] {
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+      accent-color: var(--accent);
+      touch-action: pan-y;
+    }
+
+    .hint { color: var(--muted); font-size: .8rem; line-height: 1.4; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    button {
+      min-height: 46px;
+      min-width: 86px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      padding: 9px 12px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    button:hover { border-color: var(--accent); }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--on-accent);
+      border-color: transparent;
+    }
+
+    button.primary:hover { background: var(--accent-hover); }
+
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      outline-offset: 2px;
+    }
+
+    .equation {
+      margin: 14px 0 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: color-mix(in srgb, var(--card) 86%, var(--grid));
+      text-align: center;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: clamp(.98rem, 3.8vw, 1.25rem);
+      line-height: 1.55;
+    }
+
+    svg { display: block; width: 100%; height: auto; max-width: 100%; }
+
+    .note {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      background: var(--accent-soft);
+      line-height: 1.45;
+    }
+
+    .note strong { display: block; margin-bottom: 4px; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .challenge { margin-top: 14px; }
+    .challenge p { margin: 6px 0 0; color: var(--muted); line-height: 1.5; }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .theme-credit { font-size: 0.8rem; color: var(--muted); }
+    .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .theme-credit a:hover { text-decoration: underline; }
+
+    @media (min-width: 580px) {
+      .controls-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (min-width: 820px) {
+      .container { padding: 24px; }
+      .metrics { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .controls-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .panel { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../">UOS Simulations</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="../">PHY-1111</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span class="current" aria-current="page">Standing Waves</span>
+    </nav>
+  </header>
+
+  <main class="container" id="standingWaveApp">
+    <section class="intro">
+      <h1>Standing Waves on a String</h1>
+      <p>Change the harmonic number and observe how nodes, antinodes, wavelength, and frequency change on a string fixed at both ends.</p>
+    </section>
+
+    <section class="metrics" aria-label="Standing wave quantities">
+      <div class="metric"><small>Harmonic</small><strong id="harmonicMetric">n = 1</strong></div>
+      <div class="metric"><small>Wavelength, λₙ</small><strong id="lambdaMetric">4.00 m</strong></div>
+      <div class="metric"><small>Frequency, fₙ</small><strong id="frequencyMetric">10.00 Hz</strong></div>
+      <div class="metric"><small>Nodes</small><strong id="nodesMetric">2</strong></div>
+      <div class="metric"><small>Antinodes</small><strong id="antinodesMetric">1</strong></div>
+    </section>
+
+    <section class="panel">
+      <h2>Parameters</h2>
+
+      <div class="controls-grid">
+        <div class="control">
+          <div class="control-head">
+            <label for="harmonic">Harmonic number, n</label>
+            <output id="harmonicOut">1</output>
+          </div>
+          <input id="harmonic" type="range" min="1" max="8" step="1" value="1" />
+          <div class="hint">n = 1 is the fundamental; n = 2, 3, … are higher harmonics.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="amplitude">Amplitude, A</label>
+            <output id="amplitudeOut">1.00 m</output>
+          </div>
+          <input id="amplitude" type="range" min="0.20" max="1.50" step="0.05" value="1.00" />
+          <div class="hint">Maximum displacement at an antinode.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="length">String length, L</label>
+            <output id="lengthOut">2.00 m</output>
+          </div>
+          <input id="length" type="range" min="1.00" max="5.00" step="0.10" value="2.00" />
+          <div class="hint">The ends remain fixed at x = 0 and x = L.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="speed">Wave speed, v</label>
+            <output id="speedOut">20.0 m/s</output>
+          </div>
+          <input id="speed" type="range" min="5" max="60" step="1" value="20" />
+          <div class="hint">For a given string, v determines the harmonic frequencies.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="playPause" class="primary" type="button">Pause</button>
+        <button id="step" type="button">Step</button>
+        <button id="reset" type="button">Reset</button>
+      </div>
+
+      <div class="equation">
+        y(x,t) = A sin(nπx/L) cos(2πfₙt),
+        &nbsp;&nbsp;
+        λₙ = 2L/n,
+        &nbsp;&nbsp;
+        fₙ = nv/(2L)
+      </div>
+
+      <div class="note" id="observe" aria-live="polite">
+        <strong>Fundamental mode:</strong>
+        There are two fixed nodes at the ends and one antinode at the center.
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Standing-wave pattern</h2>
+
+      <svg viewBox="0 0 920 430" role="img" aria-label="Standing wave on a string fixed at both ends with nodes and antinodes">
+        <!-- supports -->
+        <line x1="70" y1="70" x2="70" y2="360"
+              stroke="var(--border)" stroke-width="7" stroke-linecap="round"/>
+        <line x1="850" y1="70" x2="850" y2="360"
+              stroke="var(--border)" stroke-width="7" stroke-linecap="round"/>
+
+        <!-- equilibrium -->
+        <line x1="70" y1="215" x2="850" y2="215"
+              stroke="var(--grid)" stroke-width="2" stroke-dasharray="6 6"/>
+        <text x="850" y="240" text-anchor="end" fill="var(--muted)" font-size="15">equilibrium</text>
+
+        <!-- envelopes -->
+        <polyline id="upperEnvelope" points=""
+                  fill="none" stroke="var(--envelope)" stroke-width="2"
+                  stroke-dasharray="6 6" opacity="0.72"/>
+        <polyline id="lowerEnvelope" points=""
+                  fill="none" stroke="var(--envelope)" stroke-width="2"
+                  stroke-dasharray="6 6" opacity="0.72"/>
+
+        <!-- current string -->
+        <polyline id="waveLine" points=""
+                  fill="none" stroke="var(--wave)" stroke-width="5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- medium particles -->
+        <g id="particles"></g>
+
+        <!-- node and antinode markers -->
+        <g id="nodeMarkers"></g>
+        <g id="antinodeMarkers"></g>
+
+        <!-- wavelength indicator -->
+        <line id="lambdaLine"  x1="70"  y1="392" x2="850" y2="392" stroke="var(--antinode)" stroke-width="3"/>
+        <line id="lambdaTick1" x1="70"  y1="384" x2="70"  y2="400" stroke="var(--antinode)" stroke-width="3"/>
+        <line id="lambdaTick2" x1="850" y1="384" x2="850" y2="400" stroke="var(--antinode)" stroke-width="3"/>
+        <text id="lambdaText" x="460" y="420" text-anchor="middle"
+              fill="var(--antinode)" font-size="16">λ₁ = 4.00 m</text>
+      </svg>
+
+      <div class="legend">
+        <span class="key"><span class="dot" style="background:var(--wave)"></span> string at current time</span>
+        <span class="key"><span class="dot" style="background:var(--node)"></span> nodes</span>
+        <span class="key"><span class="dot" style="background:var(--antinode)"></span> antinodes</span>
+        <span class="key"><span class="dot" style="background:var(--envelope)"></span> maximum envelope</span>
+      </div>
+
+      <div class="challenge">
+        <strong>Predict before moving the harmonic slider</strong>
+        <p id="challengeText">Change from n = 1 to n = 2. What happens to the number of antinodes, wavelength, and frequency?</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Department of Computer Science and Engineering · University of Scholars</span>
+    <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+  </footer>
+
+  <script>
+  (() => {
+    const root = document.getElementById('standingWaveApp');
+    if (!root || root.dataset.ready === '1') return;
+    root.dataset.ready = '1';
+
+    const harmonic  = root.querySelector('#harmonic');
+    const amplitude = root.querySelector('#amplitude');
+    const length    = root.querySelector('#length');
+    const speed     = root.querySelector('#speed');
+
+    const harmonicOut  = root.querySelector('#harmonicOut');
+    const amplitudeOut = root.querySelector('#amplitudeOut');
+    const lengthOut    = root.querySelector('#lengthOut');
+    const speedOut     = root.querySelector('#speedOut');
+
+    const harmonicMetric   = root.querySelector('#harmonicMetric');
+    const lambdaMetric     = root.querySelector('#lambdaMetric');
+    const frequencyMetric  = root.querySelector('#frequencyMetric');
+    const nodesMetric      = root.querySelector('#nodesMetric');
+    const antinodesMetric  = root.querySelector('#antinodesMetric');
+
+    const observe       = root.querySelector('#observe');
+    const challengeText = root.querySelector('#challengeText');
+
+    const waveLine        = root.querySelector('#waveLine');
+    const upperEnvelope   = root.querySelector('#upperEnvelope');
+    const lowerEnvelope   = root.querySelector('#lowerEnvelope');
+    const particlesGroup  = root.querySelector('#particles');
+    const nodeMarkers     = root.querySelector('#nodeMarkers');
+    const antinodeMarkers = root.querySelector('#antinodeMarkers');
+
+    const lambdaLine  = root.querySelector('#lambdaLine');
+    const lambdaTick1 = root.querySelector('#lambdaTick1');
+    const lambdaTick2 = root.querySelector('#lambdaTick2');
+    const lambdaText  = root.querySelector('#lambdaText');
+
+    const playPause = root.querySelector('#playPause');
+    const stepBtn   = root.querySelector('#step');
+    const resetBtn  = root.querySelector('#reset');
+
+    const reducedMotion = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let playing   = !reducedMotion;
+    let startedAt = performance.now();
+    let pausedAt  = 0;
+    let raf       = 0;
+
+    if (!playing) playPause.textContent = 'Play';
+
+    const graphLeft  = 70;
+    const graphRight = 850;
+    const graphMid   = 215;
+    const graphAmpPx = 120;
+
+    const particleCount    = 25;
+    const particleEls      = [];
+    const particleFractions = [];
+
+    function state() {
+      const n = Number(harmonic.value);
+      const A = Number(amplitude.value);
+      const L = Number(length.value);
+      const v = Number(speed.value);
+
+      const lambda = 2 * L / n;
+      const f      = n * v / (2 * L);
+      const T      = 1 / f;
+      const omega  = 2 * Math.PI * f;
+
+      return { n, A, L, v, lambda, f, T, omega };
+    }
+
+    function currentTime(now) {
+      return playing ? (now - startedAt) / 1000 : pausedAt;
+    }
+
+    function fracToPx(frac) {
+      return graphLeft + (graphRight - graphLeft) * frac;
+    }
+
+    function yAtFraction(frac, t, s) {
+      return s.A * Math.sin(s.n * Math.PI * frac) * Math.cos(s.omega * t);
+    }
+
+    function yToPx(y) {
+      return graphMid - graphAmpPx * (y / 1.5);
+    }
+
+    function makeParticles() {
+      particlesGroup.innerHTML = '';
+      particleEls.length = 0;
+      particleFractions.length = 0;
+
+      for (let i = 0; i < particleCount; i++) {
+        const frac   = i / (particleCount - 1);
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', fracToPx(frac));
+        circle.setAttribute('cy', graphMid);
+        circle.setAttribute('r', '5.5');
+        circle.setAttribute('fill', 'var(--wave)');
+        circle.setAttribute('opacity', '.82');
+        particlesGroup.appendChild(circle);
+        particleEls.push(circle);
+        particleFractions.push(frac);
+      }
+    }
+
+    function drawEnvelopes(s) {
+      const topPts = [], bottomPts = [];
+      const samples = 480;
+
+      for (let i = 0; i <= samples; i++) {
+        const frac  = i / samples;
+        const mag   = Math.abs(s.A * Math.sin(s.n * Math.PI * frac));
+        const x     = fracToPx(frac);
+        topPts.push(x.toFixed(1) + ',' + yToPx(mag).toFixed(1));
+        bottomPts.push(x.toFixed(1) + ',' + yToPx(-mag).toFixed(1));
+      }
+
+      upperEnvelope.setAttribute('points', topPts.join(' '));
+      lowerEnvelope.setAttribute('points', bottomPts.join(' '));
+    }
+
+    function drawMarkers(s) {
+      nodeMarkers.innerHTML     = '';
+      antinodeMarkers.innerHTML = '';
+
+      for (let j = 0; j <= s.n; j++) {
+        const frac = j / s.n;
+        const x    = fracToPx(frac);
+
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', x);
+        c.setAttribute('cy', graphMid);
+        c.setAttribute('r', '8');
+        c.setAttribute('fill', 'var(--node)');
+        nodeMarkers.appendChild(c);
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', x);
+        label.setAttribute('y', graphMid + 28);
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('fill', 'var(--node)');
+        label.setAttribute('font-size', '13');
+        label.textContent = 'N';
+        nodeMarkers.appendChild(label);
+      }
+
+      for (let j = 0; j < s.n; j++) {
+        const frac  = (2 * j + 1) / (2 * s.n);
+        const x     = fracToPx(frac);
+        const shape = Math.sin(s.n * Math.PI * frac);
+        const y     = yToPx(s.A * shape);
+
+        const guide = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        guide.setAttribute('x1', x); guide.setAttribute('x2', x);
+        guide.setAttribute('y1', graphMid); guide.setAttribute('y2', y);
+        guide.setAttribute('stroke', 'var(--antinode)');
+        guide.setAttribute('stroke-width', '2');
+        guide.setAttribute('stroke-dasharray', '5 5');
+        guide.setAttribute('opacity', '.7');
+        antinodeMarkers.appendChild(guide);
+
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', x);
+        c.setAttribute('cy', y);
+        c.setAttribute('r', '7');
+        c.setAttribute('fill', 'var(--antinode)');
+        antinodeMarkers.appendChild(c);
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', x);
+        label.setAttribute('y', y + (shape >= 0 ? -12 : 22));
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('fill', 'var(--antinode)');
+        label.setAttribute('font-size', '13');
+        label.textContent = 'A';
+        antinodeMarkers.appendChild(label);
+      }
+    }
+
+    function drawWavelength(s) {
+      const fracLength = Math.min(1, s.lambda / s.L);
+      const x1 = graphLeft;
+      const x2 = fracToPx(fracLength);
+
+      lambdaLine.setAttribute('x1', x1);  lambdaLine.setAttribute('x2', x2);
+      lambdaTick1.setAttribute('x1', x1); lambdaTick1.setAttribute('x2', x1);
+      lambdaTick2.setAttribute('x1', x2); lambdaTick2.setAttribute('x2', x2);
+
+      lambdaText.setAttribute('x', (x1 + x2) / 2);
+      lambdaText.textContent =
+        'λₙ = ' + s.lambda.toFixed(2) + ' m' +
+        (s.lambda > s.L ? '  (longer than the string)' : '');
+    }
+
+    function updateObservation(s) {
+      if (s.n === 1) {
+        observe.innerHTML =
+          '<strong>Fundamental mode:</strong>There are 2 nodes and 1 antinode. The string contains half of one wavelength.';
+      } else {
+        const suffix = s.n === 2 ? 'nd' : s.n === 3 ? 'rd' : 'th';
+        observe.innerHTML =
+          '<strong>' + s.n + suffix + ' harmonic:</strong>' +
+          'There are ' + (s.n + 1) + ' nodes and ' + s.n + ' antinodes. The string contains ' + s.n + ' half-wavelengths.';
+      }
+    }
+
+    function updateStatic(changed) {
+      const s = state();
+
+      harmonicOut.textContent  = s.n.toFixed(0);
+      amplitudeOut.textContent = s.A.toFixed(2) + ' m';
+      lengthOut.textContent    = s.L.toFixed(2) + ' m';
+      speedOut.textContent     = s.v.toFixed(1) + ' m/s';
+
+      harmonicMetric.textContent  = 'n = ' + s.n;
+      lambdaMetric.textContent    = s.lambda.toFixed(2) + ' m';
+      frequencyMetric.textContent = s.f.toFixed(2) + ' Hz';
+      nodesMetric.textContent     = String(s.n + 1);
+      antinodesMetric.textContent = String(s.n);
+
+      drawEnvelopes(s);
+      drawMarkers(s);
+      drawWavelength(s);
+      updateObservation(s);
+
+      if (changed === 'n') {
+        challengeText.textContent =
+          'Compare n = 1, 2, 3, and 4. How do the numbers of nodes and antinodes change?';
+      } else if (changed === 'A') {
+        challengeText.textContent =
+          'Change amplitude. Do the node positions, wavelength, or frequency change?';
+      } else if (changed === 'L') {
+        challengeText.textContent =
+          'Increase string length while keeping n and v fixed. What happens to wavelength and frequency?';
+      } else if (changed === 'v') {
+        challengeText.textContent =
+          'Increase wave speed while keeping n and L fixed. Which quantity changes: wavelength, frequency, or both?';
+      }
+
+      drawFrame(performance.now());
+    }
+
+    function drawFrame(now) {
+      const s   = state();
+      const t   = currentTime(now);
+      const pts = [];
+      const samples = 520;
+
+      for (let i = 0; i <= samples; i++) {
+        const frac = i / samples;
+        const y    = yAtFraction(frac, t, s);
+        pts.push(fracToPx(frac).toFixed(1) + ',' + yToPx(y).toFixed(1));
+      }
+
+      waveLine.setAttribute('points', pts.join(' '));
+
+      for (let i = 0; i < particleEls.length; i++) {
+        particleEls[i].setAttribute('cy', yToPx(yAtFraction(particleFractions[i], t, s)));
+      }
+    }
+
+    function loop(now) {
+      drawFrame(now);
+      if (playing) raf = requestAnimationFrame(loop);
+    }
+
+    function startLoop() {
+      cancelAnimationFrame(raf);
+      if (playing) raf = requestAnimationFrame(loop);
+    }
+
+    harmonic.addEventListener('input', () => {
+      startedAt = performance.now();
+      pausedAt  = 0;
+      updateStatic('n');
+    });
+
+    amplitude.addEventListener('input', () => updateStatic('A'));
+
+    length.addEventListener('input', () => {
+      startedAt = performance.now();
+      pausedAt  = 0;
+      updateStatic('L');
+    });
+
+    speed.addEventListener('input', () => {
+      startedAt = performance.now();
+      pausedAt  = 0;
+      updateStatic('v');
+    });
+
+    playPause.addEventListener('click', () => {
+      if (playing) {
+        pausedAt = (performance.now() - startedAt) / 1000;
+        playing  = false;
+        cancelAnimationFrame(raf);
+        playPause.textContent = 'Play';
+        drawFrame(performance.now());
+      } else {
+        startedAt = performance.now() - pausedAt * 1000;
+        playing   = true;
+        playPause.textContent = 'Pause';
+        startLoop();
+      }
+    });
+
+    stepBtn.addEventListener('click', () => {
+      if (playing) {
+        pausedAt = (performance.now() - startedAt) / 1000;
+        playing  = false;
+        cancelAnimationFrame(raf);
+        playPause.textContent = 'Play';
+      }
+      pausedAt += state().T / 8;
+      drawFrame(performance.now());
+    });
+
+    resetBtn.addEventListener('click', () => {
+      harmonic.value  = '1';
+      amplitude.value = '1.00';
+      length.value    = '2.00';
+      speed.value     = '20';
+      pausedAt  = 0;
+      startedAt = performance.now();
+      if (!playing) { playing = true; playPause.textContent = 'Pause'; }
+      challengeText.textContent =
+        'Change from n = 1 to n = 2. What happens to the number of antinodes, wavelength, and frequency?';
+      updateStatic();
+      startLoop();
+    });
+
+    makeParticles();
+    updateStatic();
+    startLoop();
+  })();
+  </script>
+</body>
+</html>
