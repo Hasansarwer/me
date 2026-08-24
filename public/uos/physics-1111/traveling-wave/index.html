@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Travelling-Wave Animator — PHY-1111, CSE, University of Scholars</title>
+  <meta name="description" content="Interactive travelling-wave simulation for PHY-1111. Adjust amplitude, wavelength, frequency and phase to see how a sinusoidal disturbance propagates while medium particles oscillate in place." />
+  <meta name="keywords" content="travelling wave, transverse wave, wave speed, wavelength, frequency, amplitude, phase, PHY-1111, physics simulation, CSE, University of Scholars, wave equation" />
+  <meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Travelling-Wave Animator — PHY-1111, CSE, University of Scholars" />
+  <meta property="og:description" content="Adjust amplitude, wavelength, frequency and phase and watch a sinusoidal wave propagate while medium particles oscillate vertically in place." />
+  <meta property="og:locale" content="en_GB" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Travelling-Wave Animator — PHY-1111" />
+  <meta name="twitter:description" content="Interactive simulation: adjust wave parameters and watch a sinusoidal disturbance travel left or right." />
+
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "Travelling-Wave Animator",
+    "description": "Browser-based interactive simulation showing how a sinusoidal travelling wave propagates through a medium. Students adjust amplitude, wavelength, frequency, and phase while observing that medium particles oscillate vertically at fixed positions.",
+    "inLanguage": "en",
+    "educationalLevel": "undergraduate",
+    "learningResourceType": "Simulation",
+    "teaches": ["travelling wave", "wave speed", "wavelength", "frequency", "amplitude", "phase", "wave equation", "transverse wave"],
+    "isPartOf": {
+      "@type": "Course",
+      "name": "PHY-1111",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "University of Scholars",
+        "department": "Department of Computer Science and Engineering"
+      }
+    }
+  }
+  </script>
+
+  <style>
+    /* salt-theme-gen — preset: ocean, radius: rounded */
+    :root {
+      --bg:           #f3f5f7;
+      --card:         #fcfcfa;
+      --text:         #060809;
+      --muted:        #6a7379;
+      --border:       #d4d8db;
+      --accent:       #0078a9;
+      --accent-hover: #006088;
+      --accent-soft:  #b7cee2;
+      --on-accent:    #ffffff;
+
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+
+      /* sim-local */
+      --grid:     #e2e8f0;
+      --wave:     #0f766e;
+      --particle: #b45309;
+      --marker:   #7c3aed;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #090b0d;
+        --card:         #1a1e20;
+        --text:         #f3f5f7;
+        --muted:        #879197;
+        --border:       #2b2e30;
+        --accent:       #5bbaee;
+        --accent-hover: #3fa1d3;
+        --accent-soft:  #233848;
+        --on-accent:    #444444;
+
+        /* sim-local */
+        --grid:     #243147;
+        --wave:     #5eead4;
+        --particle: #fbbf24;
+        --marker:   #c4b5fd;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--border); }
+    .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+    .container {
+      width: min(100%, 1040px);
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+
+    h1 { margin: 0 0 6px; font-size: clamp(1.5rem, 5vw, 2.2rem); line-height: 1.15; }
+
+    .intro p { margin: 0; color: var(--muted); line-height: 1.5; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .metric, .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .metric { min-width: 0; padding: 12px; }
+    .metric small { display: block; color: var(--muted); font-size: .78rem; }
+    .metric strong { display: block; margin-top: 3px; font-size: 1.07rem; overflow-wrap: anywhere; }
+
+    .panel { padding: 14px; min-width: 0; }
+    .panel + .panel { margin-top: 14px; }
+    .panel h2 { margin: 0 0 12px; font-size: 1.06rem; }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .control { min-width: 0; }
+
+    .control-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .control-head label { font-weight: 700; font-size: .94rem; }
+    .control-head output { color: var(--accent); font-weight: 800; white-space: nowrap; }
+
+    input[type=range] {
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+      accent-color: var(--accent);
+      touch-action: pan-y;
+    }
+
+    .hint { color: var(--muted); font-size: .8rem; line-height: 1.4; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    button {
+      min-height: 46px;
+      min-width: 82px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      padding: 9px 12px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    button:hover { border-color: var(--accent); }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--on-accent);
+      border-color: transparent;
+    }
+
+    button.primary:hover { background: var(--accent-hover); }
+
+    button.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      outline-offset: 2px;
+    }
+
+    .equation {
+      margin: 14px 0 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: color-mix(in srgb, var(--card) 86%, var(--grid));
+      text-align: center;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: clamp(.98rem, 3.8vw, 1.28rem);
+      line-height: 1.55;
+    }
+
+    svg { display: block; width: 100%; height: auto; max-width: 100%; }
+
+    .note {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      background: var(--accent-soft);
+      line-height: 1.45;
+    }
+
+    .note strong { display: block; margin-bottom: 4px; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .challenge { margin-top: 14px; }
+    .challenge p { margin: 6px 0 0; color: var(--muted); line-height: 1.5; }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .theme-credit { font-size: 0.8rem; color: var(--muted); }
+    .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .theme-credit a:hover { text-decoration: underline; }
+
+    @media (min-width: 580px) {
+      .controls-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (min-width: 820px) {
+      .container { padding: 24px; }
+      .metrics { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .controls-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .panel { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../">UOS Simulations</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="../">PHY-1111</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span class="current" aria-current="page">Travelling Wave</span>
+    </nav>
+  </header>
+
+  <main class="container" id="travelingWaveApp">
+    <section class="intro">
+      <h1>Travelling-Wave Animator</h1>
+      <p>Change the wave parameters and watch the disturbance propagate while individual medium particles oscillate about fixed positions.</p>
+    </section>
+
+    <section class="metrics" aria-label="Calculated wave quantities">
+      <div class="metric"><small>Period, T</small><strong id="periodMetric">2.00 s</strong></div>
+      <div class="metric"><small>Wave speed, v</small><strong id="speedMetric">2.00 m/s</strong></div>
+      <div class="metric"><small>Wave number, k</small><strong id="kMetric">1.57 rad/m</strong></div>
+      <div class="metric"><small>Angular frequency, ω</small><strong id="omegaMetric">3.14 rad/s</strong></div>
+      <div class="metric"><small>Direction</small><strong id="directionMetric">→ Right</strong></div>
+    </section>
+
+    <section class="panel">
+      <h2>Wave parameters</h2>
+
+      <div class="controls-grid">
+        <div class="control">
+          <div class="control-head">
+            <label for="amplitude">Amplitude, A</label>
+            <output id="amplitudeOut">1.00 m</output>
+          </div>
+          <input id="amplitude" type="range" min="0.20" max="1.50" step="0.05" value="1.00" />
+          <div class="hint">Maximum displacement of a medium particle.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="wavelength">Wavelength, λ</label>
+            <output id="wavelengthOut">4.00 m</output>
+          </div>
+          <input id="wavelength" type="range" min="1.50" max="8.00" step="0.10" value="4.00" />
+          <div class="hint">Distance between adjacent points in the same phase.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="frequency">Frequency, f</label>
+            <output id="frequencyOut">0.50 Hz</output>
+          </div>
+          <input id="frequency" type="range" min="0.20" max="1.50" step="0.05" value="0.50" />
+          <div class="hint">Oscillations of each medium particle per second.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="phase">Initial phase, φ</label>
+            <output id="phaseOut">0°</output>
+          </div>
+          <input id="phase" type="range" min="0" max="355" step="5" value="0" />
+          <div class="hint">Shifts the wave relative to the chosen origin and time.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="playPause" class="primary" type="button">Pause</button>
+        <button id="reset" type="button">Reset</button>
+        <button id="rightBtn" class="active" type="button">→ Right</button>
+        <button id="leftBtn" type="button">← Left</button>
+      </div>
+
+      <div class="equation" id="equation">
+        y(x,t) = A sin(kx − ωt + φ), &nbsp;&nbsp; v = fλ
+      </div>
+
+      <div class="note" id="observe" aria-live="polite">
+        <strong>Key idea:</strong>
+        The wave travels to the right, but each orange particle only moves up and down around its own fixed horizontal position.
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Travelling disturbance and medium particles</h2>
+
+      <svg viewBox="0 0 900 430" role="img" aria-label="Travelling sinusoidal wave with medium particles oscillating vertically">
+        <defs>
+          <marker id="propArrow" markerWidth="14" markerHeight="14"
+                  refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,2 L12,7 L0,12 z" fill="var(--marker)"/>
+          </marker>
+        </defs>
+
+        <!-- graph area -->
+        <line x1="65" y1="220" x2="850" y2="220" stroke="var(--border)" stroke-width="2"/>
+        <line x1="65" y1="55"  x2="65"  y2="365" stroke="var(--border)" stroke-width="2"/>
+
+        <line x1="65" y1="105" x2="850" y2="105" stroke="var(--grid)" stroke-width="2" stroke-dasharray="5 6"/>
+        <line x1="65" y1="335" x2="850" y2="335" stroke="var(--grid)" stroke-width="2" stroke-dasharray="5 6"/>
+
+        <text x="52" y="110" text-anchor="end" fill="var(--muted)" font-size="16">+A</text>
+        <text x="52" y="225" text-anchor="end" fill="var(--muted)" font-size="16">0</text>
+        <text x="52" y="340" text-anchor="end" fill="var(--muted)" font-size="16">−A</text>
+        <text x="850" y="390" text-anchor="end" fill="var(--muted)" font-size="16">position x</text>
+
+        <!-- wave -->
+        <polyline id="waveLine" points=""
+                  fill="none" stroke="var(--wave)" stroke-width="5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- particles -->
+        <g id="particles"></g>
+
+        <!-- fixed particle guide -->
+        <line id="fixedGuide" x1="445" y1="75" x2="445" y2="350"
+              stroke="var(--particle)" stroke-width="2" stroke-dasharray="5 6"/>
+        <circle id="fixedParticle" cx="445" cy="220" r="10" fill="var(--particle)"/>
+        <text id="fixedLabel" x="455" y="85" fill="var(--particle)" font-size="16">one medium particle</text>
+
+        <!-- wavelength bracket -->
+        <line id="lambdaLine"  x1="145" y1="405" x2="405" y2="405" stroke="var(--marker)" stroke-width="3"/>
+        <line id="lambdaTick1" x1="145" y1="397" x2="145" y2="413" stroke="var(--marker)" stroke-width="3"/>
+        <line id="lambdaTick2" x1="405" y1="397" x2="405" y2="413" stroke="var(--marker)" stroke-width="3"/>
+        <text id="lambdaText" x="275" y="426" text-anchor="middle" fill="var(--marker)" font-size="16">λ = 4.00 m</text>
+
+        <!-- propagation arrow -->
+        <line id="directionArrow" x1="645" y1="70" x2="790" y2="70"
+              stroke="var(--marker)" stroke-width="5" stroke-linecap="round"
+              marker-end="url(#propArrow)"/>
+        <text id="directionText" x="718" y="54" text-anchor="middle"
+              fill="var(--marker)" font-size="16" font-weight="700">wave propagation</text>
+      </svg>
+
+      <div class="legend">
+        <span class="key"><span class="dot" style="background:var(--wave)"></span> wave profile</span>
+        <span class="key"><span class="dot" style="background:var(--particle)"></span> medium particles</span>
+        <span class="key"><span class="dot" style="background:var(--marker)"></span> wavelength / propagation</span>
+      </div>
+
+      <div class="challenge">
+        <strong>Predict before changing a control</strong>
+        <p id="challengeText">Double the frequency while keeping wavelength fixed. What happens to the wave speed?</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Department of Computer Science and Engineering · University of Scholars</span>
+    <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+  </footer>
+
+  <script>
+  (() => {
+    const root = document.getElementById('travelingWaveApp');
+    if (!root || root.dataset.ready === '1') return;
+    root.dataset.ready = '1';
+
+    const amplitude  = root.querySelector('#amplitude');
+    const wavelength = root.querySelector('#wavelength');
+    const frequency  = root.querySelector('#frequency');
+    const phase      = root.querySelector('#phase');
+
+    const amplitudeOut  = root.querySelector('#amplitudeOut');
+    const wavelengthOut = root.querySelector('#wavelengthOut');
+    const frequencyOut  = root.querySelector('#frequencyOut');
+    const phaseOut      = root.querySelector('#phaseOut');
+
+    const periodMetric    = root.querySelector('#periodMetric');
+    const speedMetric     = root.querySelector('#speedMetric');
+    const kMetric         = root.querySelector('#kMetric');
+    const omegaMetric     = root.querySelector('#omegaMetric');
+    const directionMetric = root.querySelector('#directionMetric');
+
+    const equation     = root.querySelector('#equation');
+    const observe      = root.querySelector('#observe');
+    const challengeText = root.querySelector('#challengeText');
+
+    const waveLine       = root.querySelector('#waveLine');
+    const particlesGroup = root.querySelector('#particles');
+    const fixedGuide     = root.querySelector('#fixedGuide');
+    const fixedParticle  = root.querySelector('#fixedParticle');
+
+    const lambdaLine  = root.querySelector('#lambdaLine');
+    const lambdaTick1 = root.querySelector('#lambdaTick1');
+    const lambdaTick2 = root.querySelector('#lambdaTick2');
+    const lambdaText  = root.querySelector('#lambdaText');
+
+    const directionArrow = root.querySelector('#directionArrow');
+
+    const playPause = root.querySelector('#playPause');
+    const resetBtn  = root.querySelector('#reset');
+    const rightBtn  = root.querySelector('#rightBtn');
+    const leftBtn   = root.querySelector('#leftBtn');
+
+    const reducedMotion = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let playing   = !reducedMotion;
+    let startedAt = performance.now();
+    let pausedAt  = 0;
+    let raf       = 0;
+    let direction = 1; // +1 = right, -1 = left
+
+    if (!playing) playPause.textContent = 'Play';
+
+    const xMin       = 0;
+    const xMax       = 12;
+    const graphLeft  = 65;
+    const graphRight = 850;
+    const graphMid   = 220;
+    const graphAmpPx = 115;
+
+    const particleXs  = [];
+    const particleEls = [];
+    const particleCount = 17;
+
+    function state() {
+      const A        = Number(amplitude.value);
+      const lambda   = Number(wavelength.value);
+      const f        = Number(frequency.value);
+      const phaseDeg = Number(phase.value);
+      return {
+        A, lambda, f,
+        T:     1 / f,
+        k:     2 * Math.PI / lambda,
+        omega: 2 * Math.PI * f,
+        speed: f * lambda,
+        phaseDeg,
+        phi: phaseDeg * Math.PI / 180
+      };
+    }
+
+    function xToPx(x) {
+      return graphLeft + (graphRight - graphLeft) * (x - xMin) / (xMax - xMin);
+    }
+
+    function yToPx(y) {
+      return graphMid - graphAmpPx * (y / 1.5);
+    }
+
+    function currentTime(now) {
+      return playing ? (now - startedAt) / 1000 : pausedAt;
+    }
+
+    function yAt(x, t, s) {
+      return s.A * Math.sin(s.k * x - direction * s.omega * t + s.phi);
+    }
+
+    function makeParticles() {
+      particlesGroup.innerHTML = '';
+      particleXs.length = 0;
+      particleEls.length = 0;
+
+      for (let i = 0; i < particleCount; i++) {
+        const x = xMin + (xMax - xMin) * i / (particleCount - 1);
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', xToPx(x));
+        circle.setAttribute('cy', graphMid);
+        circle.setAttribute('r', '7');
+        circle.setAttribute('fill', 'var(--particle)');
+        circle.setAttribute('opacity', '0.88');
+        particlesGroup.appendChild(circle);
+        particleXs.push(x);
+        particleEls.push(circle);
+      }
+    }
+
+    function drawWave(s, t) {
+      const pts = [];
+      const samples = 520;
+      for (let i = 0; i <= samples; i++) {
+        const x = xMin + (xMax - xMin) * i / samples;
+        const y = yAt(x, t, s);
+        pts.push(xToPx(x).toFixed(1) + ',' + yToPx(y).toFixed(1));
+      }
+      waveLine.setAttribute('points', pts.join(' '));
+
+      for (let i = 0; i < particleEls.length; i++) {
+        particleEls[i].setAttribute('cy', yToPx(yAt(particleXs[i], t, s)));
+      }
+
+      const fixedX = 5.8;
+      const fx = xToPx(fixedX);
+      const fy = yToPx(yAt(fixedX, t, s));
+      fixedGuide.setAttribute('x1', fx);
+      fixedGuide.setAttribute('x2', fx);
+      fixedParticle.setAttribute('cx', fx);
+      fixedParticle.setAttribute('cy', fy);
+    }
+
+    function drawWavelength(s) {
+      const startX = 2.0;
+      const endX   = Math.min(xMax, startX + s.lambda);
+      const p1 = xToPx(startX);
+      const p2 = xToPx(endX);
+
+      lambdaLine.setAttribute('x1', p1);
+      lambdaLine.setAttribute('x2', p2);
+      lambdaTick1.setAttribute('x1', p1); lambdaTick1.setAttribute('x2', p1);
+      lambdaTick2.setAttribute('x1', p2); lambdaTick2.setAttribute('x2', p2);
+      lambdaText.setAttribute('x', (p1 + p2) / 2);
+      lambdaText.textContent = 'λ = ' + s.lambda.toFixed(2) + ' m';
+    }
+
+    function drawDirection() {
+      if (direction === 1) {
+        directionArrow.setAttribute('x1', '645');
+        directionArrow.setAttribute('x2', '790');
+        directionMetric.textContent = '→ Right';
+        equation.innerHTML = 'y(x,t) = A sin(kx − ωt + φ), &nbsp;&nbsp; v = fλ';
+        rightBtn.classList.add('active');
+        leftBtn.classList.remove('active');
+        observe.innerHTML =
+          '<strong>Right-moving wave:</strong>The wave profile travels right, while each orange particle only oscillates vertically at a fixed x-position.';
+      } else {
+        directionArrow.setAttribute('x1', '790');
+        directionArrow.setAttribute('x2', '645');
+        directionMetric.textContent = '← Left';
+        equation.innerHTML = 'y(x,t) = A sin(kx + ωt + φ), &nbsp;&nbsp; v = fλ';
+        leftBtn.classList.add('active');
+        rightBtn.classList.remove('active');
+        observe.innerHTML =
+          '<strong>Left-moving wave:</strong>The wave profile travels left, while each orange particle still oscillates vertically at a fixed x-position.';
+      }
+    }
+
+    function updateStatic(changed) {
+      const s = state();
+
+      amplitudeOut.textContent  = s.A.toFixed(2) + ' m';
+      wavelengthOut.textContent = s.lambda.toFixed(2) + ' m';
+      frequencyOut.textContent  = s.f.toFixed(2) + ' Hz';
+      phaseOut.textContent      = Math.round(s.phaseDeg) + '°';
+
+      periodMetric.textContent  = s.T.toFixed(2) + ' s';
+      speedMetric.textContent   = s.speed.toFixed(2) + ' m/s';
+      kMetric.textContent       = s.k.toFixed(2) + ' rad/m';
+      omegaMetric.textContent   = s.omega.toFixed(2) + ' rad/s';
+
+      drawWavelength(s);
+      drawDirection();
+
+      if (changed === 'A') {
+        challengeText.textContent =
+          'Increase amplitude. Does wavelength, frequency, period, or wave speed change?';
+      } else if (changed === 'lambda') {
+        challengeText.textContent =
+          'Double wavelength while keeping frequency fixed. What happens to wave speed?';
+      } else if (changed === 'f') {
+        challengeText.textContent =
+          'Double frequency while keeping wavelength fixed. What happens to period and wave speed?';
+      } else if (changed === 'phi') {
+        challengeText.textContent =
+          'Change phase. Which properties change, and which remain the same?';
+      }
+
+      drawFrame(performance.now());
+    }
+
+    function drawFrame(now) {
+      drawWave(state(), currentTime(now));
+    }
+
+    function loop(now) {
+      drawFrame(now);
+      if (playing) raf = requestAnimationFrame(loop);
+    }
+
+    function startLoop() {
+      cancelAnimationFrame(raf);
+      if (playing) raf = requestAnimationFrame(loop);
+    }
+
+    amplitude.addEventListener('input',  () => updateStatic('A'));
+    wavelength.addEventListener('input', () => updateStatic('lambda'));
+    frequency.addEventListener('input',  () => updateStatic('f'));
+    phase.addEventListener('input',      () => updateStatic('phi'));
+
+    rightBtn.addEventListener('click', () => {
+      direction = 1;
+      startedAt = performance.now();
+      pausedAt  = 0;
+      drawDirection();
+      drawFrame(performance.now());
+    });
+
+    leftBtn.addEventListener('click', () => {
+      direction = -1;
+      startedAt = performance.now();
+      pausedAt  = 0;
+      drawDirection();
+      drawFrame(performance.now());
+    });
+
+    playPause.addEventListener('click', () => {
+      if (playing) {
+        pausedAt = (performance.now() - startedAt) / 1000;
+        playing  = false;
+        cancelAnimationFrame(raf);
+        playPause.textContent = 'Play';
+        drawFrame(performance.now());
+      } else {
+        startedAt = performance.now() - pausedAt * 1000;
+        playing   = true;
+        playPause.textContent = 'Pause';
+        startLoop();
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      amplitude.value  = '1.00';
+      wavelength.value = '4.00';
+      frequency.value  = '0.50';
+      phase.value      = '0';
+      direction = 1;
+      pausedAt  = 0;
+      startedAt = performance.now();
+      if (!playing) { playing = true; playPause.textContent = 'Pause'; }
+      challengeText.textContent =
+        'Double the frequency while keeping wavelength fixed. What happens to the wave speed?';
+      updateStatic();
+      startLoop();
+    });
+
+    makeParticles();
+    updateStatic();
+    startLoop();
+  })();
+  </script>
+</body>
+</html>
