@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Energy Exchange in SHM — PHY-1111, CSE, University of Scholars</title>
+  <meta name="description" content="Watch potential energy transform into kinetic energy and back while total mechanical energy stays constant. Interactive pendulum simulation for PHY-1111, CSE, University of Scholars." />
+  <meta name="keywords" content="SHM energy, pendulum energy, potential energy, kinetic energy, conservation of energy, simple harmonic motion, PHY-1111, CSE, University of Scholars" />
+  <meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Energy Exchange in SHM | PHY-1111, CSE, University of Scholars" />
+  <meta property="og:description" content="Interactive pendulum showing PE ↔ KE exchange while total mechanical energy remains constant." />
+  <meta property="og:locale" content="en_GB" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Energy Exchange in SHM — PHY-1111, CSE, University of Scholars" />
+  <meta name="twitter:description" content="Visualise potential and kinetic energy exchange in a simple pendulum." />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "Energy Exchange in Simple Harmonic Motion",
+    "description": "Interactive browser-based pendulum simulation demonstrating the exchange between potential and kinetic energy while total mechanical energy remains constant.",
+    "inLanguage": "en",
+    "educationalLevel": "undergraduate",
+    "learningResourceType": "Simulation",
+    "teaches": ["potential energy","kinetic energy","conservation of energy","simple harmonic motion","pendulum"],
+    "author": {
+      "@type": "Person",
+      "name": "Hasan Sarwer",
+      "jobTitle": "Adjunct Faculty",
+      "worksFor": {
+        "@type": "EducationalOrganization",
+        "name": "University of Scholars",
+        "department": "Department of Computer Science and Engineering"
+      }
+    },
+    "isPartOf": {
+      "@type": "Course",
+      "name": "Foundations of Physics",
+      "courseCode": "PHY-1111",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "University of Scholars",
+        "department": "Department of Computer Science and Engineering"
+      }
+    }
+  }
+  </script>
+
+  <style>
+    /* salt-theme-gen — preset: ocean, radius: rounded */
+    :root {
+      --bg:           #f3f5f7;
+      --card:         #fcfcfa;
+      --text:         #060809;
+      --muted:        #6a7379;
+      --border:       #d4d8db;
+      --accent:       #0078a9;
+      --accent-hover: #006088;
+      --accent-soft:  #b7cee2;
+      --on-accent:    #ffffff;
+
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+
+      /* simulation-specific */
+      --ke:    #0f766e;
+      --pe:    #b45309;
+      --total: #7c3aed;
+      --grid:  #e2e8f0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #090b0d;
+        --card:         #1a1e20;
+        --text:         #f3f5f7;
+        --muted:        #879197;
+        --border:       #2b2e30;
+        --accent:       #5bbaee;
+        --accent-hover: #3fa1d3;
+        --accent-soft:  #233848;
+        --on-accent:    #060809;
+
+        --ke:    #5eead4;
+        --pe:    #fbbf24;
+        --total: #c4b5fd;
+        --grid:  #243147;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--border); }
+    .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+    .app {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .intro { margin-bottom: 24px; }
+
+    .intro h1 {
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .intro p {
+      margin-top: 6px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.97rem;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .metric {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      min-width: 0;
+    }
+
+    .metric small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 3px;
+      font-size: 1.08rem;
+      overflow-wrap: anywhere;
+    }
+
+    .layout { display: grid; gap: 14px; }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.06rem;
+      font-weight: 700;
+    }
+
+    .control { margin-bottom: 18px; }
+    .control:last-child { margin-bottom: 0; }
+
+    .control-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .control-head label { font-weight: 700; font-size: 0.96rem; }
+
+    .control-head output {
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      min-height: 44px;
+      accent-color: var(--accent);
+      touch-action: pan-y;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    button {
+      min-height: 46px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    button:hover { border-color: var(--accent); }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--on-accent);
+      border-color: transparent;
+    }
+
+    button.primary:hover { background: var(--accent-hover); }
+
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      outline-offset: 2px;
+    }
+
+    .equation {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      text-align: center;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: clamp(1rem, 3.8vw, 1.28rem);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    svg { display: block; width: 100%; height: auto; }
+
+    .energy-summary {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .energy-summary-title { font-weight: 800; margin-bottom: 8px; }
+
+    .energy-equation {
+      text-align: center;
+      font-size: clamp(1rem, 4vw, 1.25rem);
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .total-stack {
+      display: flex;
+      width: 100%;
+      height: 38px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--grid);
+      border: 1px solid var(--border);
+    }
+
+    .stack-pe, .stack-ke {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .stack-pe { background: var(--pe); }
+    .stack-ke { background: var(--ke); }
+
+    .stack-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .energy-bars { display: grid; gap: 10px; margin-top: 16px; }
+
+    .energy-row {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) 82px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .energy-label { font-weight: 800; font-size: 0.9rem; }
+
+    .track {
+      height: 18px;
+      background: var(--grid);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .track.ke-track { display: flex; justify-content: flex-end; }
+
+    .fill { height: 100%; width: 0; border-radius: 999px; }
+    .fill.ke    { background: var(--ke); }
+    .fill.pe    { background: var(--pe); }
+    .fill.total { background: var(--total); }
+
+    .energy-value {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.88rem;
+    }
+
+    .status {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: var(--accent-soft);
+      color: var(--text);
+      line-height: 1.45;
+      font-size: 0.9rem;
+    }
+
+    .status strong { display: block; margin-bottom: 4px; font-size: 1.02rem; }
+
+    .phase-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .phase-box {
+      padding: 9px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      background: var(--card);
+    }
+
+    .phase-box b { display: block; color: var(--text); margin-bottom: 3px; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .theme-credit { font-size: 0.8rem; color: var(--muted); }
+    .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .theme-credit a:hover { text-decoration: underline; }
+
+    @media (min-width: 760px) {
+      .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .layout { grid-template-columns: minmax(270px, 0.82fr) minmax(0, 1.8fr); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../">UOS Simulations</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="../">PHY-1111</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span class="current" aria-current="page">Energy in SHM</span>
+    </nav>
+  </header>
+
+  <main class="app" id="pendulumEnergyApp">
+    <section class="intro">
+      <h1>Energy Exchange in a Pendulum</h1>
+      <p>Watch potential energy transform into kinetic energy and back again while total mechanical energy stays constant.</p>
+    </section>
+
+    <section class="metrics" aria-label="Current oscillator values">
+      <div class="metric"><small>Period, T</small><strong id="periodMetric">2.46 s</strong></div>
+      <div class="metric"><small>Angle, θ</small><strong id="angleMetric">+25.0°</strong></div>
+      <div class="metric"><small>Speed, v</small><strong id="speedMetric">0.00 m/s</strong></div>
+      <div class="metric"><small>Total energy, E</small><strong id="totalMetric">1.37 J</strong></div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <h2>Controls</h2>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="length">Length, L</label>
+            <output id="lengthOut">1.50 m</output>
+          </div>
+          <input id="length" type="range" min="1.00" max="3.00" step="0.10" value="1.50">
+          <div class="hint">The period remains about 2 s or longer.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="mass">Mass, m</label>
+            <output id="massOut">0.50 kg</output>
+          </div>
+          <input id="mass" type="range" min="0.05" max="1.00" step="0.05" value="0.50">
+          <div class="hint">Mass scales the total energy — heavier bob stores more PE at the same height. Period is unaffected.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="theta0">Maximum angle, θ₀</label>
+            <output id="thetaOut">25°</output>
+          </div>
+          <input id="theta0" type="range" min="5" max="30" step="1" value="25">
+          <div class="hint">The small-angle model remains a reasonable approximation.</div>
+        </div>
+
+        <div class="buttons">
+          <button id="playPause" class="primary" type="button">Pause</button>
+          <button id="step" type="button">Step</button>
+          <button id="reset" type="button">Reset</button>
+        </div>
+
+        <div class="status" id="status" aria-live="polite">
+          <strong>At an extreme position</strong>
+          PE is maximum, KE is zero, and PE + KE still equals the same total energy.
+        </div>
+
+        <div class="phase-strip">
+          <div class="phase-box"><b>Left extreme</b>PE = Total<br>KE = 0</div>
+          <div class="phase-box"><b>Equilibrium</b>KE = Total<br>PE ≈ 0</div>
+          <div class="phase-box"><b>Right extreme</b>PE = Total<br>KE = 0</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="equation">
+          PE = mgh &nbsp;&nbsp; | &nbsp;&nbsp;
+          KE = ½mv² &nbsp;&nbsp; | &nbsp;&nbsp;
+          E = PE + KE = constant
+        </div>
+
+        <h2>Pendulum motion</h2>
+        <svg viewBox="0 0 760 420" role="img" aria-label="Pendulum swinging between extreme positions and equilibrium">
+          <defs>
+            <marker id="arrowKE" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0,2 L12,7 L0,12 z" fill="var(--ke)"/>
+            </marker>
+          </defs>
+          <line x1="250" y1="42" x2="510" y2="42" stroke="var(--border)" stroke-width="8" stroke-linecap="round"/>
+          <circle cx="380" cy="65" r="8" fill="var(--text)"/>
+
+          <path id="guideArc" d="" fill="none" stroke="var(--grid)" stroke-width="3"/>
+          <line id="leftGuide"  x1="380" y1="65" x2="255" y2="330" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 6"/>
+          <line                 x1="380" y1="65" x2="380" y2="350" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 6"/>
+          <line id="rightGuide" x1="380" y1="65" x2="505" y2="330" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 6"/>
+
+          <text x="210" y="370" fill="var(--muted)" font-size="16">left extreme</text>
+          <text x="380" y="392" text-anchor="middle" fill="var(--muted)" font-size="16">equilibrium</text>
+          <text x="535" y="370" fill="var(--muted)" font-size="16">right extreme</text>
+
+          <line id="string" x1="380" y1="65" x2="505" y2="330" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+          <circle id="bob" cx="505" cy="330" r="24" fill="var(--accent)"/>
+          <text id="bobMass" x="505" y="336" text-anchor="middle" fill="var(--on-accent)" font-size="16" font-weight="700">0.5 kg</text>
+
+          <line id="heightLine" x1="535" y1="330" x2="535" y2="350" stroke="var(--pe)" stroke-width="3"/>
+          <text id="heightText" x="548" y="343" fill="var(--pe)" font-size="16">h</text>
+
+          <line id="velArrow" x1="505" y1="330" x2="505" y2="330" stroke="var(--ke)" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowKE)"/>
+          <text id="velText" x="520" y="312" fill="var(--ke)" font-size="16">v</text>
+        </svg>
+
+        <div class="energy-summary">
+          <div class="energy-summary-title">Total energy composition</div>
+          <div id="energyEquation" class="energy-equation">
+            PE 1.37 J + KE 0.00 J = Total 1.37 J
+          </div>
+
+          <div class="total-stack" aria-label="Total energy split between potential and kinetic energy">
+            <div id="stackPE" class="stack-pe" style="width:100%">PE 100%</div>
+            <div id="stackKE" class="stack-ke" style="width:0%"></div>
+          </div>
+
+          <div class="stack-labels">
+            <span>Potential energy</span>
+            <span>Total bar always = 100%</span>
+            <span>Kinetic energy</span>
+          </div>
+        </div>
+
+        <h2 style="margin-top:18px;">Individual energies</h2>
+        <div class="energy-bars">
+          <div class="energy-row">
+            <div class="energy-label">PE</div>
+            <div class="track"><div id="peFill" class="fill pe"></div></div>
+            <div id="peValue" class="energy-value">1.37 J</div>
+          </div>
+          <div class="energy-row">
+            <div class="energy-label">KE</div>
+            <div class="track ke-track"><div id="keFill" class="fill ke"></div></div>
+            <div id="keValue" class="energy-value">0.00 J</div>
+          </div>
+          <div class="energy-row">
+            <div class="energy-label">Total</div>
+            <div class="track"><div class="fill total" style="width:100%"></div></div>
+            <div id="totalValue" class="energy-value">1.37 J</div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <span class="key"><span class="dot" style="background:var(--pe)"></span> potential energy</span>
+          <span class="key"><span class="dot" style="background:var(--ke)"></span> kinetic energy</span>
+          <span class="key"><span class="dot" style="background:var(--total)"></span> total energy</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Department of Computer Science and Engineering · University of Scholars</span>
+    <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+  </footer>
+
+<script>
+(() => {
+  const root = document.getElementById('pendulumEnergyApp');
+  if (!root || root.dataset.ready === '1') return;
+  root.dataset.ready = '1';
+
+  const g = 9.81;
+
+  const length = root.querySelector('#length');
+  const mass   = root.querySelector('#mass');
+  const theta0 = root.querySelector('#theta0');
+
+  const lengthOut = root.querySelector('#lengthOut');
+  const massOut   = root.querySelector('#massOut');
+  const thetaOut  = root.querySelector('#thetaOut');
+
+  const periodMetric = root.querySelector('#periodMetric');
+  const angleMetric  = root.querySelector('#angleMetric');
+  const speedMetric  = root.querySelector('#speedMetric');
+  const totalMetric  = root.querySelector('#totalMetric');
+
+  const string     = root.querySelector('#string');
+  const bob        = root.querySelector('#bob');
+  const bobMass    = root.querySelector('#bobMass');
+  const leftGuide  = root.querySelector('#leftGuide');
+  const rightGuide = root.querySelector('#rightGuide');
+  const guideArc   = root.querySelector('#guideArc');
+
+  const heightLine = root.querySelector('#heightLine');
+  const heightText = root.querySelector('#heightText');
+  const velArrow   = root.querySelector('#velArrow');
+  const velText    = root.querySelector('#velText');
+
+  const peFill    = root.querySelector('#peFill');
+  const keFill    = root.querySelector('#keFill');
+  const peValue   = root.querySelector('#peValue');
+  const keValue   = root.querySelector('#keValue');
+  const totalValue = root.querySelector('#totalValue');
+
+  const stackPE       = root.querySelector('#stackPE');
+  const stackKE       = root.querySelector('#stackKE');
+  const energyEquation = root.querySelector('#energyEquation');
+
+  const status    = root.querySelector('#status');
+  const playPause = root.querySelector('#playPause');
+  const step      = root.querySelector('#step');
+  const reset     = root.querySelector('#reset');
+
+  const pivotX      = 380;
+  const pivotY      = 65;
+  const visualLength = 275;
+
+  let playing    = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let startTime  = performance.now();
+  let pausedTime = 0;
+  let raf        = 0;
+
+  if (!playing) playPause.textContent = 'Play';
+
+  function state() {
+    const L           = Number(length.value);
+    const m           = Number(mass.value);
+    const thetaMaxDeg = Number(theta0.value);
+    const thetaMax    = thetaMaxDeg * Math.PI / 180;
+    const omega       = Math.sqrt(g / L);
+    const T           = 2 * Math.PI / omega;
+    const hMax        = L * (1 - Math.cos(thetaMax));
+    const E           = m * g * hMax;
+    return { L, m, thetaMaxDeg, thetaMax, omega, T, hMax, E };
+  }
+
+  function timeNow(now) {
+    return playing ? (now - startTime) / 1000 : pausedTime;
+  }
+
+  function pointForAngle(theta) {
+    return {
+      x: pivotX + visualLength * Math.sin(theta),
+      y: pivotY + visualLength * Math.cos(theta)
+    };
+  }
+
+  function dynamics(t, s) {
+    const theta    = s.thetaMax * Math.cos(s.omega * t);
+    const thetaDot = -s.thetaMax * s.omega * Math.sin(s.omega * t);
+    const speed    = Math.abs(s.L * thetaDot);
+    const h        = s.L * (1 - Math.cos(theta));
+    const PE       = s.m * g * h;
+    const KE       = Math.max(0, s.E - PE);
+    return { theta, thetaDot, speed, h, PE, KE };
+  }
+
+  function drawStatic() {
+    const s = state();
+
+    lengthOut.textContent = s.L.toFixed(2) + ' m';
+    massOut.textContent   = s.m.toFixed(2) + ' kg';
+    thetaOut.textContent  = s.thetaMaxDeg.toFixed(0) + '°';
+
+    periodMetric.textContent = s.T.toFixed(2) + ' s';
+    totalMetric.textContent  = s.E.toFixed(2) + ' J';
+    totalValue.textContent   = s.E.toFixed(2) + ' J';
+    bobMass.textContent      = s.m.toFixed(1) + ' kg';
+
+    const left  = pointForAngle(-s.thetaMax);
+    const right = pointForAngle(s.thetaMax);
+
+    leftGuide.setAttribute('x2', left.x);
+    leftGuide.setAttribute('y2', left.y);
+    rightGuide.setAttribute('x2', right.x);
+    rightGuide.setAttribute('y2', right.y);
+
+    guideArc.setAttribute('d',
+      `M ${left.x.toFixed(1)} ${left.y.toFixed(1)} A ${visualLength} ${visualLength} 0 0 0 ${right.x.toFixed(1)} ${right.y.toFixed(1)}`
+    );
+
+    drawFrame(performance.now());
+  }
+
+  function setStatus(d, s) {
+    const frac = Math.abs(d.theta / s.thetaMax);
+    if (frac > 0.92) {
+      status.innerHTML = '<strong>Extreme position</strong>PE ≈ Total and KE ≈ 0. The bob stops momentarily, but total energy is unchanged.';
+    } else if (frac < 0.10) {
+      status.innerHTML = '<strong>Equilibrium position</strong>KE ≈ Total and PE ≈ 0. The bob is moving fastest, but total energy is unchanged.';
+    } else {
+      status.innerHTML = '<strong>Energy conversion in progress</strong>One energy decreases while the other increases. Their sum stays constant.';
+    }
+  }
+
+  function drawFrame(now) {
+    const s = state();
+    const t = timeNow(now);
+    const d = dynamics(t, s);
+    const p = pointForAngle(d.theta);
+
+    string.setAttribute('x2', p.x);
+    string.setAttribute('y2', p.y);
+    bob.setAttribute('cx', p.x);
+    bob.setAttribute('cy', p.y);
+    bobMass.setAttribute('x', p.x);
+    bobMass.setAttribute('y', p.y + 6);
+
+    angleMetric.textContent = (d.theta >= 0 ? '+' : '') + (d.theta * 180 / Math.PI).toFixed(1) + '°';
+    speedMetric.textContent = d.speed.toFixed(2) + ' m/s';
+
+    const pePct = s.E > 0 ? Math.max(0, Math.min(100, 100 * d.PE / s.E)) : 0;
+    const kePct = s.E > 0 ? Math.max(0, Math.min(100, 100 * d.KE / s.E)) : 0;
+
+    peFill.style.width = pePct.toFixed(1) + '%';
+    keFill.style.width = kePct.toFixed(1) + '%';
+    peValue.textContent = d.PE.toFixed(2) + ' J';
+    keValue.textContent = d.KE.toFixed(2) + ' J';
+
+    stackPE.style.width  = pePct.toFixed(1) + '%';
+    stackKE.style.width  = kePct.toFixed(1) + '%';
+    stackPE.textContent  = pePct >= 14 ? 'PE ' + pePct.toFixed(0) + '%' : '';
+    stackKE.textContent  = kePct >= 14 ? 'KE ' + kePct.toFixed(0) + '%' : '';
+
+    energyEquation.textContent =
+      'PE ' + d.PE.toFixed(2) + ' J + KE ' + d.KE.toFixed(2) + ' J = Total ' + s.E.toFixed(2) + ' J';
+
+    const lowestY = pivotY + visualLength;
+    heightLine.setAttribute('x1', p.x + 34);
+    heightLine.setAttribute('x2', p.x + 34);
+    heightLine.setAttribute('y1', p.y);
+    heightLine.setAttribute('y2', lowestY);
+    heightText.setAttribute('x', p.x + 44);
+    heightText.setAttribute('y', (p.y + lowestY) / 2);
+
+    const dir      = d.thetaDot === 0 ? 0 : Math.sign(d.thetaDot);
+    const tangentX = Math.cos(d.theta);
+    const tangentY = -Math.sin(d.theta);
+    const vmax     = Math.max(0.001, s.L * s.thetaMax * s.omega);
+    const arrowLen = Math.min(72, 18 + 48 * (d.speed / vmax));
+    const vx2      = p.x + dir * tangentX * arrowLen;
+    const vy2      = p.y + dir * tangentY * arrowLen;
+
+    velArrow.setAttribute('x1', p.x);
+    velArrow.setAttribute('y1', p.y);
+    velArrow.setAttribute('x2', vx2);
+    velArrow.setAttribute('y2', vy2);
+    velText.setAttribute('x', vx2 + 8);
+    velText.setAttribute('y', vy2 - 8);
+    velText.style.opacity = d.speed < 0.03 ? '0' : '1';
+
+    setStatus(d, s);
+  }
+
+  function loop(now) {
+    drawFrame(now);
+    if (playing) raf = requestAnimationFrame(loop);
+  }
+
+  function startLoop() {
+    cancelAnimationFrame(raf);
+    if (playing) raf = requestAnimationFrame(loop);
+  }
+
+  [length, mass, theta0].forEach(el => {
+    el.addEventListener('input', () => {
+      startTime  = performance.now();
+      pausedTime = 0;
+      drawStatic();
+    });
+  });
+
+  playPause.addEventListener('click', () => {
+    if (playing) {
+      pausedTime = (performance.now() - startTime) / 1000;
+      playing    = false;
+      cancelAnimationFrame(raf);
+      playPause.textContent = 'Play';
+      drawFrame(performance.now());
+    } else {
+      startTime = performance.now() - pausedTime * 1000;
+      playing   = true;
+      playPause.textContent = 'Pause';
+      startLoop();
+    }
+  });
+
+  step.addEventListener('click', () => {
+    if (playing) {
+      pausedTime = (performance.now() - startTime) / 1000;
+      playing    = false;
+      cancelAnimationFrame(raf);
+      playPause.textContent = 'Play';
+    }
+    pausedTime += state().T / 8;
+    drawFrame(performance.now());
+  });
+
+  reset.addEventListener('click', () => {
+    length.value = '1.50';
+    mass.value   = '0.50';
+    theta0.value = '25';
+    pausedTime   = 0;
+    startTime    = performance.now();
+    drawStatic();
+    if (!playing) { playing = true; playPause.textContent = 'Pause'; }
+    startLoop();
+  });
+
+  drawStatic();
+  startLoop();
+})();
+</script>
+</body>
+</html>
