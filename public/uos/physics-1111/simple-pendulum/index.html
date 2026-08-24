@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Simple Pendulum: Period vs Length &amp; Amplitude — PHY-1111, CSE, University of Scholars</title>
+  <meta name="description" content="Explore how pendulum length controls the period and why amplitude only matters at large angles. Compares small-angle formula with the exact elliptic-integral period. PHY-1111, CSE, University of Scholars." />
+  <meta name="keywords" content="simple pendulum, period, length, amplitude, small-angle approximation, elliptic integral, PHY-1111, CSE, University of Scholars" />
+  <meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Simple Pendulum: Period vs Length &amp; Amplitude | PHY-1111, CSE, University of Scholars" />
+  <meta property="og:description" content="Interactive pendulum comparing the small-angle formula with the exact elliptic-integral period." />
+  <meta property="og:locale" content="en_GB" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Simple Pendulum — PHY-1111, CSE, University of Scholars" />
+  <meta name="twitter:description" content="Compare small-angle and exact pendulum periods as length and amplitude change." />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "Simple Pendulum: Period vs Length and Amplitude",
+    "description": "Interactive browser-based simulation showing how pendulum length determines the period and why amplitude matters at large angles, using the exact elliptic-integral period alongside the small-angle approximation.",
+    "inLanguage": "en",
+    "educationalLevel": "undergraduate",
+    "learningResourceType": "Simulation",
+    "teaches": ["simple pendulum","period","length","amplitude","small-angle approximation","elliptic integral","oscillation"],
+    "author": {
+      "@type": "Person",
+      "name": "Hasan Sarwer",
+      "jobTitle": "Adjunct Faculty",
+      "worksFor": {
+        "@type": "EducationalOrganization",
+        "name": "University of Scholars",
+        "department": "Department of Computer Science and Engineering"
+      }
+    },
+    "isPartOf": {
+      "@type": "Course",
+      "name": "Foundations of Physics",
+      "courseCode": "PHY-1111",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "University of Scholars",
+        "department": "Department of Computer Science and Engineering"
+      }
+    }
+  }
+  </script>
+
+  <style>
+    /* salt-theme-gen — preset: ocean, radius: rounded */
+    :root {
+      --bg:           #f3f5f7;
+      --card:         #fcfcfa;
+      --text:         #060809;
+      --muted:        #6a7379;
+      --border:       #d4d8db;
+      --accent:       #0078a9;
+      --accent-hover: #006088;
+      --accent-soft:  #b7cee2;
+      --on-accent:    #ffffff;
+
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+
+      /* simulation-specific */
+      --exact:  #0f766e;
+      --approx: #b45309;
+      --grid:   #e2e8f0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #090b0d;
+        --card:         #1a1e20;
+        --text:         #f3f5f7;
+        --muted:        #879197;
+        --border:       #2b2e30;
+        --accent:       #5bbaee;
+        --accent-hover: #3fa1d3;
+        --accent-soft:  #233848;
+        --on-accent:    #060809;
+
+        --exact:  #5eead4;
+        --approx: #fbbf24;
+        --grid:   #243147;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--border); }
+    .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+    .app {
+      width: min(100%, 1000px);
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .intro { margin-bottom: 24px; }
+
+    .intro h1 {
+      font-size: clamp(1.45rem, 5vw, 2.15rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .intro p {
+      margin-top: 6px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.97rem;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .metric {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      min-width: 0;
+      padding: 12px;
+    }
+
+    .metric small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 3px;
+      font-size: 1.08rem;
+      overflow-wrap: anywhere;
+    }
+
+    .layout { display: grid; gap: 14px; }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      min-width: 0;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .control { margin-bottom: 18px; }
+    .control:last-child { margin-bottom: 0; }
+
+    .control-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .control-head label { font-weight: 700; font-size: 0.96rem; }
+
+    .control-head output {
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+      accent-color: var(--accent);
+      touch-action: pan-y;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    button {
+      min-height: 46px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      padding: 9px 8px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    button:hover { border-color: var(--accent); }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--on-accent);
+      border-color: transparent;
+    }
+
+    button.primary:hover { background: var(--accent-hover); }
+
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      outline-offset: 2px;
+    }
+
+    .equation {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      text-align: center;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: clamp(0.98rem, 3.8vw, 1.28rem);
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    svg { display: block; width: 100%; height: auto; max-width: 100%; }
+
+    .note {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      background: var(--accent-soft);
+      color: var(--text);
+      line-height: 1.45;
+      font-size: 0.9rem;
+    }
+
+    .note strong { display: block; margin-bottom: 4px; }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .compare-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      min-width: 0;
+      background: var(--bg);
+    }
+
+    .compare-box small { color: var(--muted); font-size: 0.78rem; }
+
+    .compare-box strong {
+      display: block;
+      margin-top: 3px;
+      font-size: 1.05rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .challenge { margin-top: 14px; }
+
+    .challenge p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .theme-credit { font-size: 0.8rem; color: var(--muted); }
+    .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .theme-credit a:hover { text-decoration: underline; }
+
+    @media (min-width: 760px) {
+      .metrics { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .layout  { grid-template-columns: minmax(270px, 0.82fr) minmax(0, 1.8fr); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../">UOS Simulations</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="../">PHY-1111</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span class="current" aria-current="page">Simple Pendulum</span>
+    </nav>
+  </header>
+
+  <main class="app" id="pendulumApp">
+    <section class="intro">
+      <h1>Simple Pendulum: Period vs Length and Amplitude</h1>
+      <p>Explore how pendulum length changes the period, and why amplitude matters only when the swing becomes large.</p>
+    </section>
+
+    <section class="metrics" aria-label="Pendulum values">
+      <div class="metric"><small>Length, L</small><strong id="lengthMetric">1.00 m</strong></div>
+      <div class="metric"><small>Amplitude, θ₀</small><strong id="angleMetric">10°</strong></div>
+      <div class="metric"><small>Small-angle period</small><strong id="smallMetric">2.006 s</strong></div>
+      <div class="metric"><small>Amplitude-corrected period</small><strong id="exactMetric">2.010 s</strong></div>
+      <div class="metric"><small>Velocity magnitude, |v|</small><strong id="velocityMetric">0.00 m/s</strong></div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <h2>Controls</h2>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="length">Length, L</label>
+            <output id="lengthOut">1.00 m</output>
+          </div>
+          <input id="length" type="range" min="0.25" max="3.00" step="0.05" value="1.00">
+          <div class="hint">For small angles, T ∝ √L. A longer pendulum swings more slowly.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="theta0">Release amplitude, θ₀</label>
+            <output id="thetaOut">10°</output>
+          </div>
+          <input id="theta0" type="range" min="2" max="80" step="1" value="10">
+          <div class="hint">At small angles, amplitude has almost no effect. At large angles, the true period becomes longer.</div>
+        </div>
+
+        <div class="buttons">
+          <button id="playPause" class="primary" type="button">Pause</button>
+          <button id="step" type="button">Step</button>
+          <button id="reset" type="button">Reset</button>
+        </div>
+
+        <div class="compare">
+          <div class="compare-box">
+            <small>Period increase from amplitude</small>
+            <strong id="errorMetric">+0.19%</strong>
+          </div>
+          <div class="compare-box">
+            <small>Current model</small>
+            <strong id="modelMetric">Small-angle ≈ exact</strong>
+          </div>
+        </div>
+
+        <div class="note" id="observe" aria-live="polite">
+          <strong>Observe:</strong>
+          At 10°, the small-angle approximation is extremely accurate.
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="equation">
+          Small angle: T₀ = 2π√(L/g)<br>
+          Larger amplitude: T = 4√(L/g) K(sin(θ₀/2))
+        </div>
+
+        <h2>Pendulum motion</h2>
+        <svg viewBox="0 0 760 410" role="img" aria-label="Pendulum swinging between left and right amplitude positions with a tangent velocity vector">
+          <defs>
+            <marker id="velocityArrowHead" markerWidth="14" markerHeight="14"
+                    refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0,2 L12,7 L0,12 z" fill="var(--exact)"/>
+            </marker>
+          </defs>
+
+          <line x1="250" y1="42" x2="510" y2="42" stroke="var(--border)" stroke-width="8" stroke-linecap="round"/>
+          <circle cx="380" cy="65" r="8" fill="var(--text)"/>
+
+          <path id="guideArc" d="" fill="none" stroke="var(--grid)" stroke-width="3"/>
+
+          <line id="leftGuide"  x1="380" y1="65" x2="300" y2="330" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 6"/>
+          <line                 x1="380" y1="65" x2="380" y2="350" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 6"/>
+          <line id="rightGuide" x1="380" y1="65" x2="460" y2="330" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 6"/>
+
+          <text id="leftLabel"  x="270" y="370" fill="var(--muted)" font-size="16">−10°</text>
+          <text x="380" y="395" text-anchor="middle" fill="var(--muted)" font-size="16">0° equilibrium</text>
+          <text id="rightLabel" x="475" y="370" fill="var(--muted)" font-size="16">+10°</text>
+
+          <line id="string" x1="380" y1="65" x2="420" y2="335" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+          <circle id="bob" cx="420" cy="335" r="24" fill="var(--accent)"/>
+
+          <path id="angleArc" d="" fill="none" stroke="var(--approx)" stroke-width="4" stroke-linecap="round"/>
+          <text id="thetaText" x="400" y="125" fill="var(--approx)" font-size="17">θ</text>
+
+          <line id="velocity" x1="420" y1="335" x2="420" y2="335"
+                stroke="var(--exact)" stroke-width="5" stroke-linecap="round"
+                marker-end="url(#velocityArrowHead)"/>
+          <text id="velocityText" x="430" y="315" fill="var(--exact)" font-size="16" font-weight="700">v</text>
+        </svg>
+
+        <h2>Period comparison</h2>
+        <svg viewBox="0 0 760 320" role="img" aria-label="Comparison of small-angle and amplitude-corrected pendulum period across amplitudes">
+          <line x1="65" y1="260" x2="730" y2="260" stroke="var(--border)" stroke-width="2"/>
+          <line x1="65" y1="35"  x2="65"  y2="260" stroke="var(--border)" stroke-width="2"/>
+
+          <line x1="65" y1="75"  x2="730" y2="75"  stroke="var(--grid)" stroke-dasharray="5 6"/>
+          <line x1="65" y1="165" x2="730" y2="165" stroke="var(--grid)" stroke-dasharray="5 6"/>
+
+          <text x="55" y="80"  text-anchor="end" fill="var(--muted)" font-size="15">larger T</text>
+          <text x="55" y="265" text-anchor="end" fill="var(--muted)" font-size="15">T₀</text>
+          <text x="730" y="292" text-anchor="end" fill="var(--muted)" font-size="15">amplitude θ₀</text>
+
+          <polyline id="smallLine" points="" fill="none" stroke="var(--approx)" stroke-width="3" stroke-dasharray="8 6"/>
+          <polyline id="exactLine" points="" fill="none" stroke="var(--exact)"  stroke-width="4"/>
+
+          <line id="ampCursor" x1="65" y1="35" x2="65" y2="260" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 5"/>
+          <circle id="exactPoint" cx="65" cy="260" r="7" fill="var(--accent)"/>
+        </svg>
+
+        <div class="legend">
+          <span class="key"><span class="dot" style="background:var(--approx)"></span> small-angle T₀</span>
+          <span class="key"><span class="dot" style="background:var(--exact)"></span> amplitude-corrected T</span>
+          <span class="key"><span class="dot" style="background:var(--accent)"></span> selected amplitude</span>
+        </div>
+
+        <div class="challenge">
+          <strong>Predict before moving a slider</strong>
+          <p id="challengeText">Double the length. Does the period double? Then test your prediction.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Department of Computer Science and Engineering · University of Scholars</span>
+    <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+  </footer>
+
+<script>
+(() => {
+  const root = document.getElementById('pendulumApp');
+  if (!root || root.dataset.ready === '1') return;
+  root.dataset.ready = '1';
+
+  const g = 9.81;
+
+  const length = root.querySelector('#length');
+  const theta0 = root.querySelector('#theta0');
+
+  const lengthOut = root.querySelector('#lengthOut');
+  const thetaOut  = root.querySelector('#thetaOut');
+
+  const lengthMetric   = root.querySelector('#lengthMetric');
+  const angleMetric    = root.querySelector('#angleMetric');
+  const smallMetric    = root.querySelector('#smallMetric');
+  const exactMetric    = root.querySelector('#exactMetric');
+  const velocityMetric = root.querySelector('#velocityMetric');
+  const errorMetric    = root.querySelector('#errorMetric');
+  const modelMetric    = root.querySelector('#modelMetric');
+
+  const observe       = root.querySelector('#observe');
+  const challengeText = root.querySelector('#challengeText');
+
+  const leftGuide  = root.querySelector('#leftGuide');
+  const rightGuide = root.querySelector('#rightGuide');
+  const leftLabel  = root.querySelector('#leftLabel');
+  const rightLabel = root.querySelector('#rightLabel');
+  const guideArc   = root.querySelector('#guideArc');
+
+  const string       = root.querySelector('#string');
+  const bob          = root.querySelector('#bob');
+  const angleArc     = root.querySelector('#angleArc');
+  const thetaText    = root.querySelector('#thetaText');
+  const velocity     = root.querySelector('#velocity');
+  const velocityText = root.querySelector('#velocityText');
+
+  const smallLine  = root.querySelector('#smallLine');
+  const exactLine  = root.querySelector('#exactLine');
+  const ampCursor  = root.querySelector('#ampCursor');
+  const exactPoint = root.querySelector('#exactPoint');
+
+  const playPause = root.querySelector('#playPause');
+  const step      = root.querySelector('#step');
+  const reset     = root.querySelector('#reset');
+
+  const pivotX      = 380;
+  const pivotY      = 65;
+  const visualLength = 280;
+
+  const graphLeft   = 65;
+  const graphRight  = 730;
+  const graphTop    = 55;
+  const graphBottom = 260;
+  const ampMin      = 2;
+  const ampMax      = 80;
+
+  let playing   = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let startedAt = performance.now();
+  let pausedAt  = 0;
+  let raf       = 0;
+
+  if (!playing) playPause.textContent = 'Play';
+
+  function ellipticK(k) {
+    k = Math.max(0, Math.min(0.999999999, k));
+    let a = 1;
+    let b = Math.sqrt(1 - k * k);
+    for (let i = 0; i < 30; i++) {
+      const na = (a + b) / 2;
+      const nb = Math.sqrt(a * b);
+      if (Math.abs(na - nb) < 1e-13) { a = na; break; }
+      a = na; b = nb;
+    }
+    return Math.PI / (2 * a);
+  }
+
+  function periods(L, thetaDeg) {
+    const theta  = thetaDeg * Math.PI / 180;
+    const T0     = 2 * Math.PI * Math.sqrt(L / g);
+    const Texact = 4 * Math.sqrt(L / g) * ellipticK(Math.sin(theta / 2));
+    return { T0, Texact };
+  }
+
+  function state() {
+    const L        = Number(length.value);
+    const thetaDeg = Number(theta0.value);
+    const thetaMax = thetaDeg * Math.PI / 180;
+    const p        = periods(L, thetaDeg);
+    const increase = 100 * (p.Texact / p.T0 - 1);
+    return { L, thetaDeg, thetaMax, T0: p.T0, T: p.Texact, increase, omega: 2 * Math.PI / p.Texact };
+  }
+
+  function currentTime(now) {
+    return playing ? (now - startedAt) / 1000 : pausedAt;
+  }
+
+  function pointForAngle(theta) {
+    return {
+      x: pivotX + visualLength * Math.sin(theta),
+      y: pivotY + visualLength * Math.cos(theta)
+    };
+  }
+
+  function polarPoint(cx, cy, r, theta) {
+    return { x: cx + r * Math.sin(theta), y: cy + r * Math.cos(theta) };
+  }
+
+  function currentTheta(t, s) {
+    return s.thetaMax * Math.cos(2 * Math.PI * t / s.T);
+  }
+
+  function drawGraph(s) {
+    const exactPts = [];
+    const smallPts = [];
+    let maxRatio = 1;
+
+    for (let deg = ampMin; deg <= ampMax; deg++) {
+      maxRatio = Math.max(maxRatio, periods(s.L, deg).Texact / periods(s.L, deg).T0);
+    }
+
+    const maxIncrease = Math.max(0.02, maxRatio - 1);
+
+    function yFor(T, T0) {
+      return graphBottom - ((T / T0 - 1) / maxIncrease) * (graphBottom - graphTop);
+    }
+
+    for (let deg = ampMin; deg <= ampMax; deg++) {
+      const p  = periods(s.L, deg);
+      const gx = graphLeft + (graphRight - graphLeft) * (deg - ampMin) / (ampMax - ampMin);
+      smallPts.push(gx.toFixed(1) + ',' + graphBottom.toFixed(1));
+      exactPts.push(gx.toFixed(1) + ',' + yFor(p.Texact, p.T0).toFixed(1));
+    }
+
+    smallLine.setAttribute('points', smallPts.join(' '));
+    exactLine.setAttribute('points', exactPts.join(' '));
+
+    const cursorX = graphLeft + (graphRight - graphLeft) * (s.thetaDeg - ampMin) / (ampMax - ampMin);
+    ampCursor.setAttribute('x1', cursorX);
+    ampCursor.setAttribute('x2', cursorX);
+    exactPoint.setAttribute('cx', cursorX);
+    exactPoint.setAttribute('cy', yFor(s.T, s.T0));
+  }
+
+  function drawStatic(changed) {
+    const s = state();
+
+    lengthOut.textContent = s.L.toFixed(2) + ' m';
+    thetaOut.textContent  = s.thetaDeg.toFixed(0) + '°';
+
+    lengthMetric.textContent = s.L.toFixed(2) + ' m';
+    angleMetric.textContent  = s.thetaDeg.toFixed(0) + '°';
+    smallMetric.textContent  = s.T0.toFixed(3) + ' s';
+    exactMetric.textContent  = s.T.toFixed(3) + ' s';
+    errorMetric.textContent  = '+' + s.increase.toFixed(2) + '%';
+
+    if (s.thetaDeg <= 10) {
+      modelMetric.textContent = 'Small-angle ≈ exact';
+      observe.innerHTML = '<strong>Small amplitude:</strong> The period is almost independent of amplitude. The familiar formula works very well.';
+    } else if (s.thetaDeg <= 30) {
+      modelMetric.textContent = 'Small correction';
+      observe.innerHTML = '<strong>Moderate amplitude:</strong> The true period is slightly longer than the small-angle prediction.';
+    } else {
+      modelMetric.textContent = 'Amplitude matters';
+      observe.innerHTML = '<strong>Large amplitude:</strong> The pendulum spends more time near the turning points, so its true period increases noticeably.';
+    }
+
+    if (changed === 'length') {
+      challengeText.textContent = 'Compare L = 0.50 m and L = 2.00 m. Does a fourfold increase in length double the period?';
+    } else if (changed === 'angle') {
+      challengeText.textContent = 'Compare 5°, 20°, 45° and 80°. At what point does amplitude begin to noticeably increase the period?';
+    }
+
+    const left  = pointForAngle(-s.thetaMax);
+    const right = pointForAngle(s.thetaMax);
+
+    leftGuide.setAttribute('x2', left.x);
+    leftGuide.setAttribute('y2', left.y);
+    rightGuide.setAttribute('x2', right.x);
+    rightGuide.setAttribute('y2', right.y);
+
+    leftLabel.setAttribute('x', left.x - 34);
+    leftLabel.setAttribute('y', Math.min(382, left.y + 38));
+    leftLabel.textContent = '−' + s.thetaDeg.toFixed(0) + '°';
+
+    rightLabel.setAttribute('x', right.x + 12);
+    rightLabel.setAttribute('y', Math.min(382, right.y + 38));
+    rightLabel.textContent = '+' + s.thetaDeg.toFixed(0) + '°';
+
+    guideArc.setAttribute('d',
+      `M ${left.x.toFixed(1)} ${left.y.toFixed(1)} A ${visualLength} ${visualLength} 0 0 0 ${right.x.toFixed(1)} ${right.y.toFixed(1)}`
+    );
+
+    drawGraph(s);
+    drawFrame(performance.now());
+  }
+
+  function drawFrame(now) {
+    const s     = state();
+    const t     = currentTime(now);
+    const theta = currentTheta(t, s);
+    const p     = pointForAngle(theta);
+
+    string.setAttribute('x2', p.x);
+    string.setAttribute('y2', p.y);
+    bob.setAttribute('cx', p.x);
+    bob.setAttribute('cy', p.y);
+
+    const arcR  = 46;
+    const arcEnd = polarPoint(pivotX, pivotY, arcR, theta);
+    const sweep  = theta >= 0 ? 0 : 1;
+    angleArc.setAttribute('d',
+      `M ${pivotX} ${pivotY + arcR} A ${arcR} ${arcR} 0 0 ${sweep} ${arcEnd.x.toFixed(1)} ${arcEnd.y.toFixed(1)}`
+    );
+
+    const textP = polarPoint(pivotX, pivotY, 68, theta / 2);
+    thetaText.setAttribute('x', textP.x);
+    thetaText.setAttribute('y', textP.y);
+
+    const thetaDot = -s.thetaMax * (2 * Math.PI / s.T) * Math.sin(2 * Math.PI * t / s.T);
+    const speed    = Math.abs(s.L * thetaDot);
+    const maxSpeed = Math.max(0.0001, s.L * s.thetaMax * (2 * Math.PI / s.T));
+    const speedFrac = Math.min(1, speed / maxSpeed);
+
+    const direction = thetaDot === 0 ? 0 : Math.sign(thetaDot);
+    const tangentX  = Math.cos(theta);
+    const tangentY  = -Math.sin(theta);
+    const arrowLen  = direction === 0 ? 0 : 20 + 85 * speedFrac;
+
+    const vx = p.x + direction * tangentX * arrowLen;
+    const vy = p.y + direction * tangentY * arrowLen;
+
+    velocity.setAttribute('x1', p.x);
+    velocity.setAttribute('y1', p.y);
+    velocity.setAttribute('x2', vx);
+    velocity.setAttribute('y2', vy);
+
+    velocityMetric.textContent = speed.toFixed(2) + ' m/s';
+
+    if (speedFrac < 0.025) {
+      velocity.style.opacity    = '0';
+      velocityText.style.opacity = '0';
+    } else {
+      velocity.style.opacity    = '1';
+      velocityText.style.opacity = '1';
+      velocityText.setAttribute('x', vx + (direction >= 0 ? 10 : -18));
+      velocityText.setAttribute('y', vy - 10);
+    }
+  }
+
+  function loop(now) {
+    drawFrame(now);
+    if (playing) raf = requestAnimationFrame(loop);
+  }
+
+  function startLoop() {
+    cancelAnimationFrame(raf);
+    if (playing) raf = requestAnimationFrame(loop);
+  }
+
+  length.addEventListener('input', () => {
+    startedAt = performance.now();
+    pausedAt  = 0;
+    drawStatic('length');
+  });
+
+  theta0.addEventListener('input', () => {
+    startedAt = performance.now();
+    pausedAt  = 0;
+    drawStatic('angle');
+  });
+
+  playPause.addEventListener('click', () => {
+    if (playing) {
+      pausedAt = (performance.now() - startedAt) / 1000;
+      playing  = false;
+      cancelAnimationFrame(raf);
+      playPause.textContent = 'Play';
+      drawFrame(performance.now());
+    } else {
+      startedAt = performance.now() - pausedAt * 1000;
+      playing   = true;
+      playPause.textContent = 'Pause';
+      startLoop();
+    }
+  });
+
+  step.addEventListener('click', () => {
+    if (playing) {
+      pausedAt = (performance.now() - startedAt) / 1000;
+      playing  = false;
+      cancelAnimationFrame(raf);
+      playPause.textContent = 'Play';
+    }
+    pausedAt += state().T / 8;
+    drawFrame(performance.now());
+  });
+
+  reset.addEventListener('click', () => {
+    length.value = '1.00';
+    theta0.value = '10';
+    pausedAt     = 0;
+    startedAt    = performance.now();
+    challengeText.textContent = 'Double the length. Does the period double? Then test your prediction.';
+    drawStatic();
+    if (!playing) { playing = true; playPause.textContent = 'Pause'; }
+    startLoop();
+  });
+
+  drawStatic();
+  startLoop();
+})();
+</script>
+</body>
+</html>
