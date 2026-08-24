@@ -24,15 +24,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const uosPages = [
-    { url: "/uos",                                    priority: 0.7, changeFrequency: "monthly" as const },
-    { url: "/uos/math-1111",                          priority: 0.6, changeFrequency: "monthly" as const },
+    { url: "/uos",                                    priority: 0.7, changeFrequency: "weekly" as const },
+    { url: "/uos/math-1111",                          priority: 0.6, changeFrequency: "weekly" as const },
     { url: "/uos/math-1111/derivative",               priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/math-1111/function-grapher",         priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/math-1111/derivative-rates",         priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/math-1111/limit-visualizer",         priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/math-1111/lhopital",                 priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/math-1111/discontinuity-explorer",   priority: 0.6, changeFrequency: "monthly" as const },
-    { url: "/uos/physics-1111",                       priority: 0.6, changeFrequency: "monthly" as const },
+    { url: "/uos/physics-1111",                       priority: 0.6, changeFrequency: "weekly" as const },
     { url: "/uos/physics-1111/shm",                   priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/physics-1111/periodic-motion",        priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/uos/physics-1111/reference-circle",       priority: 0.6, changeFrequency: "monthly" as const },
