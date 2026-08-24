@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Spring–Mass Oscillator — PHY-1111, CSE, University of Scholars</title>
+  <meta name="description" content="Explore how spring constant and mass determine the oscillation frequency and period of a spring–mass system. Interactive SVG simulation with live displacement graph. PHY-1111, CSE, University of Scholars." />
+  <meta name="keywords" content="spring mass oscillator, spring constant, SHM, natural frequency, period, angular frequency, oscillation, PHY-1111, CSE, University of Scholars" />
+  <meta name="author" content="Hasan Sarwer, Adjunct Faculty, CSE, University of Scholars" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Spring–Mass Oscillator | PHY-1111, CSE, University of Scholars" />
+  <meta property="og:description" content="Interactive simulation showing how k and m determine ω, f and T for a spring–mass system." />
+  <meta property="og:locale" content="en_GB" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Spring–Mass Oscillator — PHY-1111, CSE, University of Scholars" />
+  <meta name="twitter:description" content="Adjust spring constant and mass; watch frequency and period respond in real time." />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "Spring–Mass Oscillator",
+    "description": "Interactive browser-based simulation of a horizontal spring–mass system demonstrating how k and m determine angular frequency, frequency and period.",
+    "inLanguage": "en",
+    "educationalLevel": "undergraduate",
+    "learningResourceType": "Simulation",
+    "teaches": ["spring constant","mass","natural frequency","angular frequency","period","simple harmonic motion","oscillation"],
+    "author": {
+      "@type": "Person",
+      "name": "Hasan Sarwer",
+      "jobTitle": "Adjunct Faculty",
+      "worksFor": {
+        "@type": "EducationalOrganization",
+        "name": "University of Scholars",
+        "department": "Department of Computer Science and Engineering"
+      }
+    },
+    "isPartOf": {
+      "@type": "Course",
+      "name": "Foundations of Physics",
+      "courseCode": "PHY-1111",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "University of Scholars",
+        "department": "Department of Computer Science and Engineering"
+      }
+    }
+  }
+  </script>
+
+  <style>
+    /* salt-theme-gen — preset: ocean, radius: rounded */
+    :root {
+      --bg:           #f3f5f7;
+      --card:         #fcfcfa;
+      --text:         #060809;
+      --muted:        #6a7379;
+      --border:       #d4d8db;
+      --accent:       #0078a9;
+      --accent-hover: #006088;
+      --accent-soft:  #b7cee2;
+      --on-accent:    #ffffff;
+
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+
+      /* simulation-specific */
+      --spring: #0f766e;
+      --energy: #b45309;
+      --grid:   #e2e8f0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #090b0d;
+        --card:         #1a1e20;
+        --text:         #f3f5f7;
+        --muted:        #879197;
+        --border:       #2b2e30;
+        --accent:       #5bbaee;
+        --accent-hover: #3fa1d3;
+        --accent-soft:  #233848;
+        --on-accent:    #060809;
+
+        --spring: #5eead4;
+        --energy: #fbbf24;
+        --grid:   #243147;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--border); }
+    .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+    .app {
+      width: min(100%, 1000px);
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .intro { margin-bottom: 24px; }
+
+    .intro h1 {
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .intro p {
+      margin-top: 6px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.97rem;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .metric {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      min-width: 0;
+    }
+
+    .metric small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 3px;
+      font-size: 1.08rem;
+      overflow-wrap: anywhere;
+    }
+
+    .layout { display: grid; gap: 14px; }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.06rem;
+      font-weight: 700;
+    }
+
+    .control { margin-bottom: 18px; }
+    .control:last-child { margin-bottom: 0; }
+
+    .control-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .control-head label { font-weight: 700; font-size: 0.96rem; }
+
+    .control-head output {
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      min-height: 44px;
+      accent-color: var(--accent);
+      touch-action: pan-y;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      min-height: 46px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    button:hover { border-color: var(--accent); }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--on-accent);
+      border-color: transparent;
+    }
+
+    button.primary:hover { background: var(--accent-hover); }
+
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      outline-offset: 2px;
+    }
+
+    .equation {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      text-align: center;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: clamp(1.05rem, 4vw, 1.35rem);
+      margin-bottom: 14px;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+    }
+
+    .note {
+      margin-top: 14px;
+      border-radius: var(--radius-md);
+      background: var(--accent-soft);
+      color: var(--text);
+      padding: 12px;
+      line-height: 1.45;
+      font-size: 0.9rem;
+    }
+
+    .note strong { display: block; margin-bottom: 4px; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .challenge { margin-top: 14px; }
+
+    .challenge p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .theme-credit { font-size: 0.8rem; color: var(--muted); }
+    .theme-credit a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .theme-credit a:hover { text-decoration: underline; }
+
+    @media (min-width: 760px) {
+      .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .layout { grid-template-columns: minmax(270px, 0.82fr) minmax(0, 1.8fr); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../">UOS Simulations</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="../">PHY-1111</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span class="current" aria-current="page">Spring–Mass Oscillator</span>
+    </nav>
+  </header>
+
+  <main class="app" id="springMassApp">
+    <section class="intro">
+      <h1>Spring–Mass Oscillator</h1>
+      <p>Change the spring constant and mass. Observe how the oscillation frequency and period respond.</p>
+    </section>
+
+    <section class="metrics" aria-label="Calculated oscillator parameters">
+      <div class="metric"><small>Angular frequency, ω</small><strong id="omegaMetric">10.00 rad/s</strong></div>
+      <div class="metric"><small>Frequency, f</small><strong id="freqMetric">1.59 Hz</strong></div>
+      <div class="metric"><small>Period, T</small><strong id="periodMetric">0.63 s</strong></div>
+      <div class="metric"><small>Displacement, x</small><strong id="xMetric">+0.15 m</strong></div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <h2>Controls</h2>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="k">Spring constant, k</label>
+            <output id="kOut">50 N/m</output>
+          </div>
+          <input id="k" type="range" min="10" max="200" value="50" step="5">
+          <div class="hint">Larger k means a stiffer spring and stronger restoring force.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="m">Mass, m</label>
+            <output id="mOut">0.50 kg</output>
+          </div>
+          <input id="m" type="range" min="0.10" max="3.00" value="0.50" step="0.05">
+          <div class="hint">Larger mass has greater inertia and oscillates more slowly.</div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="A">Amplitude, A</label>
+            <output id="aOut">0.15 m</output>
+          </div>
+          <input id="A" type="range" min="0.05" max="0.30" value="0.15" step="0.01">
+          <div class="hint">In ideal SHM, amplitude changes the size of the motion, not its period.</div>
+        </div>
+
+        <div class="buttons">
+          <button id="playPause" class="primary" type="button">Pause</button>
+          <button id="reset" type="button">Reset</button>
+        </div>
+
+        <div class="note" id="observe" aria-live="polite">
+          <strong>Observe:</strong>
+          The natural angular frequency depends on the ratio k/m.
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="equation">
+          ω = √(k/m) &nbsp;&nbsp; | &nbsp;&nbsp; T = 2π√(m/k)
+        </div>
+
+        <h2>Oscillator</h2>
+        <svg viewBox="0 0 760 270" role="img" aria-label="A horizontal spring and mass oscillating about equilibrium">
+          <!-- wall -->
+          <rect x="40" y="60" width="28" height="150" rx="4" fill="var(--border)"/>
+          <g stroke="var(--muted)" stroke-width="2">
+            <line x1="40" y1="70"  x2="22" y2="88"/>
+            <line x1="40" y1="100" x2="22" y2="118"/>
+            <line x1="40" y1="130" x2="22" y2="148"/>
+            <line x1="40" y1="160" x2="22" y2="178"/>
+            <line x1="40" y1="190" x2="22" y2="208"/>
+          </g>
+
+          <!-- equilibrium -->
+          <line x1="500" y1="45" x2="500" y2="225" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 6"/>
+          <text x="500" y="250" text-anchor="middle" fill="var(--muted)" font-size="17">equilibrium</text>
+
+          <!-- track -->
+          <line x1="68" y1="185" x2="720" y2="185" stroke="var(--border)" stroke-width="3"/>
+
+          <!-- spring -->
+          <polyline id="spring" points="" fill="none" stroke="var(--spring)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+
+          <!-- mass -->
+          <rect id="massBlock" x="500" y="125" width="95" height="60" rx="10" fill="var(--accent)"/>
+          <text id="massLabel" x="547.5" y="162" text-anchor="middle" fill="var(--on-accent)" font-size="20" font-weight="700">0.50 kg</text>
+
+          <!-- displacement -->
+          <line id="xLine" x1="500" y1="215" x2="547" y2="215" stroke="var(--energy)" stroke-width="3"/>
+          <text id="xLabel" x="523" y="237" text-anchor="middle" fill="var(--energy)" font-size="17">x</text>
+        </svg>
+
+        <h2>Displacement–time graph</h2>
+        <svg viewBox="0 0 760 300" role="img" aria-label="Sinusoidal displacement graph for the spring–mass oscillator">
+          <line x1="60" y1="145" x2="730" y2="145" stroke="var(--border)" stroke-width="2"/>
+          <line x1="60" y1="25"  x2="60"  y2="265" stroke="var(--border)" stroke-width="2"/>
+          <line id="gridTop" x1="60" y1="55"  x2="730" y2="55"  stroke="var(--grid)" stroke-dasharray="5 6"/>
+          <line id="gridBot" x1="60" y1="235" x2="730" y2="235" stroke="var(--grid)" stroke-dasharray="5 6"/>
+
+          <text id="labelTop" x="48" y="60"  text-anchor="end" fill="var(--muted)" font-size="16">+A</text>
+          <text x="48" y="150" text-anchor="end" fill="var(--muted)" font-size="16">0</text>
+          <text id="labelBot" x="48" y="240" text-anchor="end" fill="var(--muted)" font-size="16">−A</text>
+          <text x="730" y="287" text-anchor="end" fill="var(--muted)" font-size="16">time (s)</text>
+
+          <polyline id="wave" points="" fill="none" stroke="var(--spring)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <line id="timeCursor" x1="60" y1="25" x2="60" y2="265" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 5"/>
+          <circle id="graphPoint" cx="60" cy="55" r="7" fill="var(--accent)"/>
+
+          <line id="periodLine" x1="60" y1="275" x2="170" y2="275" stroke="var(--text)" stroke-width="2"/>
+          <line x1="60" y1="269" x2="60" y2="281" stroke="var(--text)" stroke-width="2"/>
+          <line id="periodTick2" x1="170" y1="269" x2="170" y2="281" stroke="var(--text)" stroke-width="2"/>
+          <text id="periodText" x="115" y="296" text-anchor="middle" fill="var(--text)" font-size="15">T = 0.63 s</text>
+        </svg>
+
+        <div class="legend">
+          <span class="key"><span class="dot" style="background:var(--accent)"></span> current state</span>
+          <span class="key"><span class="dot" style="background:var(--spring)"></span> displacement</span>
+          <span class="key"><span class="dot" style="background:var(--energy)"></span> x from equilibrium</span>
+        </div>
+
+        <div class="challenge">
+          <strong>Predict before changing a control</strong>
+          <p id="challengeText">Double the mass while keeping k fixed. Will the period double?</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Department of Computer Science and Engineering · University of Scholars</span>
+    <span class="theme-credit">Themed by <a href="https://www.npmjs.com/package/salt-theme-gen" target="_blank" rel="noopener">salt-theme-gen</a></span>
+  </footer>
+
+<script>
+(() => {
+  const root = document.getElementById('springMassApp');
+  if (!root || root.dataset.ready === '1') return;
+  root.dataset.ready = '1';
+
+  const k = root.querySelector('#k');
+  const m = root.querySelector('#m');
+  const A = root.querySelector('#A');
+
+  const kOut = root.querySelector('#kOut');
+  const mOut = root.querySelector('#mOut');
+  const aOut = root.querySelector('#aOut');
+
+  const omegaMetric  = root.querySelector('#omegaMetric');
+  const freqMetric   = root.querySelector('#freqMetric');
+  const periodMetric = root.querySelector('#periodMetric');
+  const xMetric      = root.querySelector('#xMetric');
+
+  const massBlock = root.querySelector('#massBlock');
+  const massLabel = root.querySelector('#massLabel');
+  const spring    = root.querySelector('#spring');
+  const xLine     = root.querySelector('#xLine');
+  const xLabel    = root.querySelector('#xLabel');
+
+  const wave        = root.querySelector('#wave');
+  const timeCursor  = root.querySelector('#timeCursor');
+  const graphPoint  = root.querySelector('#graphPoint');
+  const periodLine  = root.querySelector('#periodLine');
+  const periodTick2 = root.querySelector('#periodTick2');
+  const periodText  = root.querySelector('#periodText');
+  const gridTop     = root.querySelector('#gridTop');
+  const gridBot     = root.querySelector('#gridBot');
+  const labelTop    = root.querySelector('#labelTop');
+  const labelBot    = root.querySelector('#labelBot');
+
+  const observe       = root.querySelector('#observe');
+  const challengeText = root.querySelector('#challengeText');
+  const playPause     = root.querySelector('#playPause');
+  const reset         = root.querySelector('#reset');
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let playing   = !reducedMotion;
+  let startedAt = performance.now();
+  let pausedAt  = 0;
+  let raf       = 0;
+
+  if (!playing) playPause.textContent = 'Play';
+
+  const equilibriumCenter = 547.5;
+  const visualScale       = 170 / 0.30;
+  const wallX             = 68;
+  const springY           = 155;
+  const blockWidth        = 95;
+  const blockHeight       = 60;
+
+  const graphLeft      = 60;
+  const graphRight     = 730;
+  const graphMid       = 145;
+  const graphHalfHeight = 90;
+  const graphWindow    = 5;
+
+  function state() {
+    const kval = Number(k.value);
+    const mval = Number(m.value);
+    const Aval = Number(A.value);
+    const omega = Math.sqrt(kval / mval);
+    const f = omega / (2 * Math.PI);
+    return { k: kval, m: mval, A: Aval, omega, f, T: 1 / f };
+  }
+
+  function currentTime(now) {
+    return playing ? (now - startedAt) / 1000 : pausedAt;
+  }
+
+  function displacement(t, s) {
+    return s.A * Math.cos(s.omega * t);
+  }
+
+  function buildSpring(xEnd) {
+    const start    = wallX;
+    const end      = Math.max(start + 70, xEnd);
+    const lead     = 20;
+    const coils    = 12;
+    const ampPx    = 15;
+    const pts      = [];
+    const coilStart = start + lead;
+    const coilEnd   = end - 20;
+    const segments  = coils * 2;
+
+    pts.push([start, springY]);
+    pts.push([start + lead, springY]);
+
+    for (let i = 1; i <= segments; i++) {
+      const x = coilStart + (coilEnd - coilStart) * i / segments;
+      const y = springY + (i % 2 === 0 ? -ampPx : ampPx);
+      pts.push([x, y]);
+    }
+
+    pts.push([end - 10, springY]);
+    pts.push([end, springY]);
+
+    return pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  }
+
+  function drawGraph(s) {
+    const pts = [];
+    for (let i = 0; i <= 420; i++) {
+      const t  = graphWindow * i / 420;
+      const x  = displacement(t, s);
+      const gx = graphLeft + (graphRight - graphLeft) * i / 420;
+      const gy = graphMid - (x / 0.30) * graphHalfHeight;
+      pts.push(gx.toFixed(1) + ',' + gy.toFixed(1));
+    }
+    wave.setAttribute('points', pts.join(' '));
+
+    const yTop = graphMid - (s.A / 0.30) * graphHalfHeight;
+    const yBot = graphMid + (s.A / 0.30) * graphHalfHeight;
+    gridTop.setAttribute('y1', yTop);  gridTop.setAttribute('y2', yTop);
+    gridBot.setAttribute('y1', yBot);  gridBot.setAttribute('y2', yBot);
+    labelTop.setAttribute('y', yTop + 5);
+    labelBot.setAttribute('y', yBot + 5);
+
+    const periodPx = (graphRight - graphLeft) * s.T / graphWindow;
+    const end = Math.min(graphRight, graphLeft + periodPx);
+    periodLine.setAttribute('x2', end);
+    periodTick2.setAttribute('x1', end);
+    periodTick2.setAttribute('x2', end);
+    periodText.setAttribute('x', (graphLeft + end) / 2);
+    periodText.textContent = 'T = ' + s.T.toFixed(2) + ' s';
+  }
+
+  function updateStatic(changed) {
+    const s = state();
+
+    kOut.textContent = s.k.toFixed(0) + ' N/m';
+    mOut.textContent = s.m.toFixed(2) + ' kg';
+    aOut.textContent = s.A.toFixed(2) + ' m';
+
+    omegaMetric.textContent  = s.omega.toFixed(2) + ' rad/s';
+    freqMetric.textContent   = s.f.toFixed(2) + ' Hz';
+    periodMetric.textContent = s.T.toFixed(2) + ' s';
+    massLabel.textContent    = s.m.toFixed(2) + ' kg';
+
+    drawGraph(s);
+
+    if (changed === 'k') {
+      observe.innerHTML = '<strong>Observe:</strong> Increasing k makes the spring stiffer, increasing ω and f while decreasing T.';
+      challengeText.textContent = 'If k becomes four times larger, by what factor does the period change?';
+    } else if (changed === 'm') {
+      observe.innerHTML = '<strong>Observe:</strong> Increasing m increases inertia, lowering ω and f while increasing T.';
+      challengeText.textContent = 'If m becomes four times larger, by what factor does the period change?';
+    } else if (changed === 'A') {
+      observe.innerHTML = '<strong>Observe:</strong> In ideal SHM, changing amplitude changes the size of the motion but not ω, f, or T.';
+      challengeText.textContent = 'Change A while keeping k and m fixed. Which calculated quantities remain unchanged?';
+    }
+
+    drawFrame(performance.now());
+  }
+
+  function drawFrame(now) {
+    const s      = state();
+    const t      = currentTime(now);
+    const x      = displacement(t, s);
+    const centerX = equilibriumCenter + x * visualScale;
+    const blockX  = centerX - blockWidth / 2;
+
+    xMetric.textContent = (x >= 0 ? '+' : '') + x.toFixed(2) + ' m';
+
+    massBlock.setAttribute('x', blockX);
+    massLabel.setAttribute('x', centerX);
+    spring.setAttribute('points', buildSpring(blockX));
+
+    xLine.setAttribute('x1', equilibriumCenter);
+    xLine.setAttribute('x2', centerX);
+    xLabel.setAttribute('x', (equilibriumCenter + centerX) / 2);
+    xLabel.textContent = 'x = ' + x.toFixed(2) + ' m';
+
+    const localT = t % graphWindow;
+    const gx = graphLeft + (graphRight - graphLeft) * localT / graphWindow;
+    const gy = graphMid - (displacement(localT, s) / 0.30) * graphHalfHeight;
+    timeCursor.setAttribute('x1', gx);
+    timeCursor.setAttribute('x2', gx);
+    graphPoint.setAttribute('cx', gx);
+    graphPoint.setAttribute('cy', gy);
+  }
+
+  function loop(now) {
+    drawFrame(now);
+    if (playing) raf = requestAnimationFrame(loop);
+  }
+
+  function startLoop() {
+    cancelAnimationFrame(raf);
+    if (playing) raf = requestAnimationFrame(loop);
+  }
+
+  k.addEventListener('input', () => updateStatic('k'));
+  m.addEventListener('input', () => updateStatic('m'));
+  A.addEventListener('input', () => updateStatic('A'));
+
+  playPause.addEventListener('click', () => {
+    if (playing) {
+      pausedAt = (performance.now() - startedAt) / 1000;
+      playing  = false;
+      cancelAnimationFrame(raf);
+      playPause.textContent = 'Play';
+      drawFrame(performance.now());
+    } else {
+      startedAt = performance.now() - pausedAt * 1000;
+      playing   = true;
+      playPause.textContent = 'Pause';
+      startLoop();
+    }
+  });
+
+  reset.addEventListener('click', () => {
+    k.value = '50';
+    m.value = '0.50';
+    A.value = '0.15';
+    pausedAt  = 0;
+    startedAt = performance.now();
+    observe.innerHTML = '<strong>Observe:</strong> The natural angular frequency depends on the ratio k/m.';
+    challengeText.textContent = 'Double the mass while keeping k fixed. Will the period double?';
+    updateStatic();
+    if (!playing) { playing = true; playPause.textContent = 'Pause'; }
+    startLoop();
+  });
+
+  updateStatic();
+  startLoop();
+})();
+</script>
+</body>
+</html>
