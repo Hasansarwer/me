@@ -378,9 +378,9 @@
         <div class="control">
           <div class="control-head">
             <label for="A">Amplitude, A</label>
-            <output id="aOut">0.15 m</output>
+            <output id="aOut">0.20 m</output>
           </div>
-          <input id="A" type="range" min="0.05" max="0.30" value="0.15" step="0.01">
+          <input id="A" type="range" min="0.05" max="0.50" value="0.20" step="0.01">
           <div class="hint">In ideal SHM, amplitude changes the size of the motion, not its period.</div>
         </div>
 
@@ -523,7 +523,7 @@
   if (!playing) playPause.textContent = 'Play';
 
   const equilibriumCenter = 547.5;
-  const visualScale       = 170 / 0.30;
+  const visualScale       = 150 / 0.50;
   const wallX             = 68;
   const springY           = 155;
   const blockWidth        = 95;
@@ -584,13 +584,13 @@
       const t  = graphWindow * i / 420;
       const x  = displacement(t, s);
       const gx = graphLeft + (graphRight - graphLeft) * i / 420;
-      const gy = graphMid - (x / 0.30) * graphHalfHeight;
+      const gy = graphMid - (x / 0.50) * graphHalfHeight;
       pts.push(gx.toFixed(1) + ',' + gy.toFixed(1));
     }
     wave.setAttribute('points', pts.join(' '));
 
-    const yTop = graphMid - (s.A / 0.30) * graphHalfHeight;
-    const yBot = graphMid + (s.A / 0.30) * graphHalfHeight;
+    const yTop = graphMid - (s.A / 0.50) * graphHalfHeight;
+    const yBot = graphMid + (s.A / 0.50) * graphHalfHeight;
     gridTop.setAttribute('y1', yTop);  gridTop.setAttribute('y2', yTop);
     gridBot.setAttribute('y1', yBot);  gridBot.setAttribute('y2', yBot);
     labelTop.setAttribute('y', yTop + 5);
@@ -653,7 +653,7 @@
 
     const localT = t % graphWindow;
     const gx = graphLeft + (graphRight - graphLeft) * localT / graphWindow;
-    const gy = graphMid - (displacement(localT, s) / 0.30) * graphHalfHeight;
+    const gy = graphMid - (displacement(localT, s) / 0.50) * graphHalfHeight;
     timeCursor.setAttribute('x1', gx);
     timeCursor.setAttribute('x2', gx);
     graphPoint.setAttribute('cx', gx);
@@ -692,7 +692,7 @@
   reset.addEventListener('click', () => {
     k.value = '50';
     m.value = '0.50';
-    A.value = '0.15';
+    A.value = '0.20';
     pausedAt  = 0;
     startedAt = performance.now();
     observe.innerHTML = '<strong>Observe:</strong> The natural angular frequency depends on the ratio k/m.';

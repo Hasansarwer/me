@@ -196,13 +196,13 @@
 
       <div class="card">
         <label for="freq">Frequency f (Hz)</label>
-        <input id="freq" type="range" min="0.2" max="2" step="0.1" value="0.7" />
-        <div id="freqVal" class="value">0.7</div>
+        <input id="freq" type="range" min="0.2" max="2" step="0.05" value="0.70" />
+        <div id="freqVal" class="value">0.70</div>
       </div>
 
       <div class="card">
         <label for="phase">Phase φ (degrees)</label>
-        <input id="phase" type="range" min="0" max="360" step="15" value="0" />
+        <input id="phase" type="range" min="0" max="355" step="5" value="0" />
         <div id="phaseVal" class="value">0°</div>
       </div>
     </section>
@@ -399,7 +399,7 @@
 
     function updateLabels() {
       ampVal.textContent   = Number(amp.value).toFixed(2);
-      freqVal.textContent  = Number(freq.value).toFixed(1);
+      freqVal.textContent  = Number(freq.value).toFixed(2);
       phaseVal.textContent = phase.value + "°";
 
       const f = Number(freq.value);
@@ -492,7 +492,7 @@
 
     resetBtn.addEventListener("click", () => {
       amp.value   = "0.75";
-      freq.value  = "0.7";
+      freq.value  = "0.70";
       phase.value = "0";
       startTime  = performance.now();
       pausedTime = 0;

@@ -466,10 +466,10 @@
         <div class="control">
           <div class="control-head">
             <label for="theta0">Maximum angle, θ₀</label>
-            <output id="thetaOut">25°</output>
+            <output id="thetaOut">15°</output>
           </div>
-          <input id="theta0" type="range" min="5" max="30" step="1" value="25">
-          <div class="hint">The small-angle model remains a reasonable approximation.</div>
+          <input id="theta0" type="range" min="5" max="20" step="1" value="15">
+          <div class="hint">Kept ≤ 20° so the small-angle approximation stays within ~2% error.</div>
         </div>
 
         <div class="buttons">
@@ -814,7 +814,7 @@
   reset.addEventListener('click', () => {
     length.value = '1.50';
     mass.value   = '0.50';
-    theta0.value = '25';
+    theta0.value = '15';
     pausedTime   = 0;
     startTime    = performance.now();
     drawStatic();
