@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Physics Quiz — PHY-1111 | University of Scholars</title>
+  <meta name="description" content="Chapter-wise practice quizzes for PHY-1111 at University of Scholars. Questions drawn randomly each attempt." />
+  <meta name="author" content="Hasan Sarwer, University of Scholars" />
+  <style>
+    :root {
+      --navy:        #0f3466;
+      --teal:        #0d9488;
+      --teal-light:  #ccfbf1;
+      --green:       #16a34a;
+      --green-light: #dcfce7;
+      --red:         #dc2626;
+      --red-light:   #fee2e2;
+      --bg:          #f7f9fc;
+      --card:        #ffffff;
+      --text:        #172033;
+      --muted:       #5e6a7d;
+      --border:      #d8dfeb;
+      --radius:      14px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--navy);
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1  { font-size: 1.1rem; font-weight: 700; }
+    header .sub { font-size: 0.78rem; opacity: .7; margin-top: 2px; }
+
+    /* ── Layout ── */
+    .wrap { max-width: 700px; margin: 0 auto; padding: 32px 18px 60px; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: 0 4px 18px rgba(16,24,40,.07);
+    }
+
+    /* ── Screen: chapter selection ── */
+    .sel-title { font-size: 1.35rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .sel-sub   { color: var(--muted); font-size: .88rem; margin-bottom: 24px; }
+
+    .ch-btn {
+      display: block; width: 100%; text-align: left;
+      padding: 14px 18px; margin-bottom: 10px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: var(--card); cursor: pointer; font-size: .93rem; color: var(--text);
+      transition: border-color .15s, background .15s;
+    }
+    .ch-btn:hover     { border-color: var(--teal); background: var(--teal-light); }
+    .ch-btn .ch-num   { font-size: .73rem; color: var(--muted); display: block; margin-bottom: 2px; }
+    .ch-btn .ch-name  { font-weight: 600; }
+
+    /* ── Progress ── */
+    .prog-wrap  { margin-bottom: 18px; }
+    .prog-label { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); margin-bottom: 6px; }
+    .prog-bar   { height: 5px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .prog-fill  { height: 100%; background: var(--teal); border-radius: 4px; transition: width .35s; }
+
+    /* ── Question ── */
+    .q-type   { font-size: .72rem; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    .q-text   { font-size: 1.05rem; line-height: 1.65; color: var(--navy); font-weight: 500; margin-bottom: 22px; }
+
+    /* ── MCQ options ── */
+    .option {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 15px; margin-bottom: 9px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      cursor: pointer; font-size: .92rem; line-height: 1.5;
+      transition: border-color .12s, background .12s;
+    }
+    .option:hover:not(.locked) { border-color: var(--teal); background: var(--teal-light); }
+    .option.locked  { cursor: default; }
+    .option.correct { border-color: var(--green); background: var(--green-light); }
+    .option.wrong   { border-color: var(--red);   background: var(--red-light);   }
+
+    .opt-letter {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--border); display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700; flex-shrink: 0; color: var(--text);
+    }
+    .option.correct .opt-letter { background: var(--green); color: #fff; }
+    .option.wrong   .opt-letter { background: var(--red);   color: #fff; }
+
+    /* ── Fill in the blank ── */
+    .fill-row  { display: flex; gap: 10px; margin-bottom: 10px; }
+    .fill-inp  {
+      flex: 1; padding: 10px 14px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: .95rem; outline: none; transition: border-color .15s;
+    }
+    .fill-inp:focus   { border-color: var(--teal); }
+    .fill-inp.correct { border-color: var(--green); background: var(--green-light); }
+    .fill-inp.wrong   { border-color: var(--red);   background: var(--red-light);   }
+
+    .btn-check {
+      padding: 10px 20px; background: var(--teal); color: #fff;
+      border: none; border-radius: 8px; font-size: .9rem; font-weight: 600; cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-check:disabled { opacity: .4; cursor: default; }
+
+    .fill-hint { margin-top: 6px; font-size: .83rem; color: var(--muted); }
+
+    /* ── Feedback box ── */
+    .feedback {
+      margin-top: 16px; padding: 14px 16px;
+      border-radius: 10px; font-size: .9rem; line-height: 1.65;
+    }
+    .feedback.correct { background: var(--green-light); border-left: 4px solid var(--green); }
+    .feedback.wrong   { background: var(--red-light);   border-left: 4px solid var(--red);   }
+    .fb-verdict       { font-weight: 700; margin-bottom: 4px; }
+    .feedback.correct .fb-verdict { color: var(--green); }
+    .feedback.wrong   .fb-verdict { color: var(--red);   }
+
+    /* ── Next button ── */
+    .btn-next {
+      margin-top: 20px; padding: 11px 26px;
+      background: var(--navy); color: #fff;
+      border: none; border-radius: 8px; font-size: .93rem; font-weight: 600;
+      cursor: pointer; float: right;
+    }
+    .btn-next:hover { background: #1a4a80; }
+    .cf::after { content: ""; display: block; clear: both; }
+
+    /* ── Results ── */
+    .res-card  { text-align: center; padding: 40px 24px; }
+    .res-score { font-size: 3.8rem; font-weight: 800; color: var(--navy); line-height: 1; }
+    .res-sub   { color: var(--muted); margin: 6px 0 16px; font-size: .9rem; }
+    .res-msg   { font-size: 1.05rem; font-weight: 600; color: var(--navy); margin-bottom: 30px; }
+    .res-btns  { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary   { padding: 12px 26px; background: var(--teal);  color: #fff; border: none; border-radius: 8px; font-size: .93rem; font-weight: 600; cursor: pointer; }
+    .btn-secondary { padding: 12px 26px; background: transparent;  color: var(--navy); border: 1.5px solid var(--border); border-radius: 8px; font-size: .93rem; font-weight: 600; cursor: pointer; }
+    .btn-primary:hover   { background: #0b7a70; }
+    .btn-secondary:hover { background: var(--teal-light); border-color: var(--teal); }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="sub">PHY-1111 · University of Scholars · CSE</div>
+    <h1>Physics — Practice Quiz</h1>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ── SCREEN 1: Chapter selection ── -->
+  <div id="screen-select">
+    <p class="sel-title">Select a Chapter</p>
+    <p class="sel-sub">Questions are drawn randomly every attempt. Nothing is stored or tracked.</p>
+    <div id="ch-list"></div>
+  </div>
+
+  <!-- ── SCREEN 2: Quiz ── -->
+  <div id="screen-quiz" class="hidden">
+    <div class="prog-wrap">
+      <div class="prog-label">
+        <span id="prog-text">Question 1 of 10</span>
+        <span id="ch-label" style="font-weight:600;color:var(--navy)"></span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="q-type"  id="q-type"></div>
+      <div class="q-text"  id="q-text"></div>
+      <div id="q-body"></div>
+      <div id="feedback-box" class="hidden"></div>
+      <div class="cf">
+        <button class="btn-next hidden" id="btn-next">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 3: Results ── -->
+  <div id="screen-results" class="hidden">
+    <div class="card res-card">
+      <div class="res-score" id="res-score"></div>
+      <div class="res-sub">questions answered correctly</div>
+      <div class="res-msg"  id="res-msg"></div>
+      <div class="res-btns">
+        <button class="btn-primary"   id="btn-retry">↺ Try Again</button>
+        <button class="btn-secondary" id="btn-change">← Choose Another Chapter</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- .wrap -->
+
+<script>
+// ── Chapter registry ──────────────────────────────────────────────────────────
+// Add one entry here each time a new bank file is created.
+const CHAPTERS = [
+  { id: "ch01", num: "Chapter 1", title: "Periodic and Oscillatory Motion" },
+];
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let quizSet = [], current = 0, score = 0, activeChapter = null;
+
+// ── Utility: show one screen ──────────────────────────────────────────────────
+function show(id) {
+  ["screen-select","screen-quiz","screen-results"].forEach(s =>
+    document.getElementById(s).classList.toggle("hidden", s !== id)
+  );
+}
+
+// ── Build chapter list on load ────────────────────────────────────────────────
+(function buildMenu() {
+  const list = document.getElementById("ch-list");
+  CHAPTERS.forEach(ch => {
+    const btn = document.createElement("button");
+    btn.className = "ch-btn";
+    btn.innerHTML =
+      `<span class="ch-num">${ch.num}</span>` +
+      `<span class="ch-name">${ch.title}</span>`;
+    btn.onclick = () => loadChapter(ch);
+    list.appendChild(btn);
+  });
+})();
+
+// ── Load bank file dynamically ────────────────────────────────────────────────
+function loadChapter(ch) {
+  activeChapter = ch;
+  window.QUIZ_BANK = null;
+  const old = document.getElementById("_bank");
+  if (old) old.remove();
+  const s = document.createElement("script");
+  s.id  = "_bank";
+  s.src = `bank/${ch.id}.js`;
+  s.onload  = () => { if (window.QUIZ_BANK) beginAttempt(); else alert("Bank empty."); };
+  s.onerror = () => alert("Could not load questions for " + ch.title + ".");
+  document.head.appendChild(s);
+}
+
+// ── Begin / retry ─────────────────────────────────────────────────────────────
+function beginAttempt() {
+  const pool = shuffle([...window.QUIZ_BANK]);
+  const n    = pool.length < 10 ? Math.min(5, pool.length) : 10;
+  quizSet  = pool.slice(0, n);
+  current  = 0;
+  score    = 0;
+  document.getElementById("ch-label").textContent = activeChapter.title;
+  show("screen-quiz");
+  renderQuestion();
+}
+
+// ── Render current question ───────────────────────────────────────────────────
+function renderQuestion() {
+  const q   = quizSet[current];
+  const idx = current + 1;
+  const tot = quizSet.length;
+
+  document.getElementById("prog-text").textContent = `Question ${idx} of ${tot}`;
+  document.getElementById("prog-fill").style.width = `${(idx / tot) * 100}%`;
+  document.getElementById("q-type").textContent = q.type === "mcq" ? "Multiple Choice" : "Fill in the Blank";
+  document.getElementById("q-text").textContent = q.q;
+
+  const body = document.getElementById("q-body");
+  body.innerHTML = "";
+  if (q.type === "mcq") buildMCQ(q, body);
+  else                  buildFill(q, body);
+
+  const fb = document.getElementById("feedback-box");
+  fb.className = "hidden";
+  fb.innerHTML = "";
+  document.getElementById("btn-next").classList.add("hidden");
+  document.getElementById("btn-next").onclick = advance;
+}
+
+// ── MCQ ───────────────────────────────────────────────────────────────────────
+const LETTERS = ["A","B","C","D","E"];
+
+function buildMCQ(q, body) {
+  q.options.forEach((text, i) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    div.innerHTML =
+      `<span class="opt-letter">${LETTERS[i]}</span><span>${text}</span>`;
+    div.onclick = () => submitMCQ(i, q, body);
+    body.appendChild(div);
+  });
+}
+
+function submitMCQ(chosen, q, body) {
+  const correct = q.answer;
+  const isRight = chosen === correct;
+  if (isRight) score++;
+  body.querySelectorAll(".option").forEach((el, i) => {
+    el.classList.add("locked");
+    if (i === correct)           el.classList.add("correct");
+    else if (i === chosen && !isRight) el.classList.add("wrong");
+  });
+  showFeedback(isRight, q.explanation);
+}
+
+// ── Fill ──────────────────────────────────────────────────────────────────────
+function buildFill(q, body) {
+  const row = document.createElement("div");
+  row.className = "fill-row";
+  const inp = document.createElement("input");
+  inp.className   = "fill-inp";
+  inp.type        = "text";
+  inp.placeholder = "Type your answer…";
+  inp.setAttribute("autocomplete","off");
+  const btn = document.createElement("button");
+  btn.className   = "btn-check";
+  btn.textContent = "Check";
+  btn.onclick = () => submitFill(inp.value.trim(), q, inp, btn, body);
+  inp.onkeydown = e => { if (e.key === "Enter" && !btn.disabled) btn.click(); };
+  row.appendChild(inp);
+  row.appendChild(btn);
+  body.appendChild(row);
+}
+
+function submitFill(value, q, inp, btn, body) {
+  if (!value) return;
+  const norm     = s => s.trim().toLowerCase().replace(/\s+/g, "");
+  const accepted = [q.answer, ...(q.alt || [])].map(norm);
+  const isRight  = accepted.includes(norm(value));
+  if (isRight) score++;
+  inp.classList.add(isRight ? "correct" : "wrong");
+  inp.disabled = true;
+  btn.disabled = true;
+  if (!isRight) {
+    const hint = document.createElement("p");
+    hint.className   = "fill-hint";
+    hint.textContent = "Correct answer: " + q.answer;
+    body.appendChild(hint);
+  }
+  showFeedback(isRight, q.explanation);
+}
+
+// ── Feedback ──────────────────────────────────────────────────────────────────
+function showFeedback(isRight, explanation) {
+  const fb = document.getElementById("feedback-box");
+  fb.className = "feedback " + (isRight ? "correct" : "wrong");
+  fb.innerHTML =
+    `<div class="fb-verdict">${isRight ? "✓ Correct" : "✗ Incorrect"}</div>` +
+    `<div>${explanation}</div>`;
+  document.getElementById("btn-next").classList.remove("hidden");
+}
+
+// ── Advance ───────────────────────────────────────────────────────────────────
+function advance() {
+  current++;
+  if (current < quizSet.length) renderQuestion();
+  else showResults();
+}
+
+// ── Results ───────────────────────────────────────────────────────────────────
+function showResults() {
+  const n   = quizSet.length;
+  const pct = Math.round((score / n) * 100);
+  document.getElementById("res-score").textContent = `${score} / ${n}`;
+  document.getElementById("res-msg").textContent =
+    pct === 100 ? "Perfect! Outstanding work." :
+    pct >= 80   ? "Great work — strong grasp of this chapter." :
+    pct >= 60   ? "Good effort. Review the topics you missed and try again." :
+                  "Keep at it — revisit the chapter notes and try again.";
+  document.getElementById("btn-retry").onclick  = beginAttempt;
+  document.getElementById("btn-change").onclick = () => show("screen-select");
+  show("screen-results");
+}
+
+// ── Fisher-Yates shuffle ──────────────────────────────────────────────────────
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+</script>
+</body>
+</html>
