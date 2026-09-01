@@ -172,6 +172,63 @@ window.QUIZ_BANK = [
     answer: "0",
     alt: ["zero", "0, does not", "zero, does not"],
     explanation: "g_eff = g − g = 0. With no effective restoring force, the pendulum does not oscillate at all — it remains wherever it is released. This weightlessness scenario demonstrates the equivalence principle: free fall is locally indistinguishable from the absence of gravity."
+  },
+
+  // ── Additional questions ────────────────────────────────────────────────────
+
+  {
+    type: "mcq",
+    q: "A simple pendulum of period T on Earth is taken to the Moon where g_moon = g/6. Its new period is:",
+    options: [
+      "T/√6",
+      "T/6",
+      "T√6",
+      "6T"
+    ],
+    answer: 2,
+    explanation: "T = 2π√(L/g), so T ∝ 1/√g. Replacing g with g/6 gives T_moon = 2π√(L/(g/6)) = 2π√(6L/g) = √6 × T. The weaker lunar gravity makes the pendulum swing much more slowly — it takes √6 ≈ 2.45 times longer per cycle."
+  },
+
+  {
+    type: "mcq",
+    q: "If the length of a simple pendulum is doubled, the period:",
+    options: [
+      "Doubles",
+      "Halves",
+      "Increases by a factor of √2",
+      "Increases by a factor of 4"
+    ],
+    answer: 2,
+    explanation: "T = 2π√(L/g), so T ∝ √L. Replacing L with 2L gives T_new = 2π√(2L/g) = √2 × T. The period increases by a factor of √2 ≈ 1.41. The square-root relationship means you must quadruple the length to double the period."
+  },
+
+  {
+    type: "mcq",
+    q: "The small-angle approximation sin θ ≈ θ is accurate to within 1% for amplitudes below approximately:",
+    options: [
+      "1°",
+      "8°",
+      "20°",
+      "45°"
+    ],
+    answer: 1,
+    explanation: "The approximation sin θ ≈ θ introduces less than 1% error for |θ| ≲ 8° (≈ 0.14 rad). Beyond this angle the period begins to noticeably exceed 2π√(L/g) and the full elliptic-integral solution is needed. For most lab pendulums, keeping amplitude below 5° is a safe rule of thumb."
+  },
+
+  {
+    type: "fill",
+    q: "When a lift accelerates horizontally at a, the pendulum string tilts at angle α = arctan(___) from the vertical.",
+    answer: "a/g",
+    alt: ["a / g"],
+    explanation: "The effective gravity vector has horizontal component a and vertical component g. The string aligns with this resultant, tilting at α = arctan(a/g) from the vertical. This is why you feel pushed back in an accelerating vehicle — the apparent 'gravity' tilts toward the rear."
+  },
+
+  {
+    type: "fill",
+    q: "A simple pendulum of length L = 1 m at g = 9.81 m/s² has period T ≈ ___ s. (Use π² ≈ 9.87)",
+    answer: "2",
+    alt: ["2.0", "2.00", "≈ 2"],
+    explanation: "T = 2π√(L/g) = 2π√(1/9.81) = 2π × 0.319 ≈ 2.007 s ≈ 2 s. This is the seconds pendulum — its half-period (one swing) is 1 s, which is why it was used in pendulum clocks. Its length is very close to 1 m, linking the metre and the second historically."
   }
 
 ];
