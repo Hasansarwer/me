@@ -18,7 +18,7 @@
 
 ```text
 math-1111/
-  quizes/
+  quizzes/
     index.html          ← quiz shell (chapter selector, display, scoring)
     bank/
       ch01.js           ← question bank for Chapter 1
@@ -29,7 +29,7 @@ math-1111/
   ...
 
 physics-1111/
-  quizes/
+  quizzes/
     index.html
     bank/
       ch01.js
@@ -138,6 +138,6 @@ When adding a new chapter bank:
 | ---------- | ----------------------------------------------------------------------------- |
 | Timer      | **No timer** — students work at their own pace                                |
 | Display    | **One question at a time** with Next button — students focus on each question |
-| Navigation | `quizes/` folder per subject; chapter selected inside the hub page            |
+| Navigation | `quizzes/` folder per subject; chapter selected inside the hub page           |
 | Feedback   | **Per question** — answer + explanation shown immediately after answering     |
 | History    | **Fully stateless** — no localStorage, no tracking between attempts           |
