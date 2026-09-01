@@ -172,6 +172,63 @@ window.QUIZ_BANK = [
     answer: "maximum",
     alt: ["Maximum", "max", "amplitude"],
     explanation: "Speed is zero at the turning points x = ±A (maximum displacement), where the oscillator reverses direction. Speed is greatest at the equilibrium position (x = 0), where the restoring force is zero and all energy is kinetic."
+  },
+
+  // ── Additional questions ────────────────────────────────────────────────────
+
+  {
+    type: "mcq",
+    q: "Simple harmonic motion (SHM) is a ___ case of oscillatory motion.",
+    options: [
+      "More general",
+      "Special (more restrictive)",
+      "Identical",
+      "Unrelated"
+    ],
+    answer: 1,
+    explanation: "SHM is a special type of oscillatory motion in which the restoring force is strictly proportional to displacement (Hooke's law type). All SHM is oscillatory, but not all oscillatory motion is SHM — a pendulum at large amplitude oscillates but does not satisfy the linear force condition."
+  },
+
+  {
+    type: "mcq",
+    q: "A pendulum completes one full swing in 0.25 s. Its frequency is:",
+    options: [
+      "0.25 Hz",
+      "2 Hz",
+      "4 Hz",
+      "8 Hz"
+    ],
+    answer: 2,
+    explanation: "f = 1/T = 1/0.25 = 4 Hz. The period is the time for one complete cycle, and frequency is its reciprocal. Always check units: T in seconds gives f in hertz (cycles per second)."
+  },
+
+  {
+    type: "mcq",
+    q: "Which of the following is the best example of free oscillation?",
+    options: [
+      "A tuning fork vibrating after being struck once",
+      "A child on a swing being pushed repeatedly",
+      "A loudspeaker driven by an amplifier",
+      "A bridge vibrating under heavy traffic"
+    ],
+    answer: 0,
+    explanation: "A tuning fork struck once then left alone vibrates at its natural frequency without any ongoing external driving force — this is free (natural) oscillation. The other options involve a continuously applied external force, making them forced oscillations."
+  },
+
+  {
+    type: "fill",
+    q: "If a body completes n oscillations in time t seconds, the frequency is f = ___.",
+    answer: "n/t",
+    alt: ["n / t"],
+    explanation: "f = n/t. Frequency counts cycles per unit time, so dividing the number of oscillations n by the total time t gives the rate in hertz. The period is T = t/n, the reciprocal of this."
+  },
+
+  {
+    type: "fill",
+    q: "At the equilibrium position, the net ___ force on the oscillator is zero.",
+    answer: "restoring",
+    alt: ["Restoring", "net", "spring"],
+    explanation: "The equilibrium position is defined as the point where the restoring force is zero (F = −kx = 0 when x = 0). This is why the oscillator has maximum speed there — no force is decelerating it. Away from equilibrium the restoring force grows and pulls the oscillator back."
   }
 
 ];
