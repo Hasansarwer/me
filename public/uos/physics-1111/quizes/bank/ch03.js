@@ -172,6 +172,63 @@ window.QUIZ_BANK = [
     answer: "E/2",
     alt: ["E / 2", "½E", "0.5E", "half E"],
     explanation: "⟨KE⟩ = ⟨PE⟩ = E/2. This follows because ⟨sin²(ωt+φ)⟩ = ⟨cos²(ωt+φ)⟩ = 1/2 over a full cycle. The oscillator spends equal time, on average, storing energy as kinetic and as potential — even though the instantaneous split varies continuously."
+  },
+
+  // ── Additional questions ────────────────────────────────────────────────────
+
+  {
+    type: "mcq",
+    q: "At the extreme positions x = ±A of a spring–mass oscillator:",
+    options: [
+      "KE = E and PE = 0",
+      "KE = 0 and PE = E",
+      "KE = PE = E/2",
+      "Both KE and PE are zero"
+    ],
+    answer: 1,
+    explanation: "At x = ±A: KE = ½mω²(A²−A²) = 0, and PE = ½kA² = E. All mechanical energy is stored as elastic potential energy. The oscillator momentarily stops here before reversing direction — the turning points."
+  },
+
+  {
+    type: "mcq",
+    q: "If the spring constant k is quadrupled while the mass m stays the same, the period T:",
+    options: [
+      "Doubles",
+      "Halves",
+      "Quadruples",
+      "Reduces to one quarter"
+    ],
+    answer: 1,
+    explanation: "T = 2π√(m/k). Replacing k with 4k gives T_new = 2π√(m/4k) = ½ × 2π√(m/k) = T/2. The period halves — a stiffer spring oscillates faster. Since T ∝ 1/√k, a fourfold increase in k only halves the period."
+  },
+
+  {
+    type: "mcq",
+    q: "Two identical springs each of constant k are connected in parallel (side by side, both attached to the same mass). The effective spring constant is:",
+    options: [
+      "k_eff = k/2",
+      "k_eff = k",
+      "k_eff = 2k",
+      "k_eff = k²"
+    ],
+    answer: 2,
+    explanation: "Springs in parallel share the same extension but each exerts its own restoring force, so the forces add: F_eff = kx + kx = 2kx, giving k_eff = 2k. Springs in series (end-to-end) give k_eff = k/2. Parallel ↔ stiffer; series ↔ softer."
+  },
+
+  {
+    type: "fill",
+    q: "The elastic potential energy stored in the spring at displacement x is PE = ___.",
+    answer: "½kx²",
+    alt: ["(1/2)kx²", "0.5kx²", "½k x²"],
+    explanation: "PE = ½kx². This parabolic dependence on x means potential energy is zero at the equilibrium (x = 0) and maximum at the extremes (x = ±A) where PE = ½kA² = E. Together with KE = ½mω²(A²−x²), they always sum to the constant total energy E."
+  },
+
+  {
+    type: "fill",
+    q: "At x = A/√2, the potential energy PE = ___ × E (fraction of total energy).",
+    answer: "1/2",
+    alt: ["0.5", "½", "half"],
+    explanation: "PE/E = x²/A² = (A/√2)²/A² = (A²/2)/A² = 1/2. At x = A/√2, exactly half the total energy is potential and half is kinetic — this is the displacement at which KE = PE. Note this is greater than A/2 (where PE = E/4)."
   }
 
 ];
