@@ -172,6 +172,78 @@ window.QUIZ_BANK = [
     answer: "horizontal",
     alt: ["Horizontal"],
     explanation: "The horizontal line test: a function is one-to-one (injective) if and only if every horizontal line intersects its graph at most once. If any horizontal line meets the graph more than once, the function is not one-to-one and therefore has no inverse. (The vertical line test instead checks whether a curve is a function.)"
+  },
+
+  // ── Additional MCQ ─────────────────────────────────────────────────────────
+
+  {
+    type: "mcq",
+    q: "A function f : A → B is surjective (onto) if:",
+    options: [
+      "Every element of A has exactly one image in B",
+      "Different elements of A always map to different elements of B",
+      "For every y ∈ B there exists at least one x ∈ A with f(x) = y",
+      "f is one-to-one"
+    ],
+    answer: 2,
+    explanation: "Surjectivity means every element of the codomain B is actually reached — no element of B is 'missed'. Formally: ∀ y ∈ B, ∃ x ∈ A such that f(x) = y. Option (a) is the function property; option (b) is injectivity. A surjection can map multiple inputs to the same output."
+  },
+
+  {
+    type: "mcq",
+    q: "The intersection A ∩ B equals:",
+    options: [
+      "{x | x ∈ A or x ∈ B}",
+      "{x | x ∈ A and x ∈ B}",
+      "{x | x ∉ A and x ∉ B}",
+      "{x | x ∈ A but x ∉ B}"
+    ],
+    answer: 1,
+    explanation: "A ∩ B contains precisely the elements that belong to both A and B simultaneously — the logical 'and'. The union A ∪ B uses 'or' (either or both). The complement Aᶜ is {x ∈ U | x ∉ A}, and A \\ B = {x | x ∈ A but x ∉ B} is the set difference."
+  },
+
+  {
+    type: "mcq",
+    q: "Which of the following is a transcendental function?",
+    options: [
+      "f(x) = x³ − 2x + 7",
+      "f(x) = (x² + 1)/(x − 3)",
+      "f(x) = √(x² + 1)",
+      "f(x) = sin x"
+    ],
+    answer: 3,
+    explanation: "Transcendental functions cannot be expressed as roots of polynomial equations — they 'transcend' algebra. Trigonometric functions (sin, cos, tan), exponential, and logarithmic functions are transcendental. Option (a) is a polynomial, (b) is rational, and (c) is algebraic (it satisfies y² = x² + 1, a polynomial relation)."
+  },
+
+  {
+    type: "mcq",
+    q: "Does y² = x define y as a function of x?",
+    options: [
+      "Yes, because every x gives a value of y",
+      "No, because some values of x give two values of y (e.g. x = 4 gives y = ±2)",
+      "Yes, but only for x ≥ 0",
+      "No, because the domain is empty"
+    ],
+    answer: 1,
+    explanation: "For x = 4, y² = 4 gives y = +2 and y = −2 — two outputs for one input. A function requires exactly one output per input, so y² = x does not define y as a function of x. However, y = √x (the positive branch alone) is a function, as is y = −√x (the negative branch alone)."
+  },
+
+  // ── Additional Fill ────────────────────────────────────────────────────────
+
+  {
+    type: "fill",
+    q: "The complement of set A with respect to universal set U is Aᶜ = {x ∈ U | x ___ A}.",
+    answer: "∉",
+    alt: ["not in", "does not belong to", "∉ A", "is not in"],
+    explanation: "The complement Aᶜ contains all elements of the universal set U that are not in A — the condition is x ∉ A. Together, A and Aᶜ partition U: A ∪ Aᶜ = U and A ∩ Aᶜ = ∅."
+  },
+
+  {
+    type: "fill",
+    q: "The natural domain of h(x) = √(3x − 6) is ___.",
+    answer: "[2, ∞)",
+    alt: ["[2,∞)", "x ≥ 2", "x>=2", "2 ≤ x < ∞", "[2, infinity)"],
+    explanation: "The expression under the square root must be non-negative: 3x − 6 ≥ 0 ⟹ 3x ≥ 6 ⟹ x ≥ 2. The endpoint x = 2 is included (gives h(2) = 0, which is defined), so the domain is [2, ∞)."
   }
 
 ];
