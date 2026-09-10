@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Cardiac-Cycle Simulator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <div class="title-bar">
+    <h1 class="title">&#9829; Interactive Cardiac-Cycle Simulator</h1>
+  </div>
+
+  <div class="grid">
+
+    <!-- Top-left: Heart Anatomy -->
+    <div class="panel" id="heart-panel">
+      <div class="panel-label">Heart Anatomy</div>
+      <svg id="heart-svg" viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Background -->
+        <rect width="300" height="280" fill="#080f1a"/>
+
+        <!-- Great vessels -->
+        <!-- Superior vena cava (into RA) -->
+        <line x1="215" y1="10" x2="215" y2="55" class="vessel vessel-vein" stroke-width="10"/>
+        <!-- Inferior vena cava -->
+        <line x1="215" y1="220" x2="215" y2="250" class="vessel vessel-vein" stroke-width="10"/>
+        <!-- Pulmonary artery (from RV upward-left) -->
+        <path d="M 145 60 Q 130 20 110 18" class="vessel vessel-vein" stroke-width="9" fill="none"/>
+        <!-- Pulmonary veins (into LA) -->
+        <line x1="95" y1="18" x2="75" y2="55" class="vessel vessel-art" stroke-width="8"/>
+        <!-- Aorta (from LV upward-right arch) -->
+        <path d="M 105 90 Q 90 20 150 15 Q 200 12 210 50" class="vessel vessel-art" stroke-width="9" fill="none"/>
+
+        <!-- Labels: vessels -->
+        <text x="222" y="35"  fill="#3355aa" font-size="7" font-family="monospace">SVC</text>
+        <text x="222" y="245" fill="#3355aa" font-size="7" font-family="monospace">IVC</text>
+        <text x="88"  y="14"  fill="#883333" font-size="7" font-family="monospace">Ao</text>
+        <text x="108" y="14"  fill="#3355aa" font-size="7" font-family="monospace">PA</text>
+        <text x="60"  y="53"  fill="#883333" font-size="7" font-family="monospace">PV</text>
+
+        <!-- Right Atrium (RA) — right side -->
+        <ellipse id="ra" cx="215" cy="95" rx="32" ry="38" class="chamber-wall" stroke="#303080"/>
+        <clipPath id="clip-ra">
+          <ellipse cx="215" cy="95" rx="30" ry="36"/>
+        </clipPath>
+        <rect id="ra-blood" x="185" y="59" width="60" height="72" clip-path="url(#clip-ra)" class="blood-fill" fill="#202060"/>
+
+        <!-- Left Atrium (LA) — left side -->
+        <ellipse id="la" cx="80" cy="95" rx="32" ry="38" class="chamber-wall" stroke="#7a2828"/>
+        <clipPath id="clip-la">
+          <ellipse cx="80" cy="95" rx="30" ry="36"/>
+        </clipPath>
+        <rect id="la-blood" x="50" y="59" width="60" height="72" clip-path="url(#clip-la)" class="blood-fill" fill="#602020"/>
+
+        <!-- Atrial labels -->
+        <text x="200" y="97" fill="#4455bb" font-size="9" font-family="monospace" font-weight="bold">RA</text>
+        <text x="67"  y="97" fill="#bb4444" font-size="9" font-family="monospace" font-weight="bold">LA</text>
+
+        <!-- Valve: Tricuspid (RA → RV) -->
+        <g id="valve-tricuspid" class="valve-group" data-open="false">
+          <line x1="197" y1="132" x2="205" y2="140" class="valve-leaflet valve-leaflet-l" stroke="#ccaa44" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="213" y1="140" x2="221" y2="132" class="valve-leaflet valve-leaflet-r" stroke="#ccaa44" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+
+        <!-- Valve: Mitral (LA → LV) -->
+        <g id="valve-mitral" class="valve-group" data-open="true">
+          <line x1="79"  y1="132" x2="87"  y2="140" class="valve-leaflet valve-leaflet-l" stroke="#ccaa44" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="95"  y1="140" x2="103" y2="132" class="valve-leaflet valve-leaflet-r" stroke="#ccaa44" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+
+        <!-- Right Ventricle (RV) — right, larger -->
+        <path id="rv" d="M 175 140 Q 170 230 200 245 Q 230 255 245 230 Q 255 195 245 145 Z"
+              class="chamber-wall" stroke="#303880"/>
+        <clipPath id="clip-rv">
+          <path d="M 175 140 Q 170 230 200 245 Q 230 255 245 230 Q 255 195 245 145 Z"/>
+        </clipPath>
+        <rect id="rv-blood" x="172" y="138" width="85" height="120" clip-path="url(#clip-rv)" class="blood-fill" fill="#202060"/>
+
+        <!-- Left Ventricle (LV) — left, teardrop -->
+        <path id="lv" d="M 55 140 Q 50 230 85 255 Q 115 265 135 240 Q 148 210 148 145 Z"
+              class="chamber-wall" stroke="#8b3030"/>
+        <clipPath id="clip-lv">
+          <path d="M 55 140 Q 50 230 85 255 Q 115 265 135 240 Q 148 210 148 145 Z"/>
+        </clipPath>
+        <rect id="lv-blood" x="52" y="138" width="100" height="130" clip-path="url(#clip-lv)" class="blood-fill" fill="#602020"/>
+
+        <!-- Ventricular labels -->
+        <text x="192" y="198" fill="#4455bb" font-size="9" font-family="monospace" font-weight="bold">RV</text>
+        <text x="80"  y="205" fill="#bb4444" font-size="9" font-family="monospace" font-weight="bold">LV</text>
+
+        <!-- Valve: Pulmonary (RV → PA) -->
+        <g id="valve-pulmonary" class="valve-group" data-open="false">
+          <line x1="175" y1="136" x2="181" y2="128" class="valve-leaflet valve-leaflet-l" stroke="#ccaa44" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="187" y1="126" x2="193" y2="134" class="valve-leaflet valve-leaflet-r" stroke="#ccaa44" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+
+        <!-- Valve: Aortic (LV → Aorta) -->
+        <g id="valve-aortic" class="valve-group" data-open="false">
+          <line x1="101" y1="136" x2="107" y2="128" class="valve-leaflet valve-leaflet-l" stroke="#ccaa44" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="113" y1="126" x2="119" y2="134" class="valve-leaflet valve-leaflet-r" stroke="#ccaa44" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+
+        <!-- Valve labels -->
+        <text x="195" y="127" fill="#aa8833" font-size="7" font-family="monospace">PV</text>
+        <text x="104" y="124" fill="#aa8833" font-size="7" font-family="monospace">AoV</text>
+        <text x="195" y="150" fill="#aa8833" font-size="7" font-family="monospace">TV</text>
+        <text x="64"  y="150" fill="#aa8833" font-size="7" font-family="monospace">MV</text>
+
+        <!-- Septum divider line -->
+        <line x1="155" y1="95" x2="160" y2="250" stroke="#1e3a5f" stroke-width="1.5" stroke-dasharray="4,4"/>
+      </svg>
+    </div>
+
+    <!-- Top-right: ECG -->
+    <div class="panel">
+      <div class="panel-label">ECG Waveform</div>
+      <canvas id="ecg-canvas"></canvas>
+    </div>
+
+    <!-- Bottom-left: P-V Loop -->
+    <div class="panel">
+      <div class="panel-label">Pressure–Volume Loop</div>
+      <canvas id="pv-canvas"></canvas>
+    </div>
+
+    <!-- Bottom-right: Hemodynamics -->
+    <div class="panel">
+      <div class="panel-label">Hemodynamics</div>
+      <canvas id="hemo-canvas"></canvas>
+    </div>
+
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <div class="control-group">
+      <label>Heart Rate (bpm)</label>
+      <input type="range" id="ctrl-hr" min="40" max="180" step="1" value="75">
+      <span class="val-display" id="val-hr">75</span>
+    </div>
+    <div class="control-group">
+      <label>Contractility (E<sub>max</sub>)</label>
+      <input type="range" id="ctrl-emax" min="0.5" max="3.0" step="0.1" value="2.0">
+      <span class="val-display" id="val-emax">2.0</span>
+    </div>
+    <div class="control-group">
+      <label>Preload EDV (mL)</label>
+      <input type="range" id="ctrl-edv" min="50" max="200" step="5" value="120">
+      <span class="val-display" id="val-edv">120</span>
+    </div>
+    <div class="control-group">
+      <label>Afterload R (mmHg·s/mL)</label>
+      <input type="range" id="ctrl-r" min="0.5" max="2.0" step="0.05" value="1.0">
+      <span class="val-display" id="val-r">1.00</span>
+    </div>
+    <button id="btn-playpause">Pause</button>
+  </div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
