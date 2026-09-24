@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Parallel-Axis Theorem Explorer</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f8fafc,#0b1220);
+  --panel:light-dark(#ffffff,#111827);
+  --text:light-dark(#0f172a,#f8fafc);
+  --muted:light-dark(#64748b,#a8b3c7);
+  --border:light-dark(#cbd5e1,#334155);
+  --grid:light-dark(#e2e8f0,#243147);
+  --accent:light-dark(#2563eb,#60a5fa);
+  --accent-soft:light-dark(#dbeafe,#172554);
+  --cm:light-dark(#0f766e,#5eead4);
+  --shift:light-dark(#b45309,#fbbf24);
+  --curve:light-dark(#7c3aed,#c4b5fd);
+  --rod:light-dark(#334155,#cbd5e1);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.app{width:min(100%,1050px);margin:auto;padding:16px}
+h1{margin:0 0 6px;font-size:clamp(1.5rem,5vw,2.2rem);line-height:1.15}
+.intro p{margin:0;color:var(--muted);line-height:1.5}
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0;
+}
+.metric,.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+}
+.metric{min-width:0;padding:12px}
+.metric small{display:block;color:var(--muted);font-size:.78rem}
+.metric strong{display:block;margin-top:3px;font-size:1.06rem;overflow-wrap:anywhere}
+.panel{min-width:0;padding:14px}
+.panel h2{margin:0 0 12px;font-size:1.06rem}
+.controls{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+.control{min-width:0}
+.head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:baseline;
+}
+.head label{font-weight:700}
+.head output{font-weight:800;color:var(--accent);white-space:nowrap}
+input[type=range]{
+  width:100%;
+  min-height:44px;
+  margin:0;
+  accent-color:var(--accent);
+  touch-action:pan-y;
+}
+.hint{font-size:.8rem;color:var(--muted);line-height:1.4}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button{
+  min-height:46px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--panel);
+  color:var(--text);
+  font:inherit;
+  font-weight:700;
+  padding:9px 13px;
+}
+button.primary{background:var(--accent);color:#fff;border-color:transparent}
+button:focus-visible,input:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  outline-offset:2px;
+}
+.equation{
+  margin:14px 0 12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:color-mix(in srgb,var(--panel) 86%,var(--grid));
+  text-align:center;
+  font-family:"Cambria Math","Times New Roman",serif;
+  font-size:clamp(1rem,3.7vw,1.3rem);
+  line-height:1.6;
+}
+.note{
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  background:var(--accent-soft);
+  line-height:1.45;
+}
+.note strong{display:block;margin-bottom:4px}
+.visual-grid{display:grid;gap:14px}
+svg{display:block;width:100%;height:auto}
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:.82rem;
+}
+.key{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%}
+.breakdown{
+  margin-top:14px;
+  display:grid;
+  gap:10px;
+}
+.row{
+  display:grid;
+  grid-template-columns:120px minmax(0,1fr) 110px;
+  gap:8px;
+  align-items:center;
+}
+.track{
+  height:20px;
+  background:var(--grid);
+  border-radius:999px;
+  overflow:hidden;
+}
+.fill{height:100%;border-radius:999px}
+.challenge{margin-top:14px}
+.challenge p{margin:6px 0 0;color:var(--muted);line-height:1.5}
+@media(min-width:600px){
+  .controls{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(min-width:860px){
+  .app{padding:24px}
+  .metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .panel{padding:18px}
+  .visual-grid{grid-template-columns:1.15fr .85fr}
+}
+</style>
+</head>
+<body>
+<main class="app" id="parallelAxisApp">
+  <section class="intro">
+    <h1>Parallel-Axis Theorem</h1>
+    <p>Shift the rotation axis away from the center of mass and watch the moment of inertia increase.</p>
+  </section>
+
+  <section class="metrics">
+    <div class="metric"><small>Center-axis inertia, I<sub>CM</sub></small><strong id="icmMetric">1.50 kg·m²</strong></div>
+    <div class="metric"><small>Axis shift, d</small><strong id="dMetric">0.50 m</strong></div>
+    <div class="metric"><small>Added inertia, Md²</small><strong id="addMetric">1.00 kg·m²</strong></div>
+    <div class="metric"><small>Shifted-axis inertia, I</small><strong id="iMetric">2.50 kg·m²</strong></div>
+    <div class="metric"><small>Increase over I<sub>CM</sub></small><strong id="incMetric">66.7%</strong></div>
+  </section>
+
+  <section class="panel">
+    <h2>Uniform rod</h2>
+
+    <div class="controls">
+      <div class="control">
+        <div class="head">
+          <label for="mass">Mass, M</label>
+          <output id="massOut">4.00 kg</output>
+        </div>
+        <input id="mass" type="range" min="0.50" max="10.00" step="0.25" value="4.00">
+        <div class="hint">Increasing M scales both I<sub>CM</sub> and Md².</div>
+      </div>
+
+      <div class="control">
+        <div class="head">
+          <label for="length">Rod length, L</label>
+          <output id="lengthOut">2.00 m</output>
+        </div>
+        <input id="length" type="range" min="0.50" max="4.00" step="0.10" value="2.00">
+        <div class="hint">For this rod, I<sub>CM</sub> = ML²/12.</div>
+      </div>
+
+      <div class="control">
+        <div class="head">
+          <label for="shift">Axis displacement, d</label>
+          <output id="shiftOut">+0.50 m</output>
+        </div>
+        <input id="shift" type="range" min="-3.00" max="3.00" step="0.05" value="0.50">
+        <div class="hint">The sign chooses left/right. Moment of inertia depends on d².</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="reset" class="primary" type="button">Reset</button>
+      <button id="centerAxis" type="button">d = 0</button>
+      <button id="leftAxis" type="button">d = −1 m</button>
+      <button id="rightAxis" type="button">d = +1 m</button>
+    </div>
+
+    <div class="equation">
+      I = I<sub>CM</sub> + Md²,
+      &nbsp;&nbsp;
+      I<sub>CM</sub> = ML²/12
+    </div>
+
+    <div class="note" id="observe" aria-live="polite">
+      <strong>Axis shifted 0.50 m to the right:</strong>
+      Every mass element is, on average, farther from the new axis, so the moment of inertia is larger.
+    </div>
+  </section>
+
+  <section class="visual-grid" style="margin-top:14px;">
+    <div class="panel">
+      <h2>Shift the axis</h2>
+      <svg viewBox="0 0 760 390" role="img" aria-label="Uniform rod with center-of-mass axis and a shifted parallel axis">
+        <defs>
+          <marker id="dHead" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="strokeWidth">
+            <path d="M0 0 L9 4.5 L0 9 z" fill="var(--shift)"/>
+          </marker>
+        </defs>
+
+        <line x1="70" y1="220" x2="690" y2="220"
+              stroke="var(--grid)" stroke-width="2"/>
+
+        <!-- rod -->
+        <rect id="rod" x="190" y="190" width="380" height="60" rx="14"
+              fill="var(--rod)"/>
+
+        <!-- CM -->
+        <circle cx="380" cy="220" r="8" fill="var(--cm)"/>
+        <text x="380" y="275" text-anchor="middle"
+              fill="var(--cm)" font-size="16" font-weight="700">CM</text>
+
+        <!-- center axis -->
+        <line x1="380" y1="100" x2="380" y2="315"
+              stroke="var(--cm)" stroke-width="4" stroke-dasharray="8 6"/>
+        <text x="392" y="112" fill="var(--cm)" font-size="16" font-weight="700">CM axis</text>
+
+        <!-- shifted axis -->
+        <line id="shiftAxis" x1="480" y1="80" x2="480" y2="330"
+              stroke="var(--shift)" stroke-width="6"/>
+        <text id="shiftAxisLabel" x="492" y="92"
+              fill="var(--shift)" font-size="16" font-weight="700">shifted axis</text>
+
+        <!-- distance d -->
+        <line id="dLine" x1="380" y1="340" x2="480" y2="340"
+              stroke="var(--shift)" stroke-width="4"
+              marker-end="url(#dHead)"/>
+        <line x1="380" y1="330" x2="380" y2="350"
+              stroke="var(--shift)" stroke-width="3"/>
+        <text id="dLabel" x="430" y="372" text-anchor="middle"
+              fill="var(--shift)" font-size="17" font-weight="700">d = +0.50 m</text>
+
+        <text id="lengthLabel" x="380" y="170" text-anchor="middle"
+              fill="var(--muted)" font-size="16">L = 2.00 m</text>
+      </svg>
+
+      <div class="legend">
+        <span class="key"><span class="dot" style="background:var(--cm)"></span>center-of-mass axis</span>
+        <span class="key"><span class="dot" style="background:var(--shift)"></span>shifted parallel axis</span>
+      </div>
+
+      <div class="breakdown">
+        <div class="row">
+          <span>I<sub>CM</sub></span>
+          <div class="track"><div id="icmFill" class="fill" style="background:var(--cm);width:60%"></div></div>
+          <strong id="icmValue">1.50</strong>
+        </div>
+        <div class="row">
+          <span>+ Md²</span>
+          <div class="track"><div id="addFill" class="fill" style="background:var(--shift);width:40%"></div></div>
+          <strong id="addValue">1.00</strong>
+        </div>
+        <div class="row">
+          <span>Total I</span>
+          <div class="track"><div id="totalFill" class="fill" style="background:var(--curve);width:100%"></div></div>
+          <strong id="totalValue">2.50</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>I versus axis displacement</h2>
+      <svg viewBox="0 0 520 390" role="img" aria-label="Parabolic graph of moment of inertia versus axis displacement">
+        <line x1="60" y1="320" x2="485" y2="320" stroke="var(--border)" stroke-width="2"/>
+        <line x1="273" y1="45" x2="273" y2="335" stroke="var(--border)" stroke-width="2"/>
+
+        <text x="485" y="350" text-anchor="end" fill="var(--muted)" font-size="15">d</text>
+        <text x="278" y="58" fill="var(--muted)" font-size="15">I</text>
+
+        <line x1="60" y1="230" x2="485" y2="230"
+              stroke="var(--grid)" stroke-width="2" stroke-dasharray="5 6"/>
+        <line x1="60" y1="140" x2="485" y2="140"
+              stroke="var(--grid)" stroke-width="2" stroke-dasharray="5 6"/>
+
+        <polyline id="curve" points=""
+                  fill="none" stroke="var(--curve)" stroke-width="5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+
+        <circle id="point" cx="295" cy="250" r="9" fill="var(--shift)"/>
+        <line id="pointGuide" x1="295" y1="250" x2="295" y2="320"
+              stroke="var(--shift)" stroke-width="2" stroke-dasharray="5 5"/>
+
+        <text id="graphLabel" x="307" y="238"
+              fill="var(--shift)" font-size="15" font-weight="700">current axis</text>
+
+        <text x="260" y="370" text-anchor="middle"
+              fill="var(--muted)" font-size="14">d = 0 gives the minimum I</text>
+      </svg>
+
+      <div class="note">
+        <strong>Why a parabola?</strong>
+        The extra term is Md². Therefore shifting the axis by +d or −d gives the same increase in moment of inertia.
+      </div>
+
+      <div class="challenge">
+        <strong>Predict before moving the axis</strong>
+        <p id="challengeText">Compare d = +1 m and d = −1 m. Will the two values of I be different?</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const root = document.getElementById('parallelAxisApp');
+  if (!root || root.dataset.ready === '1') return;
+  root.dataset.ready = '1';
+
+  const mass = root.querySelector('#mass');
+  const length = root.querySelector('#length');
+  const shift = root.querySelector('#shift');
+
+  const massOut = root.querySelector('#massOut');
+  const lengthOut = root.querySelector('#lengthOut');
+  const shiftOut = root.querySelector('#shiftOut');
+
+  const icmMetric = root.querySelector('#icmMetric');
+  const dMetric = root.querySelector('#dMetric');
+  const addMetric = root.querySelector('#addMetric');
+  const iMetric = root.querySelector('#iMetric');
+  const incMetric = root.querySelector('#incMetric');
+
+  const rod = root.querySelector('#rod');
+  const shiftAxis = root.querySelector('#shiftAxis');
+  const shiftAxisLabel = root.querySelector('#shiftAxisLabel');
+  const dLine = root.querySelector('#dLine');
+  const dLabel = root.querySelector('#dLabel');
+  const lengthLabel = root.querySelector('#lengthLabel');
+
+  const icmFill = root.querySelector('#icmFill');
+  const addFill = root.querySelector('#addFill');
+  const totalFill = root.querySelector('#totalFill');
+  const icmValue = root.querySelector('#icmValue');
+  const addValue = root.querySelector('#addValue');
+  const totalValue = root.querySelector('#totalValue');
+
+  const curve = root.querySelector('#curve');
+  const point = root.querySelector('#point');
+  const pointGuide = root.querySelector('#pointGuide');
+  const graphLabel = root.querySelector('#graphLabel');
+
+  const observe = root.querySelector('#observe');
+  const challengeText = root.querySelector('#challengeText');
+
+  const reset = root.querySelector('#reset');
+  const centerAxis = root.querySelector('#centerAxis');
+  const leftAxis = root.querySelector('#leftAxis');
+  const rightAxis = root.querySelector('#rightAxis');
+
+  function state(){
+    const M = Number(mass.value);
+    const L = Number(length.value);
+    const d = Number(shift.value);
+
+    const Icm = M*L*L/12;
+    const added = M*d*d;
+    const I = Icm + added;
+    const increase = Icm > 0 ? 100*added/Icm : 0;
+
+    return {M,L,d,Icm,added,I,increase};
+  }
+
+  function signed(v,digits=2){
+    return (v>=0?'+':'')+v.toFixed(digits);
+  }
+
+  function drawRod(s){
+    // Rod width scales with L but remains easy to see.
+    const w = 180 + 200*(s.L-.5)/(4-.5);
+    const centerX = 380;
+    rod.setAttribute('x',centerX-w/2);
+    rod.setAttribute('width',w);
+    lengthLabel.textContent = 'L = '+s.L.toFixed(2)+' m';
+
+    // Show d across a visual range of ±3 m.
+    const pxPerM = 88;
+    const axisX = centerX + s.d*pxPerM;
+
+    shiftAxis.setAttribute('x1',axisX);
+    shiftAxis.setAttribute('x2',axisX);
+
+    shiftAxisLabel.setAttribute(
+      'x',
+      Math.max(75,Math.min(650,axisX+(s.d>=0?12:-95)))
+    );
+
+    dLine.setAttribute('x1',centerX);
+    dLine.setAttribute('x2',axisX);
+
+    // Marker direction is automatic only at the end; for left shift the line
+    // itself still communicates the signed direction clearly.
+    dLabel.setAttribute('x',(centerX+axisX)/2);
+    dLabel.textContent = 'd = '+signed(s.d)+' m';
+  }
+
+  function drawBars(s){
+    const denom = Math.max(.0001,s.I);
+    icmFill.style.width = (100*s.Icm/denom).toFixed(1)+'%';
+    addFill.style.width = (100*s.added/denom).toFixed(1)+'%';
+    totalFill.style.width = '100%';
+
+    icmValue.textContent = s.Icm.toFixed(2);
+    addValue.textContent = s.added.toFixed(2);
+    totalValue.textContent = s.I.toFixed(2);
+  }
+
+  function drawGraph(s){
+    const left = 60, right = 485, top = 45, bottom = 320;
+    const dMax = 3;
+
+    // Same M and L as current state, graph I(d) over -3...+3 m.
+    const maxI = s.Icm + s.M*dMax*dMax;
+    const pts = [];
+
+    for(let i=0;i<=240;i++){
+      const d = -dMax + 2*dMax*i/240;
+      const I = s.Icm + s.M*d*d;
+      const x = left + (right-left)*(d+dMax)/(2*dMax);
+      const y = bottom - (bottom-top)*(I/maxI);
+      pts.push(x.toFixed(1)+','+y.toFixed(1));
+    }
+
+    curve.setAttribute('points',pts.join(' '));
+
+    const px = left + (right-left)*(s.d+dMax)/(2*dMax);
+    const py = bottom - (bottom-top)*(s.I/maxI);
+
+    point.setAttribute('cx',px);
+    point.setAttribute('cy',py);
+    pointGuide.setAttribute('x1',px);
+    pointGuide.setAttribute('x2',px);
+    pointGuide.setAttribute('y1',py);
+    pointGuide.setAttribute('y2',bottom);
+
+    graphLabel.setAttribute('x',Math.min(400,px+12));
+    graphLabel.setAttribute('y',Math.max(60,py-12));
+  }
+
+  function updateObservation(s){
+    if(Math.abs(s.d)<0.001){
+      observe.innerHTML =
+        '<strong>Axis through the center of mass:</strong>d = 0, so Md² = 0 and the moment of inertia is minimum: I = I<sub>CM</sub>.';
+    }else{
+      const side = s.d>0 ? 'right' : 'left';
+      observe.innerHTML =
+        '<strong>Axis shifted '+Math.abs(s.d).toFixed(2)+' m to the '+side+':</strong>'+
+        'The added inertia is M d² = '+s.added.toFixed(2)+' kg·m². The sign of d does not matter because d is squared.';
+    }
+  }
+
+  function draw(){
+    const s = state();
+
+    massOut.textContent = s.M.toFixed(2)+' kg';
+    lengthOut.textContent = s.L.toFixed(2)+' m';
+    shiftOut.textContent = signed(s.d)+' m';
+
+    icmMetric.textContent = s.Icm.toFixed(2)+' kg·m²';
+    dMetric.textContent = signed(s.d)+' m';
+    addMetric.textContent = s.added.toFixed(2)+' kg·m²';
+    iMetric.textContent = s.I.toFixed(2)+' kg·m²';
+    incMetric.textContent = s.increase.toFixed(1)+'%';
+
+    drawRod(s);
+    drawBars(s);
+    drawGraph(s);
+    updateObservation(s);
+  }
+
+  mass.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Double M while keeping L and d fixed. What happens to both I_CM and Md²?';
+    draw();
+  });
+
+  length.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Double L while keeping M and d fixed. How does I_CM change?';
+    draw();
+  });
+
+  shift.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Compare equal shifts left and right. Why do they give the same moment of inertia?';
+    draw();
+  });
+
+  reset.addEventListener('click',()=>{
+    mass.value='4.00';
+    length.value='2.00';
+    shift.value='0.50';
+    challengeText.textContent =
+      'Compare d = +1 m and d = −1 m. Will the two values of I be different?';
+    draw();
+  });
+
+  centerAxis.addEventListener('click',()=>{
+    shift.value='0';
+    draw();
+  });
+
+  leftAxis.addEventListener('click',()=>{
+    shift.value='-1';
+    draw();
+  });
+
+  rightAxis.addEventListener('click',()=>{
+    shift.value='1';
+    draw();
+  });
+
+  draw();
+})();
+</script>
+</body>
+</html>
