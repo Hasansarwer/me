@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rotational Equilibrium — Loaded Beam</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f8fafc,#0b1220);
+  --panel:light-dark(#ffffff,#111827);
+  --text:light-dark(#0f172a,#f8fafc);
+  --muted:light-dark(#64748b,#a8b3c7);
+  --border:light-dark(#cbd5e1,#334155);
+  --grid:light-dark(#e2e8f0,#243147);
+  --accent:light-dark(#2563eb,#60a5fa);
+  --accent-soft:light-dark(#dbeafe,#172554);
+  --load:light-dark(#b91c1c,#f87171);
+  --weight:light-dark(#b45309,#fbbf24);
+  --reactionA:light-dark(#0f766e,#5eead4);
+  --reactionB:light-dark(#7c3aed,#c4b5fd);
+  --ok:light-dark(#166534,#86efac);
+  --warn:light-dark(#92400e,#fbbf24);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.app{
+  width:min(100%,1080px);
+  margin:auto;
+  padding:16px;
+}
+h1{
+  margin:0 0 6px;
+  font-size:clamp(1.45rem,5vw,2.2rem);
+  line-height:1.15;
+}
+.intro p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.5;
+}
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0;
+}
+.metric,.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+}
+.metric{
+  min-width:0;
+  padding:12px;
+}
+.metric small{
+  display:block;
+  color:var(--muted);
+  font-size:.78rem;
+}
+.metric strong{
+  display:block;
+  margin-top:3px;
+  font-size:1.05rem;
+  overflow-wrap:anywhere;
+}
+.panel{
+  min-width:0;
+  padding:14px;
+}
+.panel h2{
+  margin:0 0 12px;
+  font-size:1.06rem;
+}
+.controls{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+.control{min-width:0}
+.control-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:10px;
+}
+.control-head label{font-weight:700}
+.control-head output{
+  color:var(--accent);
+  font-weight:800;
+  white-space:nowrap;
+}
+input[type=range]{
+  width:100%;
+  min-height:44px;
+  accent-color:var(--accent);
+  touch-action:pan-y;
+}
+.hint{
+  color:var(--muted);
+  font-size:.8rem;
+  line-height:1.4;
+}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:14px;
+}
+button{
+  min-height:46px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--panel);
+  color:var(--text);
+  font:inherit;
+  font-weight:700;
+  padding:9px 14px;
+}
+button.primary{
+  background:var(--accent);
+  color:#fff;
+  border-color:transparent;
+}
+.equation{
+  margin:14px 0 12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:color-mix(in srgb,var(--panel) 86%,var(--grid));
+  text-align:center;
+  font-family:"Cambria Math","Times New Roman",serif;
+  font-size:clamp(.96rem,3.5vw,1.24rem);
+  line-height:1.6;
+}
+.note{
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  background:var(--accent-soft);
+  line-height:1.45;
+}
+.note strong{
+  display:block;
+  margin-bottom:4px;
+}
+svg{
+  display:block;
+  width:100%;
+  height:auto;
+}
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:.82rem;
+}
+.key{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.dot{
+  width:10px;height:10px;border-radius:50%;
+}
+.balance-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-top:14px;
+}
+.check{
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:11px;
+}
+.check small{
+  color:var(--muted);
+}
+.check strong{
+  display:block;
+  margin-top:4px;
+  font-size:1rem;
+}
+.moment-bars{
+  display:grid;
+  gap:10px;
+  margin-top:14px;
+}
+.moment-row{
+  display:grid;
+  grid-template-columns:115px minmax(0,1fr) 92px;
+  gap:8px;
+  align-items:center;
+}
+.track{
+  height:18px;
+  background:var(--grid);
+  border-radius:999px;
+  overflow:hidden;
+}
+.fill{height:100%;border-radius:999px}
+.challenge{
+  margin-top:14px;
+}
+.challenge p{
+  margin:6px 0 0;
+  color:var(--muted);
+  line-height:1.5;
+}
+@media(min-width:620px){
+  .controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .balance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(min-width:900px){
+  .app{padding:24px}
+  .metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .controls{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .panel{padding:18px}
+}
+</style>
+</head>
+<body>
+<main class="app" id="beamApp">
+  <section class="intro">
+    <h1>Balance a Loaded Beam on Two Supports</h1>
+    <p>Move the supports and load. The reaction forces update automatically so that both translational and rotational equilibrium can be checked.</p>
+  </section>
+
+  <section class="metrics">
+    <div class="metric"><small>Reaction at A</small><strong id="raMetric">350 N</strong></div>
+    <div class="metric"><small>Reaction at B</small><strong id="rbMetric">350 N</strong></div>
+    <div class="metric"><small>Total downward load</small><strong id="downMetric">700 N</strong></div>
+    <div class="metric"><small>ΣFᵧ</small><strong id="forceMetric">0.00 N</strong></div>
+    <div class="metric"><small>Στ about A</small><strong id="momentMetric">0.00 N·m</strong></div>
+  </section>
+
+  <section class="panel">
+    <h2>Beam setup</h2>
+
+    <div class="controls">
+      <div class="control">
+        <div class="control-head">
+          <label for="supportA">Support A position</label>
+          <output id="supportAOut">1.00 m</output>
+        </div>
+        <input id="supportA" type="range" min="0.00" max="2.50" step="0.10" value="1.00">
+        <div class="hint">Measured from the left end.</div>
+      </div>
+
+      <div class="control">
+        <div class="control-head">
+          <label for="supportB">Support B position</label>
+          <output id="supportBOut">5.00 m</output>
+        </div>
+        <input id="supportB" type="range" min="3.50" max="6.00" step="0.10" value="5.00">
+        <div class="hint">Measured from the left end.</div>
+      </div>
+
+      <div class="control">
+        <div class="control-head">
+          <label for="loadPos">Point-load position</label>
+          <output id="loadPosOut">3.00 m</output>
+        </div>
+        <input id="loadPos" type="range" min="0.00" max="6.00" step="0.10" value="3.00">
+        <div class="hint">Drag the load anywhere along the beam.</div>
+      </div>
+
+      <div class="control">
+        <div class="control-head">
+          <label for="loadForce">Point load, P</label>
+          <output id="loadForceOut">500 N</output>
+        </div>
+        <input id="loadForce" type="range" min="100" max="1200" step="50" value="500">
+        <div class="hint">Downward concentrated force.</div>
+      </div>
+
+      <div class="control">
+        <div class="control-head">
+          <label for="beamWeight">Beam weight, W</label>
+          <output id="beamWeightOut">200 N</output>
+        </div>
+        <input id="beamWeight" type="range" min="0" max="600" step="25" value="200">
+        <div class="hint">Uniform beam weight acts at the beam center.</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="reset" class="primary" type="button">Reset</button>
+      <button id="centerLoad" type="button">Center load</button>
+      <button id="zeroBeam" type="button">Ignore beam weight</button>
+    </div>
+
+    <div class="equation">
+      ΣF<sub>y</sub> = 0:
+      &nbsp; R<sub>A</sub> + R<sub>B</sub> = P + W
+      <br>
+      Στ<sub>A</sub> = 0:
+      &nbsp; R<sub>B</sub>(x<sub>B</sub>-x<sub>A</sub>)
+      = P(x<sub>P</sub>-x<sub>A</sub>) + W(3-x<sub>A</sub>)
+    </div>
+
+    <div class="note" id="observe" aria-live="polite">
+      <strong>Balanced beam:</strong>
+      The upward reactions equal the total downward load, and the clockwise and counterclockwise moments cancel.
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:14px;">
+    <h2>Free-body diagram</h2>
+
+    <svg viewBox="0 0 960 500" role="img" aria-label="Loaded beam supported at two points with reaction forces">
+      <defs>
+        <marker id="downHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--load)"/>
+        </marker>
+        <marker id="weightHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--weight)"/>
+        </marker>
+        <marker id="raHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--reactionA)"/>
+        </marker>
+        <marker id="rbHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--reactionB)"/>
+        </marker>
+      </defs>
+
+      <!-- ruler -->
+      <line x1="80" y1="390" x2="880" y2="390" stroke="var(--border)" stroke-width="2"/>
+      <g id="ticks"></g>
+
+      <!-- beam -->
+      <rect x="80" y="245" width="800" height="28" rx="6" fill="var(--text)"/>
+
+      <!-- supports -->
+      <polygon id="supportAShape" points="200,273 175,322 225,322" fill="var(--reactionA)"/>
+      <polygon id="supportBShape" points="747,273 722,322 772,322" fill="var(--reactionB)"/>
+      <line id="supportBGround" x1="712" y1="325" x2="782" y2="325" stroke="var(--reactionB)" stroke-width="4"/>
+      <circle id="roller1" cx="735" cy="336" r="8" fill="var(--reactionB)"/>
+      <circle id="roller2" cx="759" cy="336" r="8" fill="var(--reactionB)"/>
+
+      <!-- reactions -->
+      <line id="raArrow" x1="200" y1="245" x2="200" y2="150"
+            stroke="var(--reactionA)" stroke-width="6" stroke-linecap="round"
+            marker-end="url(#raHead)"/>
+      <text id="raLabel" x="215" y="160" fill="var(--reactionA)" font-size="17" font-weight="700">Rₐ = 350 N</text>
+
+      <line id="rbArrow" x1="747" y1="245" x2="747" y2="150"
+            stroke="var(--reactionB)" stroke-width="6" stroke-linecap="round"
+            marker-end="url(#rbHead)"/>
+      <text id="rbLabel" x="762" y="160" fill="var(--reactionB)" font-size="17" font-weight="700">Rᵦ = 350 N</text>
+
+      <!-- point load -->
+      <line id="loadArrow" x1="480" y1="95" x2="480" y2="235"
+            stroke="var(--load)" stroke-width="7" stroke-linecap="round"
+            marker-end="url(#downHead)"/>
+      <text id="loadLabel" x="495" y="115" fill="var(--load)" font-size="18" font-weight="700">P = 500 N</text>
+
+      <!-- beam weight -->
+      <line id="weightArrow" x1="480" y1="130" x2="480" y2="235"
+            stroke="var(--weight)" stroke-width="5" stroke-linecap="round"
+            marker-end="url(#weightHead)"/>
+      <text id="weightLabel" x="495" y="145" fill="var(--weight)" font-size="16" font-weight="700">W = 200 N</text>
+
+      <!-- center mark -->
+      <line x1="480" y1="273" x2="480" y2="290" stroke="var(--muted)" stroke-width="2"/>
+      <text x="480" y="310" text-anchor="middle" fill="var(--muted)" font-size="15">beam center</text>
+    </svg>
+
+    <div class="legend">
+      <span class="key"><span class="dot" style="background:var(--reactionA)"></span>reaction Rₐ</span>
+      <span class="key"><span class="dot" style="background:var(--reactionB)"></span>reaction Rᵦ</span>
+      <span class="key"><span class="dot" style="background:var(--load)"></span>point load P</span>
+      <span class="key"><span class="dot" style="background:var(--weight)"></span>beam weight W</span>
+    </div>
+
+    <div class="balance-grid">
+      <div class="check">
+        <small>Vertical-force check</small>
+        <strong id="forceCheck">Rₐ + Rᵦ − P − W = 0.00 N</strong>
+      </div>
+      <div class="check">
+        <small>Moment check about A</small>
+        <strong id="momentCheck">Στₐ = 0.00 N·m</strong>
+      </div>
+    </div>
+
+    <div class="moment-bars">
+      <div class="moment-row">
+        <span>CCW from Rᵦ</span>
+        <div class="track"><div id="ccwFill" class="fill" style="background:var(--reactionB);width:100%"></div></div>
+        <strong id="ccwValue">1400 N·m</strong>
+      </div>
+      <div class="moment-row">
+        <span>CW from loads</span>
+        <div class="track"><div id="cwFill" class="fill" style="background:var(--load);width:100%"></div></div>
+        <strong id="cwValue">1400 N·m</strong>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <strong>Predict before moving the load</strong>
+      <p id="challengeText">Move P toward support A. Which reaction increases, and which reaction decreases?</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const root = document.getElementById('beamApp');
+  if (!root || root.dataset.ready === '1') return;
+  root.dataset.ready = '1';
+
+  const beamLength = 6;
+  const beamCenter = 3;
+
+  const supportA = root.querySelector('#supportA');
+  const supportB = root.querySelector('#supportB');
+  const loadPos = root.querySelector('#loadPos');
+  const loadForce = root.querySelector('#loadForce');
+  const beamWeight = root.querySelector('#beamWeight');
+
+  const supportAOut = root.querySelector('#supportAOut');
+  const supportBOut = root.querySelector('#supportBOut');
+  const loadPosOut = root.querySelector('#loadPosOut');
+  const loadForceOut = root.querySelector('#loadForceOut');
+  const beamWeightOut = root.querySelector('#beamWeightOut');
+
+  const raMetric = root.querySelector('#raMetric');
+  const rbMetric = root.querySelector('#rbMetric');
+  const downMetric = root.querySelector('#downMetric');
+  const forceMetric = root.querySelector('#forceMetric');
+  const momentMetric = root.querySelector('#momentMetric');
+
+  const supportAShape = root.querySelector('#supportAShape');
+  const supportBShape = root.querySelector('#supportBShape');
+  const supportBGround = root.querySelector('#supportBGround');
+  const roller1 = root.querySelector('#roller1');
+  const roller2 = root.querySelector('#roller2');
+
+  const raArrow = root.querySelector('#raArrow');
+  const rbArrow = root.querySelector('#rbArrow');
+  const raLabel = root.querySelector('#raLabel');
+  const rbLabel = root.querySelector('#rbLabel');
+
+  const loadArrow = root.querySelector('#loadArrow');
+  const loadLabel = root.querySelector('#loadLabel');
+  const weightArrow = root.querySelector('#weightArrow');
+  const weightLabel = root.querySelector('#weightLabel');
+
+  const observe = root.querySelector('#observe');
+  const forceCheck = root.querySelector('#forceCheck');
+  const momentCheck = root.querySelector('#momentCheck');
+  const ccwFill = root.querySelector('#ccwFill');
+  const cwFill = root.querySelector('#cwFill');
+  const ccwValue = root.querySelector('#ccwValue');
+  const cwValue = root.querySelector('#cwValue');
+  const challengeText = root.querySelector('#challengeText');
+
+  const reset = root.querySelector('#reset');
+  const centerLoad = root.querySelector('#centerLoad');
+  const zeroBeam = root.querySelector('#zeroBeam');
+
+  const ticks = root.querySelector('#ticks');
+
+  const x0 = 80;
+  const x1 = 880;
+  const beamY = 245;
+
+  function xPx(x){
+    return x0 + (x1-x0)*x/beamLength;
+  }
+
+  function state(){
+    const xA = Number(supportA.value);
+    const xB = Number(supportB.value);
+    const xP = Number(loadPos.value);
+    const P = Number(loadForce.value);
+    const W = Number(beamWeight.value);
+
+    const span = xB-xA;
+
+    const RB = (
+      P*(xP-xA) +
+      W*(beamCenter-xA)
+    ) / span;
+
+    const RA = P + W - RB;
+
+    const forceResidual = RA + RB - P - W;
+    const momentResidual =
+      RB*span -
+      P*(xP-xA) -
+      W*(beamCenter-xA);
+
+    const ccwMoment = RB*span;
+    const cwMoment =
+      P*(xP-xA) +
+      W*(beamCenter-xA);
+
+    return {
+      xA,xB,xP,P,W,span,RA,RB,
+      forceResidual,momentResidual,
+      ccwMoment,cwMoment
+    };
+  }
+
+  function trianglePoints(x){
+    return `${x},273 ${x-25},322 ${x+25},322`;
+  }
+
+  function arrowY(reaction){
+    const maxR = 1800;
+    const mag = Math.min(1,Math.abs(reaction)/maxR);
+    const len = 45 + 100*mag;
+    return reaction >= 0 ? beamY-len : beamY+len;
+  }
+
+  function setReactionArrow(line,label,x,reaction,name){
+    const y2 = arrowY(reaction);
+
+    line.setAttribute('x1',x);
+    line.setAttribute('x2',x);
+    line.setAttribute('y1',beamY);
+    line.setAttribute('y2',y2);
+
+    label.setAttribute('x',x+12);
+    label.setAttribute('y',reaction >= 0 ? y2+10 : y2-10);
+    label.textContent = `${name} = ${reaction.toFixed(1)} N`;
+  }
+
+  function makeTicks(){
+    ticks.innerHTML = '';
+
+    for(let i=0;i<=6;i++){
+      const x = xPx(i);
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',x);
+      line.setAttribute('x2',x);
+      line.setAttribute('y1','382');
+      line.setAttribute('y2','400');
+      line.setAttribute('stroke','var(--border)');
+      line.setAttribute('stroke-width','2');
+      ticks.appendChild(line);
+
+      const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+      text.setAttribute('x',x);
+      text.setAttribute('y','425');
+      text.setAttribute('text-anchor','middle');
+      text.setAttribute('fill','var(--muted)');
+      text.setAttribute('font-size','15');
+      text.textContent = i+' m';
+      ticks.appendChild(text);
+    }
+  }
+
+  function draw(){
+    const s = state();
+
+    supportAOut.textContent = s.xA.toFixed(2)+' m';
+    supportBOut.textContent = s.xB.toFixed(2)+' m';
+    loadPosOut.textContent = s.xP.toFixed(2)+' m';
+    loadForceOut.textContent = s.P.toFixed(0)+' N';
+    beamWeightOut.textContent = s.W.toFixed(0)+' N';
+
+    raMetric.textContent = s.RA.toFixed(1)+' N';
+    rbMetric.textContent = s.RB.toFixed(1)+' N';
+    downMetric.textContent = (s.P+s.W).toFixed(1)+' N';
+    forceMetric.textContent = s.forceResidual.toFixed(2)+' N';
+    momentMetric.textContent = s.momentResidual.toFixed(2)+' N·m';
+
+    const ax = xPx(s.xA);
+    const bx = xPx(s.xB);
+    const px = xPx(s.xP);
+    const cx = xPx(beamCenter);
+
+    supportAShape.setAttribute('points',trianglePoints(ax));
+
+    supportBShape.setAttribute('points',trianglePoints(bx));
+    supportBGround.setAttribute('x1',bx-35);
+    supportBGround.setAttribute('x2',bx+35);
+    roller1.setAttribute('cx',bx-12);
+    roller2.setAttribute('cx',bx+12);
+
+    setReactionArrow(raArrow,raLabel,ax,s.RA,'Rₐ');
+    setReactionArrow(rbArrow,rbLabel,bx,s.RB,'Rᵦ');
+
+    const loadLen = 75 + 85*Math.min(1,s.P/1200);
+    loadArrow.setAttribute('x1',px);
+    loadArrow.setAttribute('x2',px);
+    loadArrow.setAttribute('y1',beamY-loadLen);
+    loadArrow.setAttribute('y2',beamY-10);
+    loadLabel.setAttribute('x',px+12);
+    loadLabel.setAttribute('y',beamY-loadLen+10);
+    loadLabel.textContent = 'P = '+s.P.toFixed(0)+' N';
+
+    const weightLen = s.W === 0 ? 0 : 55 + 65*Math.min(1,s.W/600);
+    weightArrow.setAttribute('x1',cx);
+    weightArrow.setAttribute('x2',cx);
+    weightArrow.setAttribute('y1',beamY-weightLen);
+    weightArrow.setAttribute('y2',beamY-10);
+    weightArrow.style.opacity = s.W === 0 ? '0' : '1';
+    weightLabel.style.opacity = s.W === 0 ? '0' : '1';
+    weightLabel.setAttribute('x',cx+12);
+    weightLabel.setAttribute('y',beamY-weightLen+10);
+    weightLabel.textContent = 'W = '+s.W.toFixed(0)+' N';
+
+    forceCheck.textContent =
+      `Rₐ + Rᵦ − P − W = ${s.forceResidual.toFixed(2)} N`;
+
+    momentCheck.textContent =
+      `Στₐ = ${s.momentResidual.toFixed(2)} N·m`;
+
+    const maxMoment = Math.max(
+      1,
+      Math.abs(s.ccwMoment),
+      Math.abs(s.cwMoment)
+    );
+
+    ccwFill.style.width =
+      (100*Math.abs(s.ccwMoment)/maxMoment).toFixed(1)+'%';
+
+    cwFill.style.width =
+      (100*Math.abs(s.cwMoment)/maxMoment).toFixed(1)+'%';
+
+    ccwValue.textContent = s.ccwMoment.toFixed(0)+' N·m';
+    cwValue.textContent = s.cwMoment.toFixed(0)+' N·m';
+
+    if(s.RA < 0 || s.RB < 0){
+      const which = s.RA < 0 ? 'A' : 'B';
+      observe.innerHTML =
+        `<strong>Support ${which} would lose contact:</strong> `+
+        `The calculated reaction is negative. A simple support cannot pull downward, so this setup would require a hold-down or the beam would tip/lift.`;
+    }else if(Math.abs(s.RA-s.RB) < 1){
+      observe.innerHTML =
+        '<strong>Symmetric load sharing:</strong> The two supports carry almost equal reactions.';
+    }else if(s.RA > s.RB){
+      observe.innerHTML =
+        '<strong>More load is carried by support A:</strong> The resultant downward load is closer to A.';
+    }else{
+      observe.innerHTML =
+        '<strong>More load is carried by support B:</strong> The resultant downward load is closer to B.';
+    }
+  }
+
+  supportA.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Move support A toward the load. How do Rₐ and Rᵦ change?';
+    draw();
+  });
+
+  supportB.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Move support B toward the load. How do Rₐ and Rᵦ change?';
+    draw();
+  });
+
+  loadPos.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Move P toward support A. Which reaction increases, and which decreases?';
+    draw();
+  });
+
+  loadForce.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Double P without changing positions. How do both reactions change?';
+    draw();
+  });
+
+  beamWeight.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Increase beam weight. Why does its effect depend on where the beam center lies relative to the supports?';
+    draw();
+  });
+
+  reset.addEventListener('click',()=>{
+    supportA.value='1.00';
+    supportB.value='5.00';
+    loadPos.value='3.00';
+    loadForce.value='500';
+    beamWeight.value='200';
+    challengeText.textContent =
+      'Move P toward support A. Which reaction increases, and which reaction decreases?';
+    draw();
+  });
+
+  centerLoad.addEventListener('click',()=>{
+    loadPos.value='3.00';
+    draw();
+  });
+
+  zeroBeam.addEventListener('click',()=>{
+    beamWeight.value='0';
+    draw();
+  });
+
+  makeTicks();
+  draw();
+})();
+</script>
+</body>
+</html>
