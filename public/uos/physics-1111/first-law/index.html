@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>First-Law Accounting: Heat, Work, and Internal Energy</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f8fafc,#0b1220);
+  --panel:light-dark(#ffffff,#111827);
+  --text:light-dark(#0f172a,#f8fafc);
+  --muted:light-dark(#64748b,#a8b3c7);
+  --border:light-dark(#cbd5e1,#334155);
+  --grid:light-dark(#e2e8f0,#243147);
+  --accent:light-dark(#2563eb,#60a5fa);
+  --soft:light-dark(#dbeafe,#172554);
+  --heat:light-dark(#b91c1c,#f87171);
+  --work:light-dark(#0f766e,#5eead4);
+  --internal:light-dark(#7c3aed,#c4b5fd);
+  --positive:light-dark(#166534,#86efac);
+  --negative:light-dark(#991b1b,#fca5a5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.app{width:min(100%,1060px);margin:auto;padding:16px}
+h1{margin:0 0 6px;font-size:clamp(1.45rem,5vw,2.2rem);line-height:1.15}
+.intro p{margin:0;color:var(--muted);line-height:1.5}
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0;
+}
+.metric,.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+}
+.metric{padding:12px;min-width:0}
+.metric small{display:block;color:var(--muted);font-size:.78rem}
+.metric strong{display:block;margin-top:3px;font-size:1.06rem;overflow-wrap:anywhere}
+.panel{padding:14px;min-width:0}
+.panel h2{margin:0 0 12px;font-size:1.06rem}
+.controls{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+.control{min-width:0}
+.head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:10px;
+}
+.head label{font-weight:700}
+.head output{font-weight:800;color:var(--accent);white-space:nowrap}
+input[type=range]{
+  width:100%;
+  min-height:44px;
+  margin:0;
+  accent-color:var(--accent);
+  touch-action:pan-y;
+}
+.hint{font-size:.8rem;color:var(--muted);line-height:1.4}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button{
+  min-height:46px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--panel);
+  color:var(--text);
+  font:inherit;
+  font-weight:700;
+  padding:9px 13px;
+}
+button.primary{background:var(--accent);color:#fff;border-color:transparent}
+button:focus-visible,input:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  outline-offset:2px;
+}
+.equation{
+  margin:14px 0 12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:color-mix(in srgb,var(--panel) 86%,var(--grid));
+  text-align:center;
+  font-family:"Cambria Math","Times New Roman",serif;
+  font-size:clamp(1rem,3.8vw,1.32rem);
+  line-height:1.6;
+}
+.signs{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+  margin-top:12px;
+}
+.sign-card{
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px;
+  color:var(--muted);
+  line-height:1.4;
+}
+.sign-card b{color:var(--text)}
+.note{
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  background:var(--soft);
+  line-height:1.45;
+}
+.note strong{display:block;margin-bottom:4px}
+.visual-grid{display:grid;gap:14px}
+svg{display:block;width:100%;height:auto}
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:.82rem;
+}
+.key{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%}
+.accounting{
+  display:grid;
+  gap:10px;
+  margin-top:14px;
+}
+.account-row{
+  display:grid;
+  grid-template-columns:105px minmax(0,1fr) 115px;
+  gap:8px;
+  align-items:center;
+}
+.track{
+  height:22px;
+  background:var(--grid);
+  border-radius:999px;
+  overflow:hidden;
+  position:relative;
+}
+.center{
+  position:absolute;
+  left:50%;
+  top:0;
+  bottom:0;
+  width:2px;
+  background:var(--text);
+}
+.fill{
+  position:absolute;
+  top:0;
+  bottom:0;
+  border-radius:999px;
+}
+.challenge{margin-top:14px}
+.challenge p{margin:6px 0 0;color:var(--muted);line-height:1.5}
+@media(min-width:600px){
+  .controls{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .signs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(min-width:860px){
+  .app{padding:24px}
+  .metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .panel{padding:18px}
+  .visual-grid{grid-template-columns:1.2fr .8fr}
+}
+</style>
+</head>
+<body>
+<main class="app" id="firstLawApp">
+  <section class="intro">
+    <h1>First-Law Accounting: Heat, Work, and Internal Energy</h1>
+    <p>Track energy entering and leaving a thermodynamic system. Positive and negative signs have physical meaning, not just algebraic meaning.</p>
+  </section>
+
+  <section class="metrics">
+    <div class="metric"><small>Heat, Q</small><strong id="qMetric">+600 J</strong></div>
+    <div class="metric"><small>Work by system, W</small><strong id="wMetric">+250 J</strong></div>
+    <div class="metric"><small>Change, ΔU</small><strong id="duMetric">+350 J</strong></div>
+    <div class="metric"><small>Initial internal energy</small><strong id="uiMetric">2000 J</strong></div>
+    <div class="metric"><small>Final internal energy</small><strong id="ufMetric">2350 J</strong></div>
+  </section>
+
+  <section class="panel">
+    <h2>Energy transfers</h2>
+
+    <div class="controls">
+      <div class="control">
+        <div class="head">
+          <label for="heat">Heat transfer, Q</label>
+          <output id="heatOut">+600 J</output>
+        </div>
+        <input id="heat" type="range" min="-1000" max="1000" step="50" value="600">
+        <div class="hint">Q &gt; 0: heat enters. Q &lt; 0: heat leaves.</div>
+      </div>
+
+      <div class="control">
+        <div class="head">
+          <label for="work">Work by system, W</label>
+          <output id="workOut">+250 J</output>
+        </div>
+        <input id="work" type="range" min="-1000" max="1000" step="50" value="250">
+        <div class="hint">W &gt; 0: system does work. W &lt; 0: work is done on system.</div>
+      </div>
+
+      <div class="control">
+        <div class="head">
+          <label for="initial">Initial internal energy, Uᵢ</label>
+          <output id="initialOut">2000 J</output>
+        </div>
+        <input id="initial" type="range" min="1000" max="4000" step="100" value="2000">
+        <div class="hint">Used to visualize the final energy level U<sub>f</sub>.</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="reset" class="primary" type="button">Reset</button>
+      <button id="heatOnly" type="button">Heat only</button>
+      <button id="workOnly" type="button">Work only</button>
+      <button id="adiabatic" type="button">Q = 0</button>
+    </div>
+
+    <div class="equation">
+      ΔU = Q − W,
+      &nbsp;&nbsp;
+      U<sub>f</sub> = U<sub>i</sub> + Q − W
+    </div>
+
+    <div class="signs">
+      <div class="sign-card">
+        <b>Heat sign:</b> \(Q&gt;0\) means energy crosses the boundary into the system as heat; \(Q&lt;0\) means heat leaves.
+      </div>
+      <div class="sign-card">
+        <b>Work sign:</b> \(W&gt;0\) means the system does work on the surroundings; \(W&lt;0\) means the surroundings do work on the system.
+      </div>
+    </div>
+
+    <div class="note" id="observe" aria-live="polite">
+      <strong>Internal energy increases:</strong>
+      The system receives 600 J as heat and sends 250 J out as work, leaving a net gain of 350 J.
+    </div>
+  </section>
+
+  <section class="visual-grid" style="margin-top:14px">
+    <div class="panel">
+      <h2>System boundary and energy flow</h2>
+
+      <svg viewBox="0 0 760 455" role="img" aria-label="Thermodynamic system with heat and work arrows across its boundary">
+        <defs>
+          <marker id="heatHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--heat)"/>
+          </marker>
+          <marker id="workHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--work)"/>
+          </marker>
+        </defs>
+
+        <!-- surroundings -->
+        <rect x="60" y="55" width="640" height="335" rx="28"
+              fill="none" stroke="var(--border)" stroke-width="3" stroke-dasharray="8 7"/>
+        <text x="380" y="82" text-anchor="middle" fill="var(--muted)" font-size="16">surroundings</text>
+
+        <!-- system -->
+        <rect x="245" y="135" width="270" height="190" rx="24"
+              fill="var(--soft)" stroke="var(--accent)" stroke-width="4"/>
+        <text x="380" y="180" text-anchor="middle" fill="var(--text)" font-size="23" font-weight="800">SYSTEM</text>
+        <text x="380" y="210" text-anchor="middle" fill="var(--muted)" font-size="15">closed thermodynamic system</text>
+
+        <text id="uInside" x="380" y="260" text-anchor="middle"
+              fill="var(--internal)" font-size="25" font-weight="800">U = 2350 J</text>
+        <text id="duInside" x="380" y="292" text-anchor="middle"
+              fill="var(--internal)" font-size="17">ΔU = +350 J</text>
+
+        <!-- heat arrow -->
+        <line id="heatArrow" x1="90" y1="220" x2="225" y2="220"
+              stroke="var(--heat)" stroke-width="9" stroke-linecap="round"
+              marker-end="url(#heatHead)"/>
+        <text id="heatLabel" x="155" y="198" text-anchor="middle"
+              fill="var(--heat)" font-size="18" font-weight="800">Q = +600 J</text>
+
+        <!-- work arrow -->
+        <line id="workArrow" x1="535" y1="250" x2="670" y2="250"
+              stroke="var(--work)" stroke-width="9" stroke-linecap="round"
+              marker-end="url(#workHead)"/>
+        <text id="workLabel" x="603" y="228" text-anchor="middle"
+              fill="var(--work)" font-size="18" font-weight="800">W = +250 J</text>
+
+        <text id="heatMeaning" x="155" y="255" text-anchor="middle"
+              fill="var(--muted)" font-size="14">heat enters</text>
+        <text id="workMeaning" x="603" y="285" text-anchor="middle"
+              fill="var(--muted)" font-size="14">work leaves</text>
+      </svg>
+
+      <div class="legend">
+        <span class="key"><span class="dot" style="background:var(--heat)"></span>heat transfer Q</span>
+        <span class="key"><span class="dot" style="background:var(--work)"></span>work W</span>
+        <span class="key"><span class="dot" style="background:var(--internal)"></span>internal energy U</span>
+      </div>
+
+      <div class="accounting">
+        <div class="account-row">
+          <span>Heat Q</span>
+          <div class="track">
+            <div class="center"></div>
+            <div id="qFill" class="fill" style="background:var(--heat)"></div>
+          </div>
+          <strong id="qValue">+600 J</strong>
+        </div>
+
+        <div class="account-row">
+          <span>− Work W</span>
+          <div class="track">
+            <div class="center"></div>
+            <div id="minusWFill" class="fill" style="background:var(--work)"></div>
+          </div>
+          <strong id="minusWValue">−250 J</strong>
+        </div>
+
+        <div class="account-row">
+          <span>Net ΔU</span>
+          <div class="track">
+            <div class="center"></div>
+            <div id="duFill" class="fill" style="background:var(--internal)"></div>
+          </div>
+          <strong id="duValue">+350 J</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Internal-energy level</h2>
+
+      <svg viewBox="0 0 470 455" role="img" aria-label="Initial and final internal energy levels">
+        <line x1="95" y1="390" x2="385" y2="390"
+              stroke="var(--border)" stroke-width="2"/>
+
+        <rect x="120" y="150" width="90" height="240" rx="10"
+              fill="var(--grid)"/>
+        <rect id="uiBar" x="120" y="230" width="90" height="160" rx="10"
+              fill="var(--accent)"/>
+
+        <rect x="265" y="150" width="90" height="240" rx="10"
+              fill="var(--grid)"/>
+        <rect id="ufBar" x="265" y="202" width="90" height="188" rx="10"
+              fill="var(--internal)"/>
+
+        <text x="165" y="420" text-anchor="middle"
+              fill="var(--muted)" font-size="16">Uᵢ</text>
+        <text x="310" y="420" text-anchor="middle"
+              fill="var(--muted)" font-size="16">U𝒇</text>
+
+        <text id="uiText" x="165" y="218" text-anchor="middle"
+              fill="var(--accent)" font-size="16" font-weight="700">2000 J</text>
+        <text id="ufText" x="310" y="190" text-anchor="middle"
+              fill="var(--internal)" font-size="16" font-weight="700">2350 J</text>
+
+        <path id="deltaArrow" d="M215 300 C235 280 245 260 260 235"
+              fill="none" stroke="var(--internal)" stroke-width="4"/>
+        <text id="deltaLabel" x="238" y="250" text-anchor="middle"
+              fill="var(--internal)" font-size="15" font-weight="700">+350 J</text>
+      </svg>
+
+      <div class="note">
+        <strong>Accounting, not “stored heat”:</strong>
+        A system stores internal energy. Heat and work describe energy crossing the system boundary during a process.
+      </div>
+
+      <div class="challenge">
+        <strong>Predict before moving a slider</strong>
+        <p id="challengeText">Set Q = +500 J and W = +500 J. What happens to internal energy?</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const root = document.getElementById('firstLawApp');
+  if (!root || root.dataset.ready === '1') return;
+  root.dataset.ready = '1';
+
+  const heat = root.querySelector('#heat');
+  const work = root.querySelector('#work');
+  const initial = root.querySelector('#initial');
+
+  const heatOut = root.querySelector('#heatOut');
+  const workOut = root.querySelector('#workOut');
+  const initialOut = root.querySelector('#initialOut');
+
+  const qMetric = root.querySelector('#qMetric');
+  const wMetric = root.querySelector('#wMetric');
+  const duMetric = root.querySelector('#duMetric');
+  const uiMetric = root.querySelector('#uiMetric');
+  const ufMetric = root.querySelector('#ufMetric');
+
+  const heatArrow = root.querySelector('#heatArrow');
+  const workArrow = root.querySelector('#workArrow');
+  const heatLabel = root.querySelector('#heatLabel');
+  const workLabel = root.querySelector('#workLabel');
+  const heatMeaning = root.querySelector('#heatMeaning');
+  const workMeaning = root.querySelector('#workMeaning');
+
+  const uInside = root.querySelector('#uInside');
+  const duInside = root.querySelector('#duInside');
+
+  const qFill = root.querySelector('#qFill');
+  const minusWFill = root.querySelector('#minusWFill');
+  const duFill = root.querySelector('#duFill');
+  const qValue = root.querySelector('#qValue');
+  const minusWValue = root.querySelector('#minusWValue');
+  const duValue = root.querySelector('#duValue');
+
+  const uiBar = root.querySelector('#uiBar');
+  const ufBar = root.querySelector('#ufBar');
+  const uiText = root.querySelector('#uiText');
+  const ufText = root.querySelector('#ufText');
+  const deltaArrow = root.querySelector('#deltaArrow');
+  const deltaLabel = root.querySelector('#deltaLabel');
+
+  const observe = root.querySelector('#observe');
+  const challengeText = root.querySelector('#challengeText');
+
+  const reset = root.querySelector('#reset');
+  const heatOnly = root.querySelector('#heatOnly');
+  const workOnly = root.querySelector('#workOnly');
+  const adiabatic = root.querySelector('#adiabatic');
+
+  function state(){
+    const Q = Number(heat.value);
+    const W = Number(work.value);
+    const Ui = Number(initial.value);
+    const dU = Q - W;
+    const Uf = Ui + dU;
+    return {Q,W,Ui,dU,Uf};
+  }
+
+  function signed(v){
+    if(Math.abs(v) < .001) return '0';
+    return (v>0?'+':'−')+Math.abs(v).toFixed(0);
+  }
+
+  function setSignedBar(el,value,maxAbs){
+    const ratio = Math.max(-1,Math.min(1,value/maxAbs));
+    if(ratio >= 0){
+      el.style.left='50%';
+      el.style.width=(50*ratio).toFixed(1)+'%';
+    }else{
+      el.style.left=(50+50*ratio).toFixed(1)+'%';
+      el.style.width=(-50*ratio).toFixed(1)+'%';
+    }
+  }
+
+  function setHeatArrow(Q){
+    const mag = Math.abs(Q);
+    const width = 4 + 7*Math.min(1,mag/1000);
+    heatArrow.setAttribute('stroke-width',width);
+
+    if(Q >= 0){
+      heatArrow.setAttribute('x1','90');
+      heatArrow.setAttribute('x2','225');
+      heatMeaning.textContent = Q === 0 ? 'no heat transfer' : 'heat enters';
+    }else{
+      heatArrow.setAttribute('x1','225');
+      heatArrow.setAttribute('x2','90');
+      heatMeaning.textContent = 'heat leaves';
+    }
+
+    heatArrow.style.opacity = Q === 0 ? '.18' : '1';
+    heatLabel.textContent = 'Q = '+signed(Q)+' J';
+  }
+
+  function setWorkArrow(W){
+    const mag = Math.abs(W);
+    const width = 4 + 7*Math.min(1,mag/1000);
+    workArrow.setAttribute('stroke-width',width);
+
+    if(W >= 0){
+      workArrow.setAttribute('x1','535');
+      workArrow.setAttribute('x2','670');
+      workMeaning.textContent = W === 0 ? 'no work transfer' : 'work leaves';
+    }else{
+      workArrow.setAttribute('x1','670');
+      workArrow.setAttribute('x2','535');
+      workMeaning.textContent = 'work enters';
+    }
+
+    workArrow.style.opacity = W === 0 ? '.18' : '1';
+    workLabel.textContent = 'W = '+signed(W)+' J';
+  }
+
+  function drawEnergyLevels(s){
+    const maxU = 5000;
+    const baseY = 390;
+    const maxHeight = 240;
+
+    const uiHeight = maxHeight*Math.max(0,Math.min(maxU,s.Ui))/maxU;
+    const ufHeight = maxHeight*Math.max(0,Math.min(maxU,s.Uf))/maxU;
+
+    uiBar.setAttribute('y',baseY-uiHeight);
+    uiBar.setAttribute('height',uiHeight);
+    ufBar.setAttribute('y',baseY-ufHeight);
+    ufBar.setAttribute('height',ufHeight);
+
+    uiText.setAttribute('y',Math.max(165,baseY-uiHeight-12));
+    ufText.setAttribute('y',Math.max(165,baseY-ufHeight-12));
+
+    uiText.textContent = s.Ui.toFixed(0)+' J';
+    ufText.textContent = s.Uf.toFixed(0)+' J';
+
+    const startY = baseY-uiHeight/2;
+    const endY = baseY-ufHeight/2;
+    deltaArrow.setAttribute(
+      'd',
+      `M 215 ${startY.toFixed(1)} C 235 ${startY.toFixed(1)} 245 ${endY.toFixed(1)} 260 ${endY.toFixed(1)}`
+    );
+
+    deltaLabel.setAttribute('y',Math.max(175,Math.min(350,(startY+endY)/2-10)));
+    deltaLabel.textContent = signed(s.dU)+' J';
+  }
+
+  function updateObservation(s){
+    if(s.dU > 0){
+      observe.innerHTML =
+        '<strong>Internal energy increases:</strong>'+
+        'Q − W = '+signed(s.Q)+' − ('+signed(s.W)+') = '+signed(s.dU)+' J. The system has a net energy gain.';
+    }else if(s.dU < 0){
+      observe.innerHTML =
+        '<strong>Internal energy decreases:</strong>'+
+        'Q − W = '+signed(s.Q)+' − ('+signed(s.W)+') = '+signed(s.dU)+' J. The system has a net energy loss.';
+    }else{
+      observe.innerHTML =
+        '<strong>No change in internal energy:</strong>'+
+        'Heat and work contributions exactly balance, so ΔU = 0 even though energy may still cross the boundary.';
+    }
+  }
+
+  function draw(){
+    const s = state();
+
+    heatOut.textContent = signed(s.Q)+' J';
+    workOut.textContent = signed(s.W)+' J';
+    initialOut.textContent = s.Ui.toFixed(0)+' J';
+
+    qMetric.textContent = signed(s.Q)+' J';
+    wMetric.textContent = signed(s.W)+' J';
+    duMetric.textContent = signed(s.dU)+' J';
+    uiMetric.textContent = s.Ui.toFixed(0)+' J';
+    ufMetric.textContent = s.Uf.toFixed(0)+' J';
+
+    uInside.textContent = 'U = '+s.Uf.toFixed(0)+' J';
+    duInside.textContent = 'ΔU = '+signed(s.dU)+' J';
+
+    setHeatArrow(s.Q);
+    setWorkArrow(s.W);
+
+    setSignedBar(qFill,s.Q,1000);
+    setSignedBar(minusWFill,-s.W,1000);
+    setSignedBar(duFill,s.dU,2000);
+
+    qValue.textContent = signed(s.Q)+' J';
+    minusWValue.textContent = signed(-s.W)+' J';
+    duValue.textContent = signed(s.dU)+' J';
+
+    drawEnergyLevels(s);
+    updateObservation(s);
+  }
+
+  heat.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Make Q negative while W stays positive. What must happen to ΔU?';
+    draw();
+  });
+
+  work.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Make W negative. Why does work done on the system increase U in this sign convention?';
+    draw();
+  });
+
+  initial.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Change Uᵢ without changing Q or W. Does ΔU change, or only U𝒇?';
+    draw();
+  });
+
+  reset.addEventListener('click',()=>{
+    heat.value='600';
+    work.value='250';
+    initial.value='2000';
+    challengeText.textContent =
+      'Set Q = +500 J and W = +500 J. What happens to internal energy?';
+    draw();
+  });
+
+  heatOnly.addEventListener('click',()=>{
+    heat.value='600';
+    work.value='0';
+    draw();
+  });
+
+  workOnly.addEventListener('click',()=>{
+    heat.value='0';
+    work.value='500';
+    draw();
+  });
+
+  adiabatic.addEventListener('click',()=>{
+    heat.value='0';
+    draw();
+  });
+
+  draw();
+})();
+</script>
+</body>
+</html>
