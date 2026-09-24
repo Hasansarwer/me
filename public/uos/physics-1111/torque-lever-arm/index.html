@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Torque & Moment-Arm Explorer</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f8fafc,#0b1220);
+  --panel:light-dark(#fff,#111827);
+  --text:light-dark(#0f172a,#f8fafc);
+  --muted:light-dark(#64748b,#a8b3c7);
+  --border:light-dark(#cbd5e1,#334155);
+  --grid:light-dark(#e2e8f0,#243147);
+  --accent:light-dark(#2563eb,#60a5fa);
+  --accentSoft:light-dark(#dbeafe,#172554);
+  --force:light-dark(#0f766e,#5eead4);
+  --arm:light-dark(#b45309,#fbbf24);
+  --torque:light-dark(#7c3aed,#c4b5fd);
+  --line:light-dark(#64748b,#94a3b8);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.app{width:min(100%,1040px);margin:auto;padding:16px}
+h1{margin:0 0 6px;font-size:clamp(1.5rem,5vw,2.2rem);line-height:1.15}
+.intro p,.hint,.challenge p{color:var(--muted)}
+.intro p{margin:0;line-height:1.5}
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
+.metric,.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px}
+.metric{padding:12px;min-width:0}
+.metric small{display:block;color:var(--muted);font-size:.78rem}
+.metric strong{display:block;margin-top:3px;font-size:1.06rem;overflow-wrap:anywhere}
+.panel{padding:14px;min-width:0}
+.panel h2{margin:0 0 12px;font-size:1.06rem}
+.controls{display:grid;grid-template-columns:1fr;gap:14px}
+.head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.head label{font-weight:700}
+.head output{font-weight:800;color:var(--accent);white-space:nowrap}
+input[type=range]{width:100%;min-height:44px;accent-color:var(--accent);touch-action:pan-y}
+.hint{font-size:.8rem;line-height:1.4}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button{min-height:46px;min-width:86px;border:1px solid var(--border);border-radius:12px;background:var(--panel);color:var(--text);font:inherit;font-weight:700;padding:9px 12px}
+button.primary{background:var(--accent);color:#fff;border-color:transparent}
+.equation{margin:14px 0 12px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--panel) 86%,var(--grid));text-align:center;font-family:"Cambria Math","Times New Roman",serif;font-size:clamp(1rem,3.7vw,1.3rem);line-height:1.55}
+.note{margin-top:12px;padding:12px;border-radius:12px;background:var(--accentSoft);line-height:1.45}
+.note strong{display:block;margin-bottom:4px}
+svg{display:block;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;color:var(--muted);font-size:.82rem}
+.key{display:inline-flex;align-items:center;gap:6px}.dot{width:10px;height:10px;border-radius:50%}
+.gauge{margin-top:14px;padding:12px;border:1px solid var(--border);border-radius:12px}
+.axis{position:relative;height:26px;background:var(--grid);border-radius:999px;overflow:hidden}
+.center{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--text)}
+.fill{position:absolute;top:0;bottom:0;background:var(--torque)}
+.labels{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:var(--muted);font-size:.8rem}
+.challenge{margin-top:14px}.challenge p{margin:6px 0 0;line-height:1.5}
+@media(min-width:620px){.controls{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:820px){.app{padding:24px}.metrics{grid-template-columns:repeat(5,minmax(0,1fr))}.panel{padding:18px}}
+</style>
+</head>
+<body>
+<main class="app" id="app">
+<section class="intro">
+<h1>Torque & Moment-Arm Explorer</h1>
+<p>Change force, distance from the pivot, and force angle. See why torque depends on the perpendicular moment arm.</p>
+</section>
+
+<section class="metrics">
+<div class="metric"><small>Torque, τ</small><strong id="tauM">+25.0 N·m</strong></div>
+<div class="metric"><small>Moment arm, d⊥</small><strong id="dM">0.50 m</strong></div>
+<div class="metric"><small>Perpendicular force, F⊥</small><strong id="fpM">+25.0 N</strong></div>
+<div class="metric"><small>Maximum |τ|</small><strong id="maxM">50.0 N·m</strong></div>
+<div class="metric"><small>Rotation tendency</small><strong id="dirM">CCW ↺</strong></div>
+</section>
+
+<section class="panel">
+<h2>Parameters</h2>
+<div class="controls">
+<div>
+  <div class="head"><label for="F">Force, F</label><output id="Fout">50 N</output></div>
+  <input id="F" type="range" min="5" max="120" step="5" value="50">
+  <div class="hint">Torque is proportional to force.</div>
+</div>
+<div>
+  <div class="head"><label for="r">Distance from pivot, r</label><output id="rout">1.00 m</output></div>
+  <input id="r" type="range" min="0.20" max="2.00" step="0.05" value="1.00">
+  <div class="hint">Distance to the point where the force is applied.</div>
+</div>
+<div>
+  <div class="head"><label for="theta">Force angle, θ</label><output id="thetaout">+30°</output></div>
+  <input id="theta" type="range" min="-90" max="90" step="1" value="30">
+  <div class="hint">Positive → counterclockwise; negative → clockwise.</div>
+</div>
+</div>
+
+<div class="actions">
+<button id="reset" class="primary" type="button">Reset</button>
+<button id="zero" type="button">θ = 0°</button>
+<button id="ninety" type="button">θ = 90°</button>
+</div>
+
+<div class="equation">τ = rF sinθ = Fd<sub>⊥</sub>, &nbsp;&nbsp; d<sub>⊥</sub> = r|sinθ|</div>
+<div class="note" id="note" aria-live="polite"><strong>At θ = 30°:</strong> Only the perpendicular effect of the force turns the lever.</div>
+</section>
+
+<section class="panel" style="margin-top:14px">
+<h2>Lever, force, and moment arm</h2>
+<svg viewBox="0 0 920 520" role="img" aria-label="Lever with pivot, force vector, line of action, and perpendicular moment arm">
+<defs>
+  <marker id="forceHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--force)"/>
+  </marker>
+  <marker id="rHead" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="strokeWidth">
+    <path d="M0 0 L9 4.5 L0 9 z" fill="var(--accent)"/>
+  </marker>
+</defs>
+
+<line x1="95" y1="285" x2="850" y2="285" stroke="var(--grid)" stroke-width="2"/>
+<line id="lever" x1="195" y1="285" x2="630" y2="285" stroke="var(--text)" stroke-width="14" stroke-linecap="round"/>
+<polygon points="175,325 215,325 195,285" fill="var(--border)"/>
+<circle cx="195" cy="285" r="12" fill="var(--accent)"/>
+<text x="195" y="355" text-anchor="middle" fill="var(--muted)" font-size="16">pivot</text>
+
+<line id="rVec" x1="195" y1="252" x2="630" y2="252" stroke="var(--accent)" stroke-width="4" marker-end="url(#rHead)"/>
+<text id="rLabel" x="412" y="238" text-anchor="middle" fill="var(--accent)" font-size="17" font-weight="700">r = 1.00 m</text>
+
+<line id="loa" x1="500" y1="430" x2="760" y2="95" stroke="var(--line)" stroke-width="2" stroke-dasharray="8 7"/>
+<line id="fVec" x1="630" y1="285" x2="735" y2="225" stroke="var(--force)" stroke-width="6" stroke-linecap="round" marker-end="url(#forceHead)"/>
+<text id="fLabel" x="748" y="220" fill="var(--force)" font-size="17" font-weight="700">F = 50 N</text>
+
+<path id="thetaArc" d="" fill="none" stroke="var(--arm)" stroke-width="4"/>
+<text id="thetaLabel" x="685" y="273" fill="var(--arm)" font-size="17" font-weight="700">θ = 30°</text>
+
+<line id="dLine" x1="195" y1="285" x2="330" y2="365" stroke="var(--arm)" stroke-width="5" stroke-linecap="round"/>
+<circle id="foot" cx="330" cy="365" r="7" fill="var(--arm)"/>
+<text id="dLabel" x="245" y="350" fill="var(--arm)" font-size="17" font-weight="700">d⊥ = 0.50 m</text>
+<path id="rightAngle" d="" fill="none" stroke="var(--arm)" stroke-width="3"/>
+
+<path id="torqueArc" d="M155 255 A54 54 0 0 1 210 230" fill="none" stroke="var(--torque)" stroke-width="5"/>
+<polygon id="torqueHead" points="210,230 196,229 204,242" fill="var(--torque)"/>
+<text id="torqueLabel" x="115" y="220" fill="var(--torque)" font-size="18" font-weight="700">τ: CCW</text>
+</svg>
+
+<div class="legend">
+<span class="key"><span class="dot" style="background:var(--force)"></span>applied force</span>
+<span class="key"><span class="dot" style="background:var(--accent)"></span>position vector r</span>
+<span class="key"><span class="dot" style="background:var(--arm)"></span>moment arm d⊥</span>
+<span class="key"><span class="dot" style="background:var(--line)"></span>line of action</span>
+</div>
+
+<div class="gauge">
+<strong>Signed torque</strong>
+<div class="axis"><div class="center"></div><div id="bar" class="fill"></div></div>
+<div class="labels"><span>Clockwise (−)</span><span>0</span><span>Counterclockwise (+)</span></div>
+</div>
+
+<div class="challenge"><strong>Predict before moving a slider</strong>
+<p id="challenge">Keep F and r fixed. At what angle is torque maximum? At what angle is it zero?</p></div>
+</section>
+</main>
+
+<script>
+(() => {
+const q = s => document.querySelector(s);
+const F=q('#F'), r=q('#r'), theta=q('#theta');
+const pivot={x:195,y:285}, minX=285, maxX=755;
+
+function st(){
+  const fv=+F.value, rv=+r.value, deg=+theta.value, rad=deg*Math.PI/180;
+  return {F:fv,r:rv,deg,rad,tau:rv*fv*Math.sin(rad),d:rv*Math.abs(Math.sin(rad)),fp:fv*Math.sin(rad),max:rv*fv};
+}
+function appX(s){ return minX+(maxX-minX)*(s.r-.2)/1.8; }
+
+function thetaPath(x,y,a){
+  if(Math.abs(a)<.01) return '';
+  const R=58, x2=x+R*Math.cos(a), y2=y-R*Math.sin(a), sweep=a>0?0:1;
+  return `M ${x+R} ${y} A ${R} ${R} 0 0 ${sweep} ${x2} ${y2}`;
+}
+
+function draw(){
+  const s=st();
+  q('#Fout').textContent=s.F.toFixed(0)+' N';
+  q('#rout').textContent=s.r.toFixed(2)+' m';
+  q('#thetaout').textContent=(s.deg>=0?'+':'')+s.deg.toFixed(0)+'°';
+  q('#tauM').textContent=(s.tau>=0?'+':'')+s.tau.toFixed(1)+' N·m';
+  q('#dM').textContent=s.d.toFixed(2)+' m';
+  q('#fpM').textContent=(s.fp>=0?'+':'')+s.fp.toFixed(1)+' N';
+  q('#maxM').textContent=s.max.toFixed(1)+' N·m';
+
+  const x=appX(s), y=pivot.y;
+  q('#lever').setAttribute('x2',x+35);
+  q('#rVec').setAttribute('x2',x);
+  q('#rLabel').setAttribute('x',(pivot.x+x)/2);
+  q('#rLabel').textContent='r = '+s.r.toFixed(2)+' m';
+
+  const ux=Math.cos(s.rad), uy=-Math.sin(s.rad);
+  const FL=80+90*(s.F-5)/115;
+  const fx=x+FL*ux, fy=y+FL*uy;
+  q('#fVec').setAttribute('x1',x); q('#fVec').setAttribute('y1',y);
+  q('#fVec').setAttribute('x2',fx); q('#fVec').setAttribute('y2',fy);
+  q('#fLabel').setAttribute('x',fx+(ux>=0?10:-58));
+  q('#fLabel').setAttribute('y',fy+(uy>=0?24:-10));
+  q('#fLabel').textContent='F = '+s.F.toFixed(0)+' N';
+
+  const LH=270;
+  q('#loa').setAttribute('x1',x-LH*ux); q('#loa').setAttribute('y1',y-LH*uy);
+  q('#loa').setAttribute('x2',x+LH*ux); q('#loa').setAttribute('y2',y+LH*uy);
+
+  q('#thetaArc').setAttribute('d',thetaPath(x,y,s.rad));
+  q('#thetaLabel').setAttribute('x',x+82*Math.cos(s.rad/2));
+  q('#thetaLabel').setAttribute('y',y-82*Math.sin(s.rad/2)+(s.deg<0?18:-4));
+  q('#thetaLabel').textContent='θ = '+(s.deg>=0?'+':'')+s.deg.toFixed(0)+'°';
+
+  // Closest point from pivot to force line in screen coordinates.
+  const rx=x-pivot.x;
+  const t=-rx*ux;
+  const foot={x:x+t*ux,y:y+t*uy};
+
+  q('#dLine').setAttribute('x2',foot.x); q('#dLine').setAttribute('y2',foot.y);
+  q('#foot').setAttribute('cx',foot.x); q('#foot').setAttribute('cy',foot.y);
+  q('#dLabel').setAttribute('x',(pivot.x+foot.x)/2+10);
+  q('#dLabel').setAttribute('y',(pivot.y+foot.y)/2-12);
+  q('#dLabel').textContent='d⊥ = '+s.d.toFixed(2)+' m';
+
+  const px=-Math.sin(s.rad), py=-Math.cos(s.rad), z=13;
+  const a={x:foot.x+z*ux,y:foot.y+z*uy};
+  const b={x:a.x+z*px,y:a.y+z*py};
+  const c={x:foot.x+z*px,y:foot.y+z*py};
+  q('#rightAngle').setAttribute('d',`M ${a.x} ${a.y} L ${b.x} ${b.y} L ${c.x} ${c.y}`);
+
+  if(Math.abs(s.tau)<.01){
+    q('#dirM').textContent='No rotation';
+    q('#torqueLabel').textContent='τ = 0';
+    q('#torqueArc').style.opacity='.25'; q('#torqueHead').style.opacity='.25';
+  } else if(s.tau>0){
+    q('#dirM').textContent='CCW ↺';
+    q('#torqueLabel').textContent='τ: CCW';
+    q('#torqueArc').setAttribute('d','M155 255 A54 54 0 0 1 210 230');
+    q('#torqueHead').setAttribute('points','210,230 196,229 204,242');
+    q('#torqueArc').style.opacity='1'; q('#torqueHead').style.opacity='1';
+  } else {
+    q('#dirM').textContent='CW ↻';
+    q('#torqueLabel').textContent='τ: CW';
+    q('#torqueArc').setAttribute('d','M210 340 A54 54 0 0 1 155 315');
+    q('#torqueHead').setAttribute('points','155,315 169,316 161,303');
+    q('#torqueArc').style.opacity='1'; q('#torqueHead').style.opacity='1';
+  }
+
+  const ratio=s.max?Math.max(-1,Math.min(1,s.tau/s.max)):0, bar=q('#bar');
+  if(ratio>=0){bar.style.left='50%';bar.style.width=(50*ratio)+'%';}
+  else{bar.style.left=(50+50*ratio)+'%';bar.style.width=(-50*ratio)+'%';}
+
+  const aabs=Math.abs(s.deg);
+  if(aabs<1) q('#note').innerHTML='<strong>Force along the lever:</strong> The line of action passes through the pivot, so d⊥ = 0 and τ = 0.';
+  else if(aabs>89) q('#note').innerHTML='<strong>Force perpendicular to the lever:</strong> d⊥ = r, so |τ| is maximum: |τ| = rF.';
+  else q('#note').innerHTML='<strong>Only the perpendicular effect turns the lever:</strong> d⊥ = r|sinθ| and F⊥ = F sinθ. Both forms give the same torque.';
+}
+
+F.addEventListener('input',()=>{q('#challenge').textContent='Double F while keeping r and θ fixed. What happens to torque?';draw();});
+r.addEventListener('input',()=>{q('#challenge').textContent='Double r while keeping F and θ fixed. What happens to moment arm and torque?';draw();});
+theta.addEventListener('input',()=>{q('#challenge').textContent='Compare θ = 0°, 30°, 60°, and 90°. How does d⊥ explain the torque change?';draw();});
+q('#zero').addEventListener('click',()=>{theta.value='0';draw();});
+q('#ninety').addEventListener('click',()=>{theta.value='90';draw();});
+q('#reset').addEventListener('click',()=>{F.value='50';r.value='1';theta.value='30';q('#challenge').textContent='Keep F and r fixed. At what angle is torque maximum? At what angle is it zero?';draw();});
+draw();
+})();
+</script>
+</body>
+</html>
