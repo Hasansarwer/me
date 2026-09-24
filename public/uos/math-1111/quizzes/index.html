@@ -339,7 +339,14 @@ function buildFill(q, body) {
 
 function submitFill(value, q, inp, btn, body) {
   if (!value) return;
-  const norm     = s => s.trim().toLowerCase().replace(/\s+/g, "");
+  const norm = s => s
+    .replace(/π/g, "pi").replace(/ω/g, "omega").replace(/φ/g, "phi")
+    .replace(/[θΘ]/g, "theta").replace(/α/g, "alpha").replace(/β/g, "beta")
+    .replace(/λ/g, "lambda").replace(/μ/g, "mu")
+    .replace(/²/g, "^2").replace(/³/g, "^3").replace(/⁻¹/g, "^-1")
+    .replace(/√/g, "sqrt").replace(/½/g, "1/2").replace(/[−–—]/g, "-")
+    .replace(/°/g, "deg").replace(/[≈≃]/g, "")
+    .toLowerCase().replace(/\s+/g, "");
   const accepted = [q.answer, ...(q.alt || [])].map(norm);
   const isRight  = accepted.includes(norm(value));
   if (isRight) score++;
