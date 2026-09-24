@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rolling Race: Hoop vs Disc vs Sphere</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f8fafc,#0b1220);
+  --panel:light-dark(#ffffff,#111827);
+  --text:light-dark(#0f172a,#f8fafc);
+  --muted:light-dark(#64748b,#a8b3c7);
+  --border:light-dark(#cbd5e1,#334155);
+  --grid:light-dark(#e2e8f0,#243147);
+  --accent:light-dark(#2563eb,#60a5fa);
+  --soft:light-dark(#dbeafe,#172554);
+  --hoop:light-dark(#b45309,#fbbf24);
+  --disc:light-dark(#0f766e,#5eead4);
+  --sphere:light-dark(#7c3aed,#c4b5fd);
+  --track:light-dark(#475569,#94a3b8);
+  --finish:light-dark(#991b1b,#fca5a5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.app{width:min(100%,1080px);margin:auto;padding:16px}
+h1{margin:0 0 6px;font-size:clamp(1.5rem,5vw,2.2rem);line-height:1.15}
+.intro p{margin:0;color:var(--muted);line-height:1.5}
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;margin:14px 0;
+}
+.metric,.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+}
+.metric{padding:12px;min-width:0}
+.metric small{display:block;color:var(--muted);font-size:.78rem}
+.metric strong{display:block;margin-top:3px;font-size:1.05rem;overflow-wrap:anywhere}
+.panel{padding:14px;min-width:0}
+.panel h2{margin:0 0 12px;font-size:1.06rem}
+.controls{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+.control{min-width:0}
+.head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.head label{font-weight:700}
+.head output{font-weight:800;color:var(--accent);white-space:nowrap}
+input[type=range]{
+  width:100%;min-height:44px;margin:0;
+  accent-color:var(--accent);touch-action:pan-y;
+}
+.hint{font-size:.8rem;color:var(--muted);line-height:1.4}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button{
+  min-height:46px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--panel);
+  color:var(--text);
+  font:inherit;
+  font-weight:700;
+  padding:9px 14px;
+}
+button.primary{background:var(--accent);color:#fff;border-color:transparent}
+button:focus-visible,input:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  outline-offset:2px;
+}
+.equation{
+  margin:14px 0 12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:color-mix(in srgb,var(--panel) 86%,var(--grid));
+  text-align:center;
+  font-family:"Cambria Math","Times New Roman",serif;
+  font-size:clamp(.95rem,3.6vw,1.25rem);
+  line-height:1.6;
+}
+.note{
+  margin-top:12px;padding:12px;border-radius:12px;
+  background:var(--soft);line-height:1.45;
+}
+.note strong{display:block;margin-bottom:4px}
+svg{display:block;width:100%;height:auto}
+.legend{
+  display:flex;flex-wrap:wrap;gap:12px;
+  margin-top:8px;color:var(--muted);font-size:.82rem;
+}
+.key{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%}
+.results{
+  display:grid;
+  gap:10px;
+  margin-top:14px;
+}
+.result{
+  display:grid;
+  grid-template-columns:90px minmax(0,1fr) 105px;
+  gap:8px;
+  align-items:center;
+}
+.trackbar{
+  height:20px;background:var(--grid);
+  border-radius:999px;overflow:hidden;
+}
+.fill{height:100%;border-radius:999px}
+.energy{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  margin-top:14px;
+}
+.energy-card{
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px;
+  min-width:0;
+}
+.energy-card b{display:block;margin-bottom:5px}
+.energy-card small{color:var(--muted);line-height:1.35;display:block}
+.challenge{margin-top:14px}
+.challenge p{margin:6px 0 0;color:var(--muted);line-height:1.5}
+@media(min-width:620px){
+  .controls{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(min-width:880px){
+  .app{padding:24px}
+  .metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .panel{padding:18px}
+}
+</style>
+</head>
+<body>
+<main class="app" id="rollingApp">
+  <section class="intro">
+    <h1>Rolling Race: Hoop vs Disc vs Sphere</h1>
+    <p>Release three objects together on identical inclines. Compare how rotational inertia changes their acceleration and finish time.</p>
+  </section>
+
+  <section class="metrics">
+    <div class="metric"><small>Hoop acceleration</small><strong id="aHoop">1.27 m/s²</strong></div>
+    <div class="metric"><small>Disc acceleration</small><strong id="aDisc">1.69 m/s²</strong></div>
+    <div class="metric"><small>Sphere acceleration</small><strong id="aSphere">1.81 m/s²</strong></div>
+    <div class="metric"><small>Fastest object</small><strong>Solid sphere</strong></div>
+    <div class="metric"><small>Race time</small><strong id="timer">0.00 s</strong></div>
+  </section>
+
+  <section class="panel">
+    <h2>Race setup</h2>
+
+    <div class="controls">
+      <div class="control">
+        <div class="head">
+          <label for="angle">Incline angle, θ</label>
+          <output id="angleOut">15°</output>
+        </div>
+        <input id="angle" type="range" min="5" max="35" step="1" value="15">
+        <div class="hint">A steeper incline increases all three accelerations.</div>
+      </div>
+
+      <div class="control">
+        <div class="head">
+          <label for="distance">Track length, s</label>
+          <output id="distanceOut">5.00 m</output>
+        </div>
+        <input id="distance" type="range" min="2" max="10" step="0.25" value="5">
+        <div class="hint">All objects travel the same distance along the incline.</div>
+      </div>
+
+      <div class="control">
+        <div class="head">
+          <label for="radius">Object radius, R</label>
+          <output id="radiusOut">0.30 m</output>
+        </div>
+        <input id="radius" type="range" min="0.15" max="0.50" step="0.01" value="0.30">
+        <div class="hint">For ideal rolling, changing R does not change the winner.</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="start" class="primary" type="button">Start race</button>
+      <button id="pause" type="button">Pause</button>
+      <button id="reset" type="button">Reset</button>
+    </div>
+
+    <div class="equation">
+      a = g sinθ / (1 + I/mR²)
+      <br>
+      Hoop: I = mR² &nbsp; | &nbsp;
+      Disc: I = ½mR² &nbsp; | &nbsp;
+      Sphere: I = ⅖mR²
+    </div>
+
+    <div class="note" id="observe" aria-live="polite">
+      <strong>Prediction:</strong>
+      The object with the smallest rotational-inertia factor uses less of its gravitational energy in rotation and gains translational speed fastest.
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:14px">
+    <h2>Race</h2>
+
+    <svg viewBox="0 0 940 590" role="img" aria-label="Hoop, solid disc, and solid sphere rolling down identical inclined tracks">
+      <defs>
+        <pattern id="finishPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+          <rect width="10" height="10" fill="var(--finish)"/>
+          <rect x="10" y="10" width="10" height="10" fill="var(--finish)"/>
+        </pattern>
+      </defs>
+
+      <text x="62" y="65" fill="var(--muted)" font-size="15">START</text>
+      <text x="820" y="65" fill="var(--muted)" font-size="15">FINISH</text>
+
+      <line id="finishLine" x1="835" y1="65" x2="835" y2="525"
+            stroke="url(#finishPattern)" stroke-width="8"/>
+
+      <!-- three parallel race tracks -->
+      <g id="tracks"></g>
+
+      <!-- labels -->
+      <text x="30" y="145" fill="var(--hoop)" font-size="18" font-weight="700">Hoop</text>
+      <text x="30" y="305" fill="var(--disc)" font-size="18" font-weight="700">Disc</text>
+      <text x="30" y="465" fill="var(--sphere)" font-size="18" font-weight="700">Sphere</text>
+
+      <!-- hoop -->
+      <g id="hoopObj">
+        <circle cx="110" cy="105" r="27" fill="none" stroke="var(--hoop)" stroke-width="8"/>
+        <line x1="110" y1="78" x2="110" y2="132" stroke="var(--hoop)" stroke-width="4"/>
+      </g>
+
+      <!-- disc -->
+      <g id="discObj">
+        <circle cx="110" cy="265" r="27" fill="var(--disc)" opacity=".9"/>
+        <line x1="110" y1="265" x2="110" y2="238" stroke="var(--panel)" stroke-width="4"/>
+      </g>
+
+      <!-- sphere -->
+      <g id="sphereObj">
+        <circle cx="110" cy="425" r="27" fill="var(--sphere)" opacity=".9"/>
+        <ellipse cx="110" cy="425" rx="20" ry="7" fill="none" stroke="var(--panel)" stroke-width="3"/>
+        <line x1="110" y1="398" x2="110" y2="452" stroke="var(--panel)" stroke-width="3"/>
+      </g>
+
+      <!-- live finish labels -->
+      <text id="hoopStatus" x="850" y="150" fill="var(--hoop)" font-size="15">—</text>
+      <text id="discStatus" x="850" y="310" fill="var(--disc)" font-size="15">—</text>
+      <text id="sphereStatus" x="850" y="470" fill="var(--sphere)" font-size="15">—</text>
+    </svg>
+
+    <div class="legend">
+      <span class="key"><span class="dot" style="background:var(--hoop)"></span>hoop: β = 1</span>
+      <span class="key"><span class="dot" style="background:var(--disc)"></span>solid disc: β = 1/2</span>
+      <span class="key"><span class="dot" style="background:var(--sphere)"></span>solid sphere: β = 2/5</span>
+    </div>
+
+    <div class="results">
+      <div class="result">
+        <span>Sphere</span>
+        <div class="trackbar"><div id="sphereBar" class="fill" style="background:var(--sphere)"></div></div>
+        <strong id="sphereTime">2.35 s</strong>
+      </div>
+      <div class="result">
+        <span>Disc</span>
+        <div class="trackbar"><div id="discBar" class="fill" style="background:var(--disc)"></div></div>
+        <strong id="discTime">2.43 s</strong>
+      </div>
+      <div class="result">
+        <span>Hoop</span>
+        <div class="trackbar"><div id="hoopBar" class="fill" style="background:var(--hoop)"></div></div>
+        <strong id="hoopTime">2.80 s</strong>
+      </div>
+    </div>
+
+    <div class="energy">
+      <div class="energy-card">
+        <b style="color:var(--hoop)">Hoop</b>
+        <small>Translational KE: 50.0%</small>
+        <small>Rotational KE: 50.0%</small>
+      </div>
+      <div class="energy-card">
+        <b style="color:var(--disc)">Solid disc</b>
+        <small>Translational KE: 66.7%</small>
+        <small>Rotational KE: 33.3%</small>
+      </div>
+      <div class="energy-card">
+        <b style="color:var(--sphere)">Solid sphere</b>
+        <small>Translational KE: 71.4%</small>
+        <small>Rotational KE: 28.6%</small>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <strong>Predict before changing a control</strong>
+      <p id="challengeText">Make the incline steeper. Does the finishing order change?</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const root = document.getElementById('rollingApp');
+  if (!root || root.dataset.ready === '1') return;
+  root.dataset.ready = '1';
+
+  const g = 9.81;
+  const beta = {hoop:1, disc:0.5, sphere:0.4};
+
+  const angle = root.querySelector('#angle');
+  const distance = root.querySelector('#distance');
+  const radius = root.querySelector('#radius');
+
+  const angleOut = root.querySelector('#angleOut');
+  const distanceOut = root.querySelector('#distanceOut');
+  const radiusOut = root.querySelector('#radiusOut');
+
+  const aHoop = root.querySelector('#aHoop');
+  const aDisc = root.querySelector('#aDisc');
+  const aSphere = root.querySelector('#aSphere');
+  const timer = root.querySelector('#timer');
+
+  const hoopObj = root.querySelector('#hoopObj');
+  const discObj = root.querySelector('#discObj');
+  const sphereObj = root.querySelector('#sphereObj');
+
+  const hoopStatus = root.querySelector('#hoopStatus');
+  const discStatus = root.querySelector('#discStatus');
+  const sphereStatus = root.querySelector('#sphereStatus');
+
+  const hoopTime = root.querySelector('#hoopTime');
+  const discTime = root.querySelector('#discTime');
+  const sphereTime = root.querySelector('#sphereTime');
+
+  const hoopBar = root.querySelector('#hoopBar');
+  const discBar = root.querySelector('#discBar');
+  const sphereBar = root.querySelector('#sphereBar');
+
+  const tracks = root.querySelector('#tracks');
+  const observe = root.querySelector('#observe');
+  const challengeText = root.querySelector('#challengeText');
+
+  const startBtn = root.querySelector('#start');
+  const pauseBtn = root.querySelector('#pause');
+  const resetBtn = root.querySelector('#reset');
+
+  const startX = 110;
+  const endX = 810;
+  const baseYs = {hoop:105, disc:265, sphere:425};
+  const maxRise = 72;
+
+  let running = false;
+  let elapsed = 0;
+  let lastStamp = 0;
+  let raf = 0;
+  let finished = {hoop:false,disc:false,sphere:false};
+
+  function state(){
+    const thetaDeg = Number(angle.value);
+    const theta = thetaDeg*Math.PI/180;
+    const s = Number(distance.value);
+    const R = Number(radius.value);
+
+    const accelerations = {};
+    const times = {};
+
+    for(const key of Object.keys(beta)){
+      accelerations[key] = g*Math.sin(theta)/(1+beta[key]);
+      times[key] = Math.sqrt(2*s/accelerations[key]);
+    }
+
+    return {thetaDeg,theta,s,R,accelerations,times};
+  }
+
+  function trackRise(s){
+    // Visual slope follows angle, but is compressed to keep all three lanes visible.
+    return 20 + maxRise*(s.thetaDeg-5)/(35-5);
+  }
+
+  function drawTracks(s){
+    tracks.innerHTML = '';
+    const rise = trackRise(s);
+
+    for(const key of ['hoop','disc','sphere']){
+      const y0 = baseYs[key]+32;
+      const y1 = y0+rise;
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',startX-34);
+      line.setAttribute('y1',y0);
+      line.setAttribute('x2',endX+34);
+      line.setAttribute('y2',y1);
+      line.setAttribute('stroke','var(--track)');
+      line.setAttribute('stroke-width','7');
+      line.setAttribute('stroke-linecap','round');
+      tracks.appendChild(line);
+    }
+  }
+
+  function progressAt(t,a,s){
+    const x = 0.5*a*t*t;
+    return Math.max(0,Math.min(1,x/s));
+  }
+
+  function setObject(el,key,progress,s){
+    const rise = trackRise(s);
+    const x = startX + (endX-startX)*progress;
+    const y = baseYs[key] + rise*progress;
+    const travelled = s.s*progress;
+
+    // Rolling without slipping: angular displacement φ = distance / R.
+    const rotDeg = (travelled/s.R)*180/Math.PI;
+
+    el.setAttribute(
+      'transform',
+      `translate(${(x-startX).toFixed(2)} ${(y-baseYs[key]).toFixed(2)}) rotate(${rotDeg.toFixed(2)} ${startX} ${baseYs[key]})`
+    );
+  }
+
+  function drawRace(){
+    const s = state();
+
+    const ph = progressAt(elapsed,s.accelerations.hoop,s.s);
+    const pd = progressAt(elapsed,s.accelerations.disc,s.s);
+    const ps = progressAt(elapsed,s.accelerations.sphere,s.s);
+
+    setObject(hoopObj,'hoop',ph,s);
+    setObject(discObj,'disc',pd,s);
+    setObject(sphereObj,'sphere',ps,s);
+
+    timer.textContent = elapsed.toFixed(2)+' s';
+
+    if(!finished.sphere && elapsed >= s.times.sphere){
+      finished.sphere = true;
+      sphereStatus.textContent = '1st • '+s.times.sphere.toFixed(2)+' s';
+    }
+    if(!finished.disc && elapsed >= s.times.disc){
+      finished.disc = true;
+      discStatus.textContent = '2nd • '+s.times.disc.toFixed(2)+' s';
+    }
+    if(!finished.hoop && elapsed >= s.times.hoop){
+      finished.hoop = true;
+      hoopStatus.textContent = '3rd • '+s.times.hoop.toFixed(2)+' s';
+    }
+
+    if(elapsed >= s.times.hoop){
+      running = false;
+      observe.innerHTML =
+        '<strong>Race complete:</strong>The solid sphere finishes first, followed by the solid disc and then the hoop. The difference comes from I/(mR²), not from their mass or radius.';
+    }
+  }
+
+  function animate(stamp){
+    if(!running) return;
+
+    if(!lastStamp) lastStamp = stamp;
+    const dt = Math.min(.05,(stamp-lastStamp)/1000);
+    lastStamp = stamp;
+    elapsed += dt;
+
+    drawRace();
+
+    if(running) raf = requestAnimationFrame(animate);
+  }
+
+  function updateStatic(changed){
+    const s = state();
+
+    angleOut.textContent = s.thetaDeg.toFixed(0)+'°';
+    distanceOut.textContent = s.s.toFixed(2)+' m';
+    radiusOut.textContent = s.R.toFixed(2)+' m';
+
+    aHoop.textContent = s.accelerations.hoop.toFixed(2)+' m/s²';
+    aDisc.textContent = s.accelerations.disc.toFixed(2)+' m/s²';
+    aSphere.textContent = s.accelerations.sphere.toFixed(2)+' m/s²';
+
+    hoopTime.textContent = s.times.hoop.toFixed(2)+' s';
+    discTime.textContent = s.times.disc.toFixed(2)+' s';
+    sphereTime.textContent = s.times.sphere.toFixed(2)+' s';
+
+    // Shorter finishing time = longer comparison bar.
+    hoopBar.style.width = (100*s.times.sphere/s.times.hoop).toFixed(1)+'%';
+    discBar.style.width = (100*s.times.sphere/s.times.disc).toFixed(1)+'%';
+    sphereBar.style.width = '100%';
+
+    drawTracks(s);
+
+    if(changed === 'angle'){
+      challengeText.textContent =
+        'Make the incline steeper. All objects accelerate more, but does the finishing order change?';
+    }else if(changed === 'distance'){
+      challengeText.textContent =
+        'Double the track length. How do the finish times change? Do they double?';
+    }else if(changed === 'radius'){
+      challengeText.textContent =
+        'Change the common radius. Why do the calculated accelerations and finish times stay unchanged?';
+    }
+
+    resetRace(false);
+  }
+
+  function resetRace(resetControls){
+    running = false;
+    cancelAnimationFrame(raf);
+    elapsed = 0;
+    lastStamp = 0;
+    finished = {hoop:false,disc:false,sphere:false};
+
+    if(resetControls){
+      angle.value='15';
+      distance.value='5';
+      radius.value='0.30';
+      return updateStatic();
+    }
+
+    hoopStatus.textContent='—';
+    discStatus.textContent='—';
+    sphereStatus.textContent='—';
+    timer.textContent='0.00 s';
+
+    const s = state();
+    setObject(hoopObj,'hoop',0,s);
+    setObject(discObj,'disc',0,s);
+    setObject(sphereObj,'sphere',0,s);
+
+    observe.innerHTML =
+      '<strong>Prediction:</strong>The object with the smallest rotational-inertia factor uses less of its gravitational energy in rotation and gains translational speed fastest.';
+  }
+
+  angle.addEventListener('input',()=>updateStatic('angle'));
+  distance.addEventListener('input',()=>updateStatic('distance'));
+  radius.addEventListener('input',()=>updateStatic('radius'));
+
+  startBtn.addEventListener('click',()=>{
+    if(elapsed >= state().times.hoop) resetRace(false);
+    if(running) return;
+    running = true;
+    lastStamp = 0;
+    observe.innerHTML =
+      '<strong>Race in progress:</strong>Watch the separation grow even though all three objects start together from rest.';
+    raf = requestAnimationFrame(animate);
+  });
+
+  pauseBtn.addEventListener('click',()=>{
+    running = false;
+    cancelAnimationFrame(raf);
+    lastStamp = 0;
+  });
+
+  resetBtn.addEventListener('click',()=>{
+    resetRace(true);
+    challengeText.textContent =
+      'Make the incline steeper. Does the finishing order change?';
+  });
+
+  updateStatic();
+})();
+</script>
+</body>
+</html>
