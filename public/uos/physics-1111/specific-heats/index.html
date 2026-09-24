@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Specific-Heat Calculator with Variable Gamma</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f8fafc,#0b1220);
+  --panel:light-dark(#ffffff,#111827);
+  --text:light-dark(#0f172a,#f8fafc);
+  --muted:light-dark(#64748b,#a8b3c7);
+  --border:light-dark(#cbd5e1,#334155);
+  --grid:light-dark(#e2e8f0,#243147);
+  --accent:light-dark(#2563eb,#60a5fa);
+  --soft:light-dark(#dbeafe,#172554);
+  --cv:light-dark(#0f766e,#5eead4);
+  --cp:light-dark(#b45309,#fbbf24);
+  --r:light-dark(#7c3aed,#c4b5fd);
+  --qv:light-dark(#0369a1,#7dd3fc);
+  --qp:light-dark(#9a3412,#fdba74);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.app{width:min(100%,1080px);margin:auto;padding:16px}
+h1{margin:0 0 6px;font-size:clamp(1.45rem,5vw,2.2rem);line-height:1.15}
+.intro p{margin:0;color:var(--muted);line-height:1.5}
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0;
+}
+.metric,.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+}
+.metric{min-width:0;padding:12px}
+.metric small{display:block;color:var(--muted);font-size:.78rem}
+.metric strong{display:block;margin-top:3px;font-size:1.05rem;overflow-wrap:anywhere}
+.panel{min-width:0;padding:14px}
+.panel h2{margin:0 0 12px;font-size:1.06rem}
+.controls{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+.control{min-width:0}
+.head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:baseline;
+}
+.head label{font-weight:700}
+.head output{font-weight:800;color:var(--accent);white-space:nowrap}
+input[type=range]{
+  width:100%;
+  min-height:44px;
+  margin:0;
+  accent-color:var(--accent);
+  touch-action:pan-y;
+}
+.hint{font-size:.8rem;color:var(--muted);line-height:1.4}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button{
+  min-height:46px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--panel);
+  color:var(--text);
+  font:inherit;
+  font-weight:700;
+  padding:9px 13px;
+}
+button.primary{background:var(--accent);color:#fff;border-color:transparent}
+button:focus-visible,input:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  outline-offset:2px;
+}
+.equation{
+  margin:14px 0 12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:color-mix(in srgb,var(--panel) 86%,var(--grid));
+  text-align:center;
+  font-family:"Cambria Math","Times New Roman",serif;
+  font-size:clamp(.95rem,3.6vw,1.25rem);
+  line-height:1.65;
+}
+.note{
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  background:var(--soft);
+  line-height:1.45;
+}
+.note strong{display:block;margin-bottom:4px}
+.visual-grid{display:grid;gap:14px}
+svg{display:block;width:100%;height:auto}
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:.82rem;
+}
+.key{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%}
+.capacity{
+  display:grid;
+  gap:12px;
+  margin-top:8px;
+}
+.cap-row{
+  display:grid;
+  grid-template-columns:92px minmax(0,1fr) 126px;
+  gap:8px;
+  align-items:center;
+}
+.track{
+  height:24px;
+  background:var(--grid);
+  border-radius:999px;
+  overflow:hidden;
+}
+.fill{height:100%;border-radius:999px}
+.heat-cards{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-top:14px;
+}
+.heat-card{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px;
+}
+.heat-card b{display:block;margin-bottom:4px}
+.heat-card strong{font-size:1.25rem}
+.heat-card small{display:block;color:var(--muted);margin-top:4px;line-height:1.4}
+.challenge{margin-top:14px}
+.challenge p{margin:6px 0 0;color:var(--muted);line-height:1.5}
+@media(min-width:600px){
+  .controls{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .heat-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(min-width:880px){
+  .app{padding:24px}
+  .metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .panel{padding:18px}
+  .visual-grid{grid-template-columns:1.08fr .92fr}
+}
+</style>
+</head>
+<body>
+<main class="app" id="specificHeatApp">
+  <section class="intro">
+    <h1>Specific-Heat Calculator with Variable γ</h1>
+    <p>For an ideal gas, vary the heat-capacity ratio γ and see how the molar heat capacities at constant volume and constant pressure are related.</p>
+  </section>
+
+  <section class="metrics">
+    <div class="metric"><small>Heat-capacity ratio</small><strong id="gammaMetric">γ = 1.400</strong></div>
+    <div class="metric"><small>C<sub>V</sub></small><strong id="cvMetric">20.79 J mol⁻¹ K⁻¹</strong></div>
+    <div class="metric"><small>C<sub>P</sub></small><strong id="cpMetric">29.10 J mol⁻¹ K⁻¹</strong></div>
+    <div class="metric"><small>C<sub>P</sub> − C<sub>V</sub></small><strong id="diffMetric">8.314 J mol⁻¹ K⁻¹</strong></div>
+    <div class="metric"><small>C<sub>P</sub>/C<sub>V</sub></small><strong id="ratioMetric">1.400</strong></div>
+  </section>
+
+  <section class="panel">
+    <h2>Parameters</h2>
+
+    <div class="controls">
+      <div class="control">
+        <div class="head">
+          <label for="gamma">Heat-capacity ratio, γ</label>
+          <output id="gammaOut">1.400</output>
+        </div>
+        <input id="gamma" type="range" min="1.10" max="1.67" step="0.01" value="1.40">
+        <div class="hint">For an ideal gas, γ must be greater than 1.</div>
+      </div>
+
+      <div class="control">
+        <div class="head">
+          <label for="moles">Amount of gas, n</label>
+          <output id="molesOut">1.00 mol</output>
+        </div>
+        <input id="moles" type="range" min="0.25" max="5.00" step="0.25" value="1.00">
+        <div class="hint">Used to compare heat required for the same temperature change.</div>
+      </div>
+
+      <div class="control">
+        <div class="head">
+          <label for="deltaT">Temperature change, ΔT</label>
+          <output id="deltaTOut">50 K</output>
+        </div>
+        <input id="deltaT" type="range" min="-100" max="150" step="5" value="50">
+        <div class="hint">Positive means heating; negative means cooling.</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="reset" class="primary" type="button">Reset</button>
+      <button id="mono" type="button">Monatomic γ = 5/3</button>
+      <button id="dia" type="button">Diatomic γ = 7/5</button>
+      <button id="poly" type="button">γ = 4/3</button>
+    </div>
+
+    <div class="equation">
+      γ = C<sub>P</sub>/C<sub>V</sub>,
+      &nbsp;&nbsp;
+      C<sub>P</sub> − C<sub>V</sub> = R
+      <br>
+      C<sub>V</sub> = R/(γ−1),
+      &nbsp;&nbsp;
+      C<sub>P</sub> = γR/(γ−1)
+    </div>
+
+    <div class="note" id="observe" aria-live="polite">
+      <strong>At γ = 1.40:</strong>
+      C<sub>V</sub> ≈ 20.79 and C<sub>P</sub> ≈ 29.10 J mol⁻¹ K⁻¹. Constant-pressure heating requires more energy because the gas can also do expansion work.
+    </div>
+  </section>
+
+  <section class="visual-grid" style="margin-top:14px">
+    <div class="panel">
+      <h2>Compare C<sub>V</sub> and C<sub>P</sub></h2>
+
+      <div class="capacity">
+        <div class="cap-row">
+          <strong>C<sub>V</sub></strong>
+          <div class="track"><div id="cvFill" class="fill" style="background:var(--cv)"></div></div>
+          <span id="cvValue">20.79 J/mol·K</span>
+        </div>
+        <div class="cap-row">
+          <strong>C<sub>P</sub></strong>
+          <div class="track"><div id="cpFill" class="fill" style="background:var(--cp)"></div></div>
+          <span id="cpValue">29.10 J/mol·K</span>
+        </div>
+        <div class="cap-row">
+          <strong>Difference</strong>
+          <div class="track"><div id="rFill" class="fill" style="background:var(--r)"></div></div>
+          <span>R = 8.314</span>
+        </div>
+      </div>
+
+      <div class="heat-cards">
+        <div class="heat-card">
+          <b style="color:var(--cv)">Constant volume</b>
+          <strong id="qvValue">1.04 kJ</strong>
+          <small>Q<sub>V</sub> = nC<sub>V</sub>ΔT. No boundary expansion work for a rigid container.</small>
+        </div>
+
+        <div class="heat-card">
+          <b style="color:var(--cp)">Constant pressure</b>
+          <strong id="qpValue">1.46 kJ</strong>
+          <small>Q<sub>P</sub> = nC<sub>P</sub>ΔT. More heat is required for the same ΔT.</small>
+        </div>
+      </div>
+
+      <div class="note" id="heatDifference">
+        <strong>Extra heat at constant pressure:</strong>
+        Q<sub>P</sub> − Q<sub>V</sub> = nRΔT = 0.42 kJ.
+      </div>
+
+      <div class="challenge">
+        <strong>Predict before moving γ</strong>
+        <p id="challengeText">Decrease γ toward 1. What happens to C<sub>V</sub> and C<sub>P</sub>?</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>How C<sub>P</sub> and C<sub>V</sub> depend on γ</h2>
+
+      <svg viewBox="0 0 560 430" role="img" aria-label="Molar heat capacities versus gamma for an ideal gas">
+        <line x1="70" y1="350" x2="520" y2="350" stroke="var(--border)" stroke-width="2"/>
+        <line x1="70" y1="45" x2="70" y2="350" stroke="var(--border)" stroke-width="2"/>
+
+        <text x="520" y="382" text-anchor="end" fill="var(--muted)" font-size="15">γ</text>
+        <text x="82" y="58" fill="var(--muted)" font-size="15">J mol⁻¹ K⁻¹</text>
+
+        <line x1="70" y1="250" x2="520" y2="250" stroke="var(--grid)" stroke-width="2" stroke-dasharray="5 6"/>
+        <line x1="70" y1="150" x2="520" y2="150" stroke="var(--grid)" stroke-width="2" stroke-dasharray="5 6"/>
+
+        <polyline id="cvCurve" points="" fill="none" stroke="var(--cv)" stroke-width="5" stroke-linecap="round"/>
+        <polyline id="cpCurve" points="" fill="none" stroke="var(--cp)" stroke-width="5" stroke-linecap="round"/>
+
+        <circle id="cvPoint" cx="300" cy="260" r="8" fill="var(--cv)"/>
+        <circle id="cpPoint" cx="300" cy="220" r="8" fill="var(--cp)"/>
+
+        <line id="gammaGuide" x1="300" y1="45" x2="300" y2="350"
+              stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 5"/>
+
+        <text id="gammaGraphLabel" x="312" y="75"
+              fill="var(--accent)" font-size="15" font-weight="700">γ = 1.40</text>
+
+        <text x="85" y="405" fill="var(--cv)" font-size="15" font-weight="700">Cᵥ</text>
+        <text x="135" y="405" fill="var(--cp)" font-size="15" font-weight="700">Cₚ</text>
+      </svg>
+
+      <div class="note">
+        <strong>Important behavior:</strong>
+        As γ approaches 1 from above, both heat capacities become large. Their difference remains exactly R in this ideal-gas model.
+      </div>
+
+      <div class="legend">
+        <span class="key"><span class="dot" style="background:var(--cv)"></span>C<sub>V</sub></span>
+        <span class="key"><span class="dot" style="background:var(--cp)"></span>C<sub>P</sub></span>
+        <span class="key"><span class="dot" style="background:var(--r)"></span>C<sub>P</sub> − C<sub>V</sub> = R</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const root = document.getElementById('specificHeatApp');
+  if (!root || root.dataset.ready === '1') return;
+  root.dataset.ready = '1';
+
+  const R = 8.314462618;
+
+  const gamma = root.querySelector('#gamma');
+  const moles = root.querySelector('#moles');
+  const deltaT = root.querySelector('#deltaT');
+
+  const gammaOut = root.querySelector('#gammaOut');
+  const molesOut = root.querySelector('#molesOut');
+  const deltaTOut = root.querySelector('#deltaTOut');
+
+  const gammaMetric = root.querySelector('#gammaMetric');
+  const cvMetric = root.querySelector('#cvMetric');
+  const cpMetric = root.querySelector('#cpMetric');
+  const diffMetric = root.querySelector('#diffMetric');
+  const ratioMetric = root.querySelector('#ratioMetric');
+
+  const cvFill = root.querySelector('#cvFill');
+  const cpFill = root.querySelector('#cpFill');
+  const rFill = root.querySelector('#rFill');
+  const cvValue = root.querySelector('#cvValue');
+  const cpValue = root.querySelector('#cpValue');
+  const qvValue = root.querySelector('#qvValue');
+  const qpValue = root.querySelector('#qpValue');
+  const heatDifference = root.querySelector('#heatDifference');
+
+  const cvCurve = root.querySelector('#cvCurve');
+  const cpCurve = root.querySelector('#cpCurve');
+  const cvPoint = root.querySelector('#cvPoint');
+  const cpPoint = root.querySelector('#cpPoint');
+  const gammaGuide = root.querySelector('#gammaGuide');
+  const gammaGraphLabel = root.querySelector('#gammaGraphLabel');
+
+  const observe = root.querySelector('#observe');
+  const challengeText = root.querySelector('#challengeText');
+
+  const reset = root.querySelector('#reset');
+  const mono = root.querySelector('#mono');
+  const dia = root.querySelector('#dia');
+  const poly = root.querySelector('#poly');
+
+  function state(){
+    const g = Math.max(1.001,Number(gamma.value));
+    const n = Number(moles.value);
+    const dT = Number(deltaT.value);
+
+    const Cv = R/(g-1);
+    const Cp = g*R/(g-1);
+    const Qv = n*Cv*dT;
+    const Qp = n*Cp*dT;
+    const extra = Qp-Qv;
+
+    return {g,n,dT,Cv,Cp,Qv,Qp,extra};
+  }
+
+  function formatEnergy(j){
+    const abs = Math.abs(j);
+    if(abs >= 1000){
+      return (j/1000).toFixed(2)+' kJ';
+    }
+    return j.toFixed(0)+' J';
+  }
+
+  function signedNumber(v,digits=0){
+    if(Math.abs(v) < 1e-9) return '0';
+    return (v>0?'+':'−')+Math.abs(v).toFixed(digits);
+  }
+
+  function drawBars(s){
+    const max = Math.max(s.Cp,1);
+    cvFill.style.width = (100*s.Cv/max).toFixed(1)+'%';
+    cpFill.style.width = '100%';
+    rFill.style.width = (100*R/max).toFixed(1)+'%';
+
+    cvValue.textContent = s.Cv.toFixed(2)+' J/mol·K';
+    cpValue.textContent = s.Cp.toFixed(2)+' J/mol·K';
+  }
+
+  function drawGraph(s){
+    const left=70, right=520, top=45, bottom=350;
+    const gMin=1.10, gMax=1.67;
+
+    // Use a fixed y range matched to the allowed gamma range.
+    const yMax = 95;
+
+    function gx(g){
+      return left+(right-left)*(g-gMin)/(gMax-gMin);
+    }
+    function gy(c){
+      return bottom-(bottom-top)*Math.min(yMax,c)/yMax;
+    }
+
+    const cvPts=[], cpPts=[];
+    const N=220;
+
+    for(let i=0;i<=N;i++){
+      const g=gMin+(gMax-gMin)*i/N;
+      const Cv=R/(g-1);
+      const Cp=g*R/(g-1);
+      cvPts.push(gx(g).toFixed(1)+','+gy(Cv).toFixed(1));
+      cpPts.push(gx(g).toFixed(1)+','+gy(Cp).toFixed(1));
+    }
+
+    cvCurve.setAttribute('points',cvPts.join(' '));
+    cpCurve.setAttribute('points',cpPts.join(' '));
+
+    const x=gx(s.g);
+    cvPoint.setAttribute('cx',x);
+    cvPoint.setAttribute('cy',gy(s.Cv));
+    cpPoint.setAttribute('cx',x);
+    cpPoint.setAttribute('cy',gy(s.Cp));
+
+    gammaGuide.setAttribute('x1',x);
+    gammaGuide.setAttribute('x2',x);
+    gammaGraphLabel.setAttribute('x',Math.min(430,x+10));
+    gammaGraphLabel.textContent='γ = '+s.g.toFixed(2);
+  }
+
+  function describeGamma(g){
+    if(Math.abs(g-5/3) < .015){
+      return 'This is near the ideal monatomic-gas value γ = 5/3.';
+    }
+    if(Math.abs(g-7/5) < .015){
+      return 'This is near the familiar ideal diatomic-gas value γ = 7/5 under ordinary-temperature assumptions.';
+    }
+    if(Math.abs(g-4/3) < .015){
+      return 'This γ = 4/3 setting is a useful comparison case.';
+    }
+    return 'Changing γ changes both molar heat capacities while Cₚ − Cᵥ remains R.';
+  }
+
+  function draw(){
+    const s=state();
+
+    gammaOut.textContent=s.g.toFixed(3);
+    molesOut.textContent=s.n.toFixed(2)+' mol';
+    deltaTOut.textContent=signedNumber(s.dT)+' K';
+
+    gammaMetric.textContent='γ = '+s.g.toFixed(3);
+    cvMetric.textContent=s.Cv.toFixed(2)+' J mol⁻¹ K⁻¹';
+    cpMetric.textContent=s.Cp.toFixed(2)+' J mol⁻¹ K⁻¹';
+    diffMetric.textContent=(s.Cp-s.Cv).toFixed(3)+' J mol⁻¹ K⁻¹';
+    ratioMetric.textContent=(s.Cp/s.Cv).toFixed(3);
+
+    qvValue.textContent=formatEnergy(s.Qv);
+    qpValue.textContent=formatEnergy(s.Qp);
+
+    heatDifference.innerHTML =
+      '<strong>Difference between the two processes:</strong>'+
+      'Q<sub>P</sub> − Q<sub>V</sub> = nRΔT = '+formatEnergy(s.extra)+'.';
+
+    observe.innerHTML =
+      '<strong>At γ = '+s.g.toFixed(2)+':</strong>'+
+      'C<sub>V</sub> = '+s.Cv.toFixed(2)+
+      ' and C<sub>P</sub> = '+s.Cp.toFixed(2)+
+      ' J mol⁻¹ K⁻¹. '+describeGamma(s.g);
+
+    drawBars(s);
+    drawGraph(s);
+  }
+
+  gamma.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Decrease γ toward 1. Why do both Cᵥ and Cₚ increase while their difference remains R?';
+    draw();
+  });
+
+  moles.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Double n while γ and ΔT remain fixed. What happens to Qᵥ and Qₚ?';
+    draw();
+  });
+
+  deltaT.addEventListener('input',()=>{
+    challengeText.textContent =
+      'Make ΔT negative. What do the signs of Qᵥ and Qₚ now mean physically?';
+    draw();
+  });
+
+  reset.addEventListener('click',()=>{
+    gamma.value='1.40';
+    moles.value='1.00';
+    deltaT.value='50';
+    challengeText.textContent =
+      'Decrease γ toward 1. What happens to Cᵥ and Cₚ?';
+    draw();
+  });
+
+  mono.addEventListener('click',()=>{
+    gamma.value=(5/3).toFixed(2);
+    draw();
+  });
+
+  dia.addEventListener('click',()=>{
+    gamma.value='1.40';
+    draw();
+  });
+
+  poly.addEventListener('click',()=>{
+    gamma.value='1.33';
+    draw();
+  });
+
+  draw();
+})();
+</script>
+</body>
+</html>
