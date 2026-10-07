@@ -175,6 +175,7 @@ export default function RootLayout({
                   operatingSystem: "iOS, Android",
                   url: "https://www.npmjs.com/package/@esaltws/react-native-salt",
                   codeRepository: "https://github.com/Hasansarwer/react-native-salt",
+                  downloadUrl: "https://play.google.com/store/apps/details?id=com.sarwer.rnsaltdemo",
                   author: { "@id": `${siteConfig.url}/#person` },
                   offers: { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
                 },

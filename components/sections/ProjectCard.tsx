@@ -95,10 +95,11 @@ export function ProjectCard({ project, variant = "compact" }: ProjectCardProps) 
             {project.demo && (
               <a
                 href={project.demo}
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 className={styles.link}
               >
-                Demo APK &darr;
+                Google Play &rarr;
               </a>
             )}
             {project.docs && (
@@ -170,7 +171,7 @@ export function ProjectCard({ project, variant = "compact" }: ProjectCardProps) 
         )}
         {project.demo && (
           <a href={project.demo} target="_blank" rel="noopener noreferrer" className={styles.link}>
-            Demo APK
+            Google Play
           </a>
         )}
         {project.docs && (

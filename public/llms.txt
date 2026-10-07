@@ -14,7 +14,7 @@
 ## Products
 
 - salt-theme-gen: OKLCH-based design system theme engine. One hex color in — complete light/dark theme with 21 semantic colors, 32 interactive states, and WCAG accessibility. Zero dependencies, pure TypeScript. npm: https://www.npmjs.com/package/salt-theme-gen GitHub: https://github.com/Hasansarwer/salt-theme-gen
-- react-native-salt: 119-component React Native UI library with single-color theming. Pass one hex color — every component adapts in light and dark mode. No native linking, works in Expo Go. npm: https://www.npmjs.com/package/@esaltws/react-native-salt GitHub: https://github.com/Hasansarwer/react-native-salt
+- react-native-salt: 119-component React Native UI library with single-color theming. Pass one hex color — every component adapts in light and dark mode. No native linking, works in Expo Go. npm: https://www.npmjs.com/package/@esaltws/react-native-salt GitHub: https://github.com/Hasansarwer/react-native-salt Google Play: https://play.google.com/store/apps/details?id=com.sarwer.rnsaltdemo
 - DentistLeads: B2B SaaS data pipeline that identifies under-performing dental practices in any target city and generates AI-powered opportunity reports for dental marketing agencies. Built with FastAPI, PostgreSQL, Anthropic SDK, Google Maps API, H3 hex grid. In active development.
 - E-Learning Platform: Adaptive, interactive e-learning platform with mathematical rigor and serious pedagogy. In development.
 

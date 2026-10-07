@@ -20,7 +20,7 @@ const products = [
     status: "live" as const,
     npm: "https://www.npmjs.com/package/@esaltws/react-native-salt",
     github: "https://github.com/Hasansarwer/react-native-salt",
-    demo: "https://drive.google.com/file/d/1i1qEqURhI9MKpvX9Z_8nuaY_PAasOBl8/view",
+    demo: "https://play.google.com/store/apps/details?id=com.sarwer.rnsaltdemo",
     docs: "https://learn.esalt.net/react-native-salt/",
   },
   {
@@ -67,7 +67,7 @@ export default function HomePage() {
                         rel="noopener noreferrer"
                         className={`${styles.productLink} ${styles.productLinkDemo}`}
                       >
-                        Try Demo (APK) &rarr;
+                        Google Play &rarr;
                       </a>
                     )}
                     {p.docs && (
